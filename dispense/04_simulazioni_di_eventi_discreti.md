@@ -57,20 +57,14 @@ L’evoluzione è **stocastica**: il tempo e il tipo del prossimo evento sono ca
 ## 2. Tempo di attesa e legge esponenziale
 
 Se un evento accade con tasso costante $\lambda$, la probabilità che avvenga entro il tempo $t$ è
-$$
-P(T < t) = 1 - e^{-\lambda t}.
-$$
+$$P(T < t) = 1 - e^{-\lambda t}.$$
 
 La densità di probabilità del **tempo di attesa** è quindi
-$$
-p(t) = \lambda e^{-\lambda t},
-$$
+$$p(t) = \lambda e^{-\lambda t},$$
 una **distribuzione esponenziale** con valore medio $1/\lambda$.
 
 Nella simulazione, si può estrarre il tempo del prossimo evento come:
-$$
-\tau = -\frac{1}{\lambda}\ln U,
-$$
+$$\tau = -\frac{1}{\lambda}\ln U,$$
 dove $U$ è una variabile uniforme in $[0,1)$.
 
 **Interpretazione:** il sistema “attende” un tempo casuale $\tau$ prima che qualcosa accada.
@@ -82,19 +76,13 @@ dove $U$ è una variabile uniforme in $[0,1)$.
 ### 3.1 Idea generale
 
 In un sistema con $M$ tipi di eventi, ciascuno con tasso $a_j(x)$, il **tasso totale** è
-$$
-a_0(x) = \sum_{j=1}^{M} a_j(x).
-$$
+$$a_0(x) = \sum_{j=1}^{M} a_j(x).$$
 
 A ogni passo:
 1. si estrae il **tempo del prossimo evento**
-   $$
-   \tau = \frac{1}{a_0(x)} \ln\!\left(\frac{1}{U_1}\right),
-   $$
+   $$\tau = \frac{1}{a_0(x)} \ln\!\left(\frac{1}{U_1}\right),$$
 2. si sceglie **quale evento avviene** con probabilità proporzionale al suo tasso:
-   $$
-   P(\text{evento } j) = \frac{a_j(x)}{a_0(x)}.
-   $$
+   $$P(\text{evento } j) = \frac{a_j(x)}{a_0(x)}.$$
 3. si **aggiorna lo stato** secondo la regola dell’evento selezionato,
 4. si incrementa il tempo $t \to t + \tau$,
 5. si ripete.
@@ -145,13 +133,11 @@ Quando i tassi sono grandi, il metodo di Gillespie diventa lento: si può **salt
 
 Numero di eventi del tipo $j$ in $\Delta t$:\
 $$\
-k\_j \sim \text{Poisson}(a\_j(x),\Delta t).\
-$$
+k\_j \sim \text{Poisson}(a\_j(x),\Delta t).\$$
 
 Aggiornamento:\
 $$\
-x \to x + \sum\_j k\_j,\nu\_j,\
-$$\
+x \to x + \sum\_j k\_j,\nu\_j,\$$\
 dove $\nu\_j$ è il vettore di cambiamento per l’evento $j$.
 
 Questo metodo è un ponte verso le **equazioni di Langevin chimiche**.

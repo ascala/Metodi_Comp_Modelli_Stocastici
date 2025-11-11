@@ -80,9 +80,7 @@ Le principali quantità descrittive di una variabile aleatoria sono:
 
 Una proprietà fondamentale è la **normalizzazione**:
 
-$$
-\sum_x P(x) = 1 \quad \text{(discreta)}, \qquad \int_{-\infty}^{\infty} p(x)\,dx = 1 \quad \text{(continua)}.
-$$
+$$\sum_x P(x) = 1 \quad \text{(discreta)}, \qquad \int_{-\infty}^{\infty} p(x)\,dx = 1 \quad \text{(continua)}.$$
 
 
 ### Variabili discrete e continue
@@ -116,27 +114,19 @@ La Gaussiana emerge come limite di molte distribuzioni per effetto del **teorema
 
 1. **Linearità della media**:
 
-   $$
-   \langle aX + bY \rangle = a\langle X\rangle + b\langle Y\rangle.
-   $$
+   $$\langle aX + bY \rangle = a\langle X\rangle + b\langle Y\rangle.$$
 
 2. **Varianza di una combinazione lineare**:
 
-   $$
-   \mathrm{Var}(aX+bY)=a^2\mathrm{Var}(X)+b^2\mathrm{Var}(Y)+2ab\,\mathrm{Cov}(X,Y).
-   $$
+   $$\mathrm{Var}(aX+bY)=a^2\mathrm{Var}(X)+b^2\mathrm{Var}(Y)+2ab\,\mathrm{Cov}(X,Y).$$
 
 3. **Funzione caratteristica** (trasformata di Fourier della densità):
 
-   $$
-   \phi_X(k)=\langle e^{ikX}\rangle = \int e^{ikx}p(x)\,dx.
-   $$
+   $$\phi_X(k)=\langle e^{ikX}\rangle = \int e^{ikx}p(x)\,dx.$$
 
    Essa codifica tutti i momenti di $X$ e semplifica l’analisi di somme di variabili indipendenti:
 
-   $$
-   \phi_{X+Y}(k)=\phi_X(k)\phi_Y(k).
-   $$
+   $$\phi_{X+Y}(k)=\phi_X(k)\phi_Y(k).$$
 
 
 ### Esempi e interpretazioni
@@ -186,18 +176,14 @@ Caratteristiche principali:
 
 Un caso fondamentale è il **processo di Markov**, per il quale vale:
 
-$$
-P(X_{t+1}|X_t, X_{t-1}, \ldots) = P(X_{t+1}|X_t).
-$$
+$$P(X_{t+1}|X_t, X_{t-1}, \ldots) = P(X_{t+1}|X_t).$$
 
 
 ## Rumore e media: dal determinismo alla fluttuazione
 
 In molti modelli, l’evoluzione temporale di una variabile è descritta come:
 
-$$
-x_{t+1} = f(x_t) + \eta_t,
-$$
+$$x_{t+1} = f(x_t) + \eta_t,$$
 
 dove $\eta_t$ rappresenta un termine di rumore.
 

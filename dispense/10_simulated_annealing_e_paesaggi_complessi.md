@@ -59,17 +59,13 @@ Un raffreddamento troppo rapido porta a **vetri amorfi** (minimi locali); uno le
 ## 2. Principio del simulated annealing
 
 L’algoritmo riproduce la dinamica di un sistema termico che esplora configurazioni secondo la distribuzione di Boltzmann:
-$$
-P(x) \propto e^{-E(x)/T}.
-$$
+$$P(x) \propto e^{-E(x)/T}.$$
 
 A ogni passo:
 1. Si propone una nuova configurazione $x'$.  
 2. Si calcola la variazione di energia $\Delta E = E(x') - E(x)$.  
 3. Si accetta la mossa con probabilità
-$$
-p_{\text{acc}} = \min(1, e^{-\Delta E/T}).
-$$
+$$p_{\text{acc}} = \min(1, e^{-\Delta E/T}).$$
 
 La temperatura $T$ controlla il grado di esplorazione:
 - alta $T$ → accettazione di molte mosse, anche peggiorative;  
@@ -113,9 +109,7 @@ def simulated_annealing(E, x0, T0, alpha, steps):
 ### 4.1 Funzione multimodale
 
 Esempio con una funzione con più minimi locali:
-$$
-E(x) = x^4 - 3x^3 + 2.
-$$
+$$E(x) = x^4 - 3x^3 + 2.$$
 
 ```python
 def E(x): return x**4 - 3*x**3 + 2

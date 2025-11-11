@@ -46,17 +46,13 @@ La **dinamica molecolare (MD)** è un metodo numerico per risolvere le equazioni
 ### 1.1 Equazioni del moto
 
 Per ciascuna particella $i$ di massa $m_i$ e posizione $\mathbf{r}_i$:
-$$
-m_i \frac{d^2\mathbf{r}_i}{dt^2} = \mathbf{F}_i,
-$$
+$$m_i \frac{d^2\mathbf{r}_i}{dt^2} = \mathbf{F}_i,$$
 dove $\mathbf{F}_i$ è la forza risultante dovuta alle interazioni con le altre particelle.
 
 ### 1.2 Conservazione e termalizzazione
 
 Le forze derivano in genere da un **potenziale di interazione** $U(\mathbf{r}_1, \dots, \mathbf{r}_N)$:
-$$
-\mathbf{F}_i = -\nabla_i U.
-$$
+$$\mathbf{F}_i = -\nabla_i U.$$
 L’energia totale $E = K + U$ (cinematica + potenziale) si conserva in assenza di rumore o termostati.
 
 ---
@@ -66,9 +62,7 @@ L’energia totale $E = K + U$ (cinematica + potenziale) si conserva in assenza 
 ### 2.1 Potenziale di Lennard–Jones
 
 Un modello classico per le interazioni tra particelle neutre:
-$$
-U(r) = 4\epsilon\left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6\right].
-$$
+$$U(r) = 4\epsilon\left[\left(\frac{\sigma}{r}\right)^{12} - \left(\frac{\sigma}{r}\right)^6\right].$$
 Il termine $r^{-12}$ rappresenta la repulsione a corta distanza, il termine $r^{-6}$ l’attrazione di van der Waals.
 
 ### 2.2 Potenziali semplici e modelli granulari
@@ -85,9 +79,7 @@ In simulazioni didattiche o sociali, si possono usare potenziali semplificati:
 ### 3.1 Integrazione numerica
 
 Le equazioni del moto sono integrate per passi discreti $\Delta t$:
-$$
-\mathbf{r}_i(t+\Delta t) = \mathbf{r}_i(t) + \mathbf{v}_i(t)\Delta t + \frac{1}{2m_i}\mathbf{F}_i(t)\Delta t^2.
-$$
+$$\mathbf{r}_i(t+\Delta t) = \mathbf{r}_i(t) + \mathbf{v}_i(t)\Delta t + \frac{1}{2m_i}\mathbf{F}_i(t)\Delta t^2.$$
 
 Il metodo **Verlet** (o Velocity Verlet) è spesso usato per la sua stabilità e conservazione dell’energia.
 
@@ -115,17 +107,13 @@ In un sistema finito si usano:
 
 Le regole di interazione non devono essere fisiche: possono rappresentare decisioni, preferenze, o strategie.
 Un sistema a molti agenti può essere descritto da:
-$$
-\frac{d\mathbf{x}_i}{dt} = \mathbf{f}_i(\mathbf{x}_1, \dots, \mathbf{x}_N) + \boldsymbol{\eta}_i(t),
-$$
+$$\frac{d\mathbf{x}_i}{dt} = \mathbf{f}_i(\mathbf{x}_1, \dots, \mathbf{x}_N) + \boldsymbol{\eta}_i(t),$$
 dove $\mathbf{f}_i$ sintetizza la risposta dell’agente alle condizioni locali e $\boldsymbol{\eta}_i(t)$ rappresenta rumore o imprevedibilità.
 
 ### 4.1 Dinamiche di consenso
 
 Esempio: ogni agente adatta la propria opinione alla media dei vicini:
-$$
-x_i(t+\Delta t) = x_i(t) + \alpha\sum_{j\in\mathcal{N}_i}(x_j(t) - x_i(t)) + \xi_i(t),
-$$
+$$x_i(t+\Delta t) = x_i(t) + \alpha\sum_{j\in\mathcal{N}_i}(x_j(t) - x_i(t)) + \xi_i(t),$$
 dove $\mathcal{N}_i$ è il vicinato di $i$ e $\xi_i$ è un termine casuale.
 
 ### 4.2 Simulazione semplice

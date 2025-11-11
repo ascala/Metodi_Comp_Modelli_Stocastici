@@ -12,9 +12,7 @@ L’approccio Monte Carlo trova applicazione in fisica statistica, finanza quant
 Il principio di base consiste nel sostituire il calcolo deterministico di una grandezza media con una stima empirica ottenuta da campioni casuali indipendenti.  
 Se $X$ è una variabile aleatoria con densità $p(x)$ e si vuole valutare la media di una funzione $f(x)$, vale:
 
-$$
-\langle f(X) \rangle = \int f(x) p(x)\,dx \simeq \frac{1}{N} \sum_{i=1}^N f(x_i),
-$$
+$$\langle f(X) \rangle = \int f(x) p(x)\,dx \simeq \frac{1}{N} \sum_{i=1}^N f(x_i),$$
 
 dove $\{x_i\}$ sono campioni generati secondo la distribuzione $p(x)$.  
 Per effetto della **legge dei grandi numeri**, la stima converge al valore vero al crescere di $N$, mentre per il **teorema del limite centrale** l’errore statistico decresce come $1/\sqrt{N}$.
@@ -39,24 +37,18 @@ In pratica, si sostituisce la media teorica con una **media empirica** calcolata
 
 Consideriamo un integrale definito su un intervallo $[a,b]$:
 
-$$
-I = \int_a^b f(x)\,dx.
-$$
+$$I = \int_a^b f(x)\,dx.$$
 
 Calcolare $I$ in modo esatto può essere difficile o impossibile se $f(x)$ è complicata o se lo spazio di integrazione ha molte dimensioni.  
 Per semplificare, si effettua un **cambio di variabile lineare** che porta l’integrale su un intervallo unitario:
 
-$$
-I = (b-a) \int_0^1 f[a + (b-a)u]\,du,
-$$
+$$I = (b-a) \int_0^1 f[a + (b-a)u]\,du,$$
 
 dove $u$ è una variabile uniforme in $[0,1]$.  
 
 A questo punto si generano $N$ numeri casuali indipendenti $u_i \in [0,1)$ e si approssima l’integrale con la **media aritmetica** dei valori della funzione nei punti campionati:
 
-$$
-I \simeq (b-a)\frac{1}{N}\sum_{i=1}^N f[a + (b-a)u_i].
-$$
+$$I \simeq (b-a)\frac{1}{N}\sum_{i=1}^N f[a + (b-a)u_i].$$
 
 Questa è la forma più semplice di **integrazione Monte Carlo**.  
 Essa si basa sul principio che la media dei campioni tende alla media vera quando il numero di campioni $N$ cresce, secondo la **legge dei grandi numeri**.
@@ -68,15 +60,11 @@ Essa si basa sul principio che la media dei campioni tende alla media vera quand
 La stima Monte Carlo può essere vista come una media statistica della variabile casuale $Y = f[a + (b-a)U]$, dove $U$ è distribuita uniformemente in $[0,1]$.  
 La varianza della stima è proporzionale alla varianza di $Y$ e inversamente proporzionale al numero di campioni:
 
-$$
-\sigma_I^2 = (b-a)^2\frac{\sigma_f^2}{N},
-$$
+$$\sigma_I^2 = (b-a)^2\frac{\sigma_f^2}{N},$$
 
 da cui l’incertezza (errore statistico) risulta:
 
-$$
-\sigma_I = (b-a)\frac{\sigma_f}{\sqrt{N}},
-$$
+$$\sigma_I = (b-a)\frac{\sigma_f}{\sqrt{N}},$$
 
 dove $\sigma_f$ è la deviazione standard dei valori di $f$.  
 
@@ -99,9 +87,7 @@ L’efficacia dei metodi Monte Carlo dipende dalla qualità dei numeri casuali u
 Un **generatore di numeri pseudocasuali** (PRNG) produce una sequenza deterministica che approssima una distribuzione uniforme in $[0,1)$.  
 Un esempio classico è il **generatore congruenziale lineare**:
 
-$$
-x_{n+1} = (a x_n + c) \bmod m,
-$$
+$$x_{n+1} = (a x_n + c) \bmod m,$$
 
 con parametri $a$, $c$ e $m$ scelti per massimizzare il periodo e la qualità statistica.  
 Le principali proprietà desiderate sono:
@@ -128,16 +114,12 @@ In questa lezione ci limiteremo ai primi due, che costituiscono la base di tutti
 
 Il principio di questo metodo è concettualmente semplice: la probabilità che una variabile aleatoria $X$ sia minore o uguale a un certo valore $x$ è data dalla **funzione di distribuzione cumulativa** (CDF)
 
-$$
-F(x) = P(X \le x) = \int_{-\infty}^{x} p(x')\,dx'.
-$$
+$$F(x) = P(X \le x) = \int_{-\infty}^{x} p(x')\,dx'.$$
 
 Poiché $F(x)$ cresce monotonamente da $0$ a $1$, essa è **invertibile** se $p(x)$ è continua e non nulla sull’intervallo di interesse.  
 Di conseguenza, se si estrae un numero casuale $U$ distribuito uniformemente in $[0,1)$, si può definire
 
-$$
-X = F^{-1}(U),
-$$
+$$X = F^{-1}(U),$$
 
 ottenendo un valore $X$ che segue esattamente la distribuzione $p(x)$.  
 
@@ -149,28 +131,20 @@ Questo procedimento consente di convertire un generatore uniforme in un generato
 
 Si consideri la distribuzione esponenziale
 
-$$
-p(x) = \lambda e^{-\lambda x}, \quad x \ge 0,
-$$
+$$p(x) = \lambda e^{-\lambda x}, \quad x \ge 0,$$
 
 che descrive ad esempio i tempi di attesa tra eventi indipendenti (come decadimenti radioattivi o arrivi di particelle in un rivelatore).  
 La funzione cumulativa è
 
-$$
-F(x) = 1 - e^{-\lambda x}.
-$$
+$$F(x) = 1 - e^{-\lambda x}.$$
 
 Ponendo $U = F(x)$ e risolvendo rispetto a $x$, si ottiene:
 
-$$
-x = F^{-1}(U) = -\frac{1}{\lambda}\ln(1 - U).
-$$
+$$x = F^{-1}(U) = -\frac{1}{\lambda}\ln(1 - U).$$
 
 Poiché $U$ è uniforme in $[0,1)$, anche $1-U$ lo è, quindi si può semplicemente scrivere
 
-$$
-x = -\frac{1}{\lambda}\ln U.
-$$
+$$x = -\frac{1}{\lambda}\ln U.$$
 
 Questo fornisce un metodo pratico e diretto per generare numeri casuali esponenzialmente distribuiti.  
 
@@ -298,22 +272,16 @@ Essa consente di stimare integrali di funzioni complesse o multidimensionali att
 Sia $\Omega \subset \mathbb{R}^d$ un dominio $d$–dimensionale di volume finito $V(\Omega)$.  
 L’obiettivo è stimare un integrale del tipo:
 
-$$
-I = \int_{\Omega} f(\mathbf{x})\, d\mathbf{x}.
-$$
+$$I = \int_{\Omega} f(\mathbf{x})\, d\mathbf{x}.$$
 
 Introducendo la variabile aleatoria $\mathbf{X}$ uniformemente distribuita in $\Omega$, possiamo riscrivere:
 
-$$
-I = V(\Omega)\, \mathbb{E}[f(\mathbf{X})].
-$$
+$$I = V(\Omega)\, \mathbb{E}[f(\mathbf{X})].$$
 
 Questo significa che l’integrale è proporzionale al valore medio di $f$ calcolato su punti distribuiti uniformemente nel dominio.  
 La stima Monte Carlo corrispondente è:
 
-$$
-I \simeq \frac{V(\Omega)}{N}\sum_{i=1}^{N} f(\mathbf{x}_i),
-$$
+$$I \simeq \frac{V(\Omega)}{N}\sum_{i=1}^{N} f(\mathbf{x}_i),$$
 
 dove $\mathbf{x}_i$ sono campioni casuali indipendenti uniformi in $\Omega$.
 
@@ -338,11 +306,9 @@ L’area del quarto di cerchio è $\pi/4$, mentre l’area del quadrato è 1.
 Generando $N$ punti uniformi $(x_i, y_i)$ nel quadrato, si calcola la frazione di punti che soddisfano $x_i^2 + y_i^2 \le 1$.  
 Denotando con $N_{\text{cerchio}}$ il numero di punti interni al quarto di cerchio, si ha:
 
-$$
-\frac{N_{\text{cerchio}}}{N_{\text{totale}}} \simeq \frac{\pi}{4},
+$$\frac{N_{\text{cerchio}}}{N_{\text{totale}}} \simeq \frac{\pi}{4},
 \qquad
-\pi \simeq 4 \frac{N_{\text{cerchio}}}{N_{\text{totale}}}.
-$$
+\pi \simeq 4 \frac{N_{\text{cerchio}}}{N_{\text{totale}}}.$$
 
 Questo esempio mostra come un concetto geometrico (rapporto di aree) e una procedura probabilistica (conteggio di eventi) coincidano perfettamente nel quadro Monte Carlo.
 
@@ -352,21 +318,15 @@ Questo esempio mostra come un concetto geometrico (rapporto di aree) e una proce
 
 Il valore stimato dell’integrale può essere visto come una media di variabili casuali indipendenti:
 
-$$
-\bar{f}_N = \frac{1}{N}\sum_{i=1}^{N} f(\mathbf{x}_i).
-$$
+$$\bar{f}_N = \frac{1}{N}\sum_{i=1}^{N} f(\mathbf{x}_i).$$
 
 Dalla teoria della probabilità segue che la media empirica è una variabile aleatoria con media $\langle f \rangle$ e varianza:
 
-$$
-\mathrm{Var}(\bar{f}_N) = \frac{\mathrm{Var}(f)}{N}.
-$$
+$$\mathrm{Var}(\bar{f}_N) = \frac{\mathrm{Var}(f)}{N}.$$
 
 L’incertezza associata alla stima dell’integrale è quindi:
 
-$$
-\sigma_I = V(\Omega) \frac{\sigma_f}{\sqrt{N}},
-$$
+$$\sigma_I = V(\Omega) \frac{\sigma_f}{\sqrt{N}},$$
 
 dove $\sigma_f$ è la deviazione standard dei valori di $f$ campionati.
 
@@ -392,10 +352,8 @@ In questo modo si evita che i punti si concentrino casualmente in una sola zona,
 Si sceglie una distribuzione di probabilità $q(\mathbf{x})$ che approssimi la forma di $|f(\mathbf{x})|$, e si campiona secondo $q$ invece che uniformemente.  
 L’integrale diventa:
 
-$$
-I = \int_{\Omega} \frac{f(\mathbf{x})}{q(\mathbf{x})} q(\mathbf{x})\,d\mathbf{x}
-   \simeq \frac{1}{N}\sum_{i=1}^{N} \frac{f(\mathbf{x}_i)}{q(\mathbf{x}_i)}.
-$$
+$$I = \int_{\Omega} \frac{f(\mathbf{x})}{q(\mathbf{x})} q(\mathbf{x})\,d\mathbf{x}
+   \simeq \frac{1}{N}\sum_{i=1}^{N} \frac{f(\mathbf{x}_i)}{q(\mathbf{x}_i)}.$$
 
 In questo modo i campioni sono concentrati nelle regioni più rilevanti, riducendo la fluttuazione statistica.
 
@@ -410,9 +368,7 @@ Le due valutazioni di $f$ tendono ad avere errori opposti, la cui media è più 
 
 Come esempio semplice, si può stimare l’integrale
 
-$$
-I = \int_0^1 e^{-x^2}\,dx
-$$
+$$I = \int_0^1 e^{-x^2}\,dx$$
 
 usando campioni uniformi.  
 
@@ -439,9 +395,7 @@ La precisione cresce come $\sqrt{N}$, e il confronto con metodi deterministici (
 L’integrazione Monte Carlo è in realtà un caso particolare del **calcolo di medie d’ensemble** su una distribuzione di probabilità.  
 Molti problemi fisici o statistici --- come la stima di osservabili in un sistema termico o di valori attesi in una catena di Markov --- si riducono allo stesso principio generale:
 
-$$
-\langle A \rangle = \int A(x)\, p(x)\,dx \simeq \frac{1}{N}\sum_{i=1}^{N} A(x_i),
-$$
+$$\langle A \rangle = \int A(x)\, p(x)\,dx \simeq \frac{1}{N}\sum_{i=1}^{N} A(x_i),$$
 
 dove $x_i$ sono campioni estratti secondo la distribuzione $p(x)$.
 
@@ -476,21 +430,15 @@ Questo risultato, apparentemente semplice, può essere dimostrato in modo rigoro
 Sia $F(x)$ una funzione di distribuzione cumulativa (CDF) strettamente crescente e continua, dunque invertibile.  
 Per ogni $x$ reale, consideriamo:
 
-$$
-P(X \le x) = P(F^{-1}(U) \le x).
-$$
+$$P(X \le x) = P(F^{-1}(U) \le x).$$
 
 Poiché $F$ è crescente, l’inequazione $F^{-1}(U) \le x$ equivale a $U \le F(x)$.  
 Dato che $U$ è uniforme in $[0,1)$, vale:
 
-$$
-P(U \le F(x)) = F(x).
-$$
+$$P(U \le F(x)) = F(x).$$
 
 Pertanto, la distribuzione cumulativa della variabile $X = F^{-1}(U)$ coincide con $F(x)$:  
-$$
-P(X \le x) = F(x).
-$$
+$$P(X \le x) = F(x).$$
 
 Questo mostra che $X$ ha proprio la distribuzione desiderata.
 
@@ -502,27 +450,19 @@ Supponiamo ora che $F$ sia una funzione derivabile e strettamente crescente, con
 Definiamo nuovamente $X = F^{-1}(U)$, dove $U$ è uniforme in $[0,1)$.  
 Poiché $U = F(X)$, derivando entrambi i membri otteniamo:
 
-$$
-\frac{dU}{dX} = F'(X) = p(X).
-$$
+$$\frac{dU}{dX} = F'(X) = p(X).$$
 
 Applicando la regola della derivata dell’inversa, si ha:
 
-$$
-\frac{dX}{dU} = \frac{1}{F'(X)} = \frac{1}{p(X)}.
-$$
+$$\frac{dX}{dU} = \frac{1}{F'(X)} = \frac{1}{p(X)}.$$
 
 Ora, per una trasformazione monotona $U \mapsto X$, la densità si trasforma come:
 
-$$
-f_X(x) = f_U(u) \left|\frac{dU}{dX}\right| = f_U(F(x)) \, p(x).
-$$
+$$f_X(x) = f_U(u) \left|\frac{dU}{dX}\right| = f_U(F(x)) \, p(x).$$
 
 Poiché $f_U(u) = 1$ per $u \in [0,1)$, segue immediatamente che:
 
-$$
-f_X(x) = p(x).
-$$
+$$f_X(x) = p(x).$$
 
 Quindi la variabile $X = F^{-1}(U)$ possiede esattamente la densità desiderata.
 
@@ -533,15 +473,11 @@ Quindi la variabile $X = F^{-1}(U)$ possiede esattamente la densità desiderata.
 Quando $F$ non è strettamente crescente o presenta tratti piatti (come nelle distribuzioni discrete o miste), l’inversa classica non esiste in senso stretto.  
 Si definisce allora la **funzione quantile** o **inversa generalizzata**:
 
-$$
-F^{-1}(u) = \inf \{x \in \mathbb{R} : F(x) \ge u\}, \quad u \in (0,1).
-$$
+$$F^{-1}(u) = \inf \{x \in \mathbb{R} : F(x) \ge u\}, \quad u \in (0,1).$$
 
 Se $U \sim \mathrm{Unif}(0,1)$ e $X = F^{-1}(U)$, si verifica comunque che:
 
-$$
-P(X \le x) = P(F^{-1}(U) \le x) = P(U \le F(x)) = F(x).
-$$
+$$P(X \le x) = P(F^{-1}(U) \le x) = P(U \le F(x)) = F(x).$$
 
 Dunque, anche nel caso discreto o misto, la definizione mantiene la proprietà fondamentale.
 
@@ -565,22 +501,16 @@ Dunque, anche nel caso discreto o misto, la definizione mantiene la proprietà f
 Consideriamo $p(x) = \lambda e^{-\lambda x}$ per $x \ge 0$.  
 La funzione cumulativa è:
 
-$$
-F(x) = 1 - e^{-\lambda x}.
-$$
+$$F(x) = 1 - e^{-\lambda x}.$$
 
 Il metodo dell’inversione dà:
 
-$$
-X = F^{-1}(U) = -\frac{1}{\lambda} \ln(1 - U).
-$$
+$$X = F^{-1}(U) = -\frac{1}{\lambda} \ln(1 - U).$$
 
 Poiché $U$ è uniforme in $[0,1)$, anche $1-U$ lo è, e dunque:
 
-$$
-P(X \le x) = P\left(-\frac{1}{\lambda}\ln(1-U) \le x\right)
-= P(U \le 1 - e^{-\lambda x}) = 1 - e^{-\lambda x} = F(x).
-$$
+$$P(X \le x) = P\left(-\frac{1}{\lambda}\ln(1-U) \le x\right)
+= P(U \le 1 - e^{-\lambda x}) = 1 - e^{-\lambda x} = F(x).$$
 
 Infine, derivando $F(x)$ si ottiene $F'(x) = \lambda e^{-\lambda x} = p(x)$, confermando che la variabile generata con $X = -\frac{1}{\lambda} \ln(1-U)$ segue la distribuzione esponenziale attesa.
 

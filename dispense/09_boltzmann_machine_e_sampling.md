@@ -45,9 +45,7 @@ Un sistema con molte variabili interagenti può trovarsi in diversi stati $x$.
 A ciascuno stato si associa un’energia $E(x)$, che misura la sua “compatibilità” interna.
 
 L’idea chiave è che gli stati a bassa energia siano più probabili:
-$$
-P(x) \propto e^{-E(x)/T},
-$$
+$$P(x) \propto e^{-E(x)/T},$$
 dove $T$ rappresenta la temperatura (grado di rumore o incertezza del sistema).
 
 Nei modelli computazionali, $E(x)$ è una funzione che rappresenta le interazioni tra le variabili e i vincoli del sistema.
@@ -59,13 +57,9 @@ Nei modelli computazionali, $E(x)$ è una funzione che rappresenta le interazion
 ### 2.1 Forma generale
 
 La probabilità di uno stato $x$ in equilibrio termico:
-$$
-P(x) = \frac{1}{Z} e^{-E(x)/T},
-$$
+$$P(x) = \frac{1}{Z} e^{-E(x)/T},$$
 dove
-$$
-Z = \sum_x e^{-E(x)/T}
-$$
+$$Z = \sum_x e^{-E(x)/T}$$
 è la **funzione di partizione**, necessaria per normalizzare la distribuzione.
 
 ### 2.2 Interpretazione
@@ -85,17 +79,13 @@ Questa distribuzione è il ponte fra **fisica** e **intelligenza artificiale**: 
 ### 3.1 Architettura
 
 Una **Boltzmann Machine (BM)** è una rete di unità binarie $\{s_i\}$ collegate da pesi simmetrici $w_{ij}$:
-$$
-E(s) = -\frac{1}{2}\sum_{i,j} w_{ij} s_i s_j - \sum_i b_i s_i.
-$$
+$$E(s) = -\frac{1}{2}\sum_{i,j} w_{ij} s_i s_j - \sum_i b_i s_i.$$
 Gli stati $s_i \in \{0,1\}$ rappresentano neuroni o variabili binarie.
 
 ### 3.2 Dinamica stocastica
 
 Ogni unità si aggiorna con probabilità:
-$$
-P(s_i = 1 | s_{-i}) = \frac{1}{1 + e^{-\Delta E_i/T}},
-$$
+$$P(s_i = 1 | s_{-i}) = \frac{1}{1 + e^{-\Delta E_i/T}},$$
 dove $\Delta E_i$ è la variazione di energia se $s_i$ passa da 0 a 1.
 
 Questa regola è analoga al **campionamento di Gibbs**, e garantisce che, nel tempo, il sistema esplori la distribuzione di Boltzmann associata all’energia $E(s)$.
@@ -105,9 +95,7 @@ Questa regola è analoga al **campionamento di Gibbs**, e garantisce che, nel te
 L’obiettivo dell’apprendimento è modificare $w_{ij}$ e $b_i$ per ridurre la differenza tra la distribuzione appresa $P(s)$ e quella osservata nei dati.
 
 Il gradiente dell’errore implica due termini:
-$$
-\Delta w_{ij} \propto \langle s_i s_j \rangle_{\text{data}} - \langle s_i s_j \rangle_{\text{model}},
-$$
+$$\Delta w_{ij} \propto \langle s_i s_j \rangle_{\text{data}} - \langle s_i s_j \rangle_{\text{model}},$$
 cioè la differenza fra correlazioni osservate e correlate generate dal modello.
 
 ---
@@ -121,9 +109,7 @@ Poiché $Z$ è in genere inaccessibile (richiede somma su troppi stati), si usan
 A ogni passo:
 1. si propone una modifica dello stato (es. invertire un bit);  
 2. si accetta con probabilità
-$$
-p_{\text{acc}} = \min\left(1, e^{-\Delta E/T}\right);
-$$
+$$p_{\text{acc}} = \min\left(1, e^{-\Delta E/T}\right);$$
 3. si ripete per ottenere una sequenza di stati distribuiti secondo $P(x)$.
 
 ### 4.2 Gibbs sampling

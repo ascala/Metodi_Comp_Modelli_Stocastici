@@ -44,9 +44,7 @@ In ogni algoritmo iterativo, un piccolo errore introdotto a uno step può cresce
 In simulazioni deterministiche, questo accade quando il modello è rigido o il passo temporale troppo grande; in simulazioni stocastiche, le fluttuazioni casuali possono amplificare l’instabilità numerica.
 
 Esempio intuitivo: simulare la crescita logistica  
-$$
-x_{t+1} = r\,x_t(1 - x_t)
-$$  
+$$x_{t+1} = r\,x_t(1 - x_t)$$  
 con un valore di $r$ troppo grande o un passo $\Delta t$ improprio può generare oscillazioni spurie o divergenze.
 
 ---

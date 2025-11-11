@@ -46,9 +46,7 @@ L’algoritmo di Metropolis sfrutta questa struttura per **campionare distribuzi
 
 Un sistema markoviano è un sistema in cui **il futuro dipende solo dal presente**, non dall’intera storia passata.  
 In simboli:
-$$
-P(X_{t+1}=j \mid X_t=i, X_{t-1},\ldots,X_0) = P(X_{t+1}=j \mid X_t=i).
-$$
+$$P(X_{t+1}=j \mid X_t=i, X_{t-1},\ldots,X_0) = P(X_{t+1}=j \mid X_t=i).$$
 
 È una proprietà sorprendentemente generale: la ritroviamo nei giochi di sorte, nei processi biologici, nelle scelte degli individui, nei modelli economici e nei flussi di informazione.
 
@@ -59,14 +57,10 @@ Un giocatore può trovarsi in due stati:
 - **1:** ha vinto.
 
 Le probabilità di transizione sono:
-$$
-P_{01}=0.4,\quad P_{00}=0.6,\quad P_{10}=0.2,\quad P_{11}=0.8.
-$$
+$$P_{01}=0.4,\quad P_{00}=0.6,\quad P_{10}=0.2,\quad P_{11}=0.8.$$
 
 Questa matrice di transizione
-$$
-P=\begin{pmatrix}0.6 & 0.4 \\ 0.2 & 0.8\end{pmatrix}
-$$
+$$P=\begin{pmatrix}0.6 & 0.4 \\ 0.2 & 0.8\end{pmatrix}$$
 descrive l’intero processo.  
 Dopo alcuni passi, la frequenza dei due stati tende a valori stabili indipendenti dalle condizioni iniziali — il sistema “dimentica il passato”.
 
@@ -77,28 +71,20 @@ Dopo alcuni passi, la frequenza dei due stati tende a valori stabili indipendent
 ### 2.1 Concetto di equilibrio
 
 Una **distribuzione stazionaria** $\pi$ è tale che
-$$
-\pi = \pi P,
-$$
+$$\pi = \pi P,$$
 cioè la probabilità media di essere in ciascuno stato non cambia più nel tempo.  
 
 Nel gioco della moneta truccata, risolvendo le equazioni:
-$$
-\pi_0 = 0.6\pi_0 + 0.2\pi_1, \quad \pi_0+\pi_1=1,
-$$
+$$\pi_0 = 0.6\pi_0 + 0.2\pi_1, \quad \pi_0+\pi_1=1,$$
 si ottiene
-$$
-\pi = \left(\tfrac{1}{3}, \tfrac{2}{3}\right).
-$$
+$$\pi = \left(\tfrac{1}{3}, \tfrac{2}{3}\right).$$
 
 Il giocatore trascorre circa un terzo del tempo perdendo e due terzi vincendo: questa è la condizione di equilibrio.
 
 ### 2.2 Reversibilità e bilancio dettagliato
 
 In equilibrio, i flussi di probabilità da $i$ a $j$ e da $j$ a $i$ si compensano:
-$$
-\pi_i P_{ij} = \pi_j P_{ji}.
-$$
+$$\pi_i P_{ij} = \pi_j P_{ji}.$$
 
 È il cosiddetto **bilancio dettagliato**, equivalente all’assenza di correnti nette.  
 In fisica rappresenta l’equilibrio microscopico; in economia o sociologia, una condizione di stabilità dinamica — gli scambi o le opinioni cambiano, ma il profilo medio resta costante.
@@ -115,9 +101,7 @@ L’idea dell’algoritmo di **Metropolis** è costruire una catena di Markov ch
 A ogni passo:
 1. Si propone una nuova configurazione $x'$ (da una distribuzione di proposta simmetrica $q(x'|x)$).  
 2. Si accetta o rifiuta la mossa con probabilità:
-$$
-A(x\to x') = \min\left(1, \frac{\pi(x')}{\pi(x)}\right).
-$$
+$$A(x\to x') = \min\left(1, \frac{\pi(x')}{\pi(x)}\right).$$
 
 Se $\pi(x')>\pi(x)$ la mossa è sempre accettata; se è peggiore, può comunque essere accettata con una probabilità che consente al sistema di “uscire dai minimi locali”.
 
@@ -153,9 +137,7 @@ def metropolis(E, x0, T, steps):
 ### 4.1 Obiettivo
 
 Campionare una distribuzione gaussiana:
-$$
-\pi(x) \propto e^{-x^2/2}.
-$$
+$$\pi(x) \propto e^{-x^2/2}.$$
 
 Definiamo $E(x)=x^2/2$ come “energia” del sistema e applichiamo Metropolis con temperatura $T=1$.
 

@@ -45,18 +45,14 @@ I modelli di crescita e branching introducono il caso come componente dinamica, 
 ### 1.1 Crescita deterministica
 
 Il modello di crescita esponenziale classico:
-$$
-\frac{dN}{dt} = rN
-$$
+$$\frac{dN}{dt} = rN$$
 ha soluzione $N(t) = N_0 e^{rt}$, dove $r$ è il tasso di crescita.  
 Tutti gli individui o agenti seguono la stessa legge, senza fluttuazioni.
 
 ### 1.2 Crescita stocastica
 
 Nei sistemi reali, la crescita è soggetta a variazioni casuali:
-$$
-\frac{dN}{dt} = rN + \sigma N \eta(t),
-$$
+$$\frac{dN}{dt} = rN + \sigma N \eta(t),$$
 dove $\eta(t)$ è un rumore bianco gaussiano.  
 Le fluttuazioni amplificano o riducono localmente la crescita, e i risultati cambiano a ogni simulazione.
 
@@ -68,9 +64,7 @@ Le fluttuazioni amplificano o riducono localmente la crescita, e i risultati cam
 
 Ogni individuo produce un numero casuale di discendenti $K$, con distribuzione $P(K=k)$.  
 Il numero totale alla generazione $t+1$ è:
-$$
-N_{t+1} = \sum_{i=1}^{N_t} K_i.
-$$
+$$N_{t+1} = \sum_{i=1}^{N_t} K_i.$$
 
 ### 2.2 Valore medio e soglia critica
 
@@ -108,9 +102,7 @@ Ogni realizzazione può portare a estinzione o crescita esplosiva, anche con gli
 ### 3.1 Equazione di estinzione
 
 Sia $q$ la probabilità che il processo si estingua. Essa soddisfa:
-$$
-q = G(q),
-$$
+$$q = G(q),$$
 dove $G(s) = \sum_k P(K=k)s^k$ è la funzione generatrice della distribuzione dei figli.
 
 * Se $m \le 1$, l’unica soluzione è $q = 1$ (estinzione certa).
@@ -131,17 +123,13 @@ La distribuzione di $N_t$ è altamente asimmetrica:
 ### 4.1 Processo di Yule (crescita pura)
 
 Ogni individuo genera nuovi individui con tasso $\lambda$:
-$$
-\frac{dN}{dt} = \lambda N.
-$$
+$$\frac{dN}{dt} = \lambda N.$$
 Il numero totale segue in media $N(t) = N_0 e^{\lambda t}$, ma con fluttuazioni lognormali.
 
 ### 4.2 Crescita logistica stocastica
 
 Quando le risorse sono limitate:
-$$
-\frac{dN}{dt} = rN(1 - N/K) + \sigma N \eta(t),
-$$
+$$\frac{dN}{dt} = rN(1 - N/K) + \sigma N \eta(t),$$
 dove $K$ è la capacità portante.
 Il termine rumoroso introduce oscillazioni intorno all’equilibrio.
 

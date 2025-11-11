@@ -58,13 +58,9 @@ Si parla di:
 ## 2. Concetto di equazione stocastica
 
 Un sistema dinamico deterministico è descritto da
-$$
-\frac{dx}{dt} = f(x,t),
-$$
+$$\frac{dx}{dt} = f(x,t),$$
 mentre un sistema stocastico include un termine casuale:
-$$
-\frac{dx}{dt} = f(x,t) + g(x,t)\,\eta(t),
-$$
+$$\frac{dx}{dt} = f(x,t) + g(x,t)\,\eta(t),$$
 dove $\eta(t)$ è un “rumore bianco” ideale: una variabile casuale con media nulla e varianza unitaria per ogni intervallo infinitesimo.
 
 **Interpretazione:** il termine $f(x,t)$ rappresenta la tendenza media del sistema, mentre $g(x,t)\eta(t)$ introduce fluttuazioni imprevedibili.
@@ -74,15 +70,11 @@ dove $\eta(t)$ è un “rumore bianco” ideale: una variabile casuale con media
 ## 3. Equazione di Langevin
 
 L’equazione di Langevin nasce in fisica per descrivere il **moto browniano** di una particella:
-$$
-m\frac{dv}{dt} = -\gamma v + \sqrt{2\gamma k_B T}\,\eta(t).
-$$
+$$m\frac{dv}{dt} = -\gamma v + \sqrt{2\gamma k_B T}\,\eta(t).$$
 
 Il termine $-\gamma v$ rappresenta l’attrito, mentre $\sqrt{2\gamma k_B T}\,\eta(t)$ è la forza casuale dovuta alle collisioni molecolari.  
 In forma semplificata:
-$$
-\frac{dx}{dt} = f(x) + \sigma\,\eta(t).
-$$
+$$\frac{dx}{dt} = f(x) + \sigma\,\eta(t).$$
 
 Questa struttura è universale: può descrivere l’evoluzione di qualunque variabile soggetta a un equilibrio fra tendenza e fluttuazione.
 
@@ -91,9 +83,7 @@ Questa struttura è universale: può descrivere l’evoluzione di qualunque vari
 ## 4. Simulazioni numeriche di traiettorie
 
 La versione discreta (schema di Euler–Maruyama) approssima l’evoluzione per passi di ampiezza $\Delta t$:
-$$
-x_{n+1} = x_n + f(x_n)\,\Delta t + \sigma\sqrt{\Delta t}\,\xi_n,
-$$
+$$x_{n+1} = x_n + f(x_n)\,\Delta t + \sigma\sqrt{\Delta t}\,\xi_n,$$
 dove $\xi_n$ è una variabile gaussiana standard ($\mathcal{N}(0,1)$).
 
 **Esempio in Python:**
@@ -135,9 +125,7 @@ L’espressione genica è un processo rumoroso: la quantità di una proteina var
 ### 5.3 Economia
 
 Nei mercati finanziari, la variazione del prezzo $S_t$ è spesso modellata come
-$$
-dS_t = \mu S_t,dt + \sigma S_t,dW_t,
-$$
+$$dS_t = \mu S_t,dt + \sigma S_t,dW_t,$$
 dove $W_t$ è un processo di Wiener. Questo è il modello di **moto geometrico browniano**.
 
 ### 5.4 Scienze sociali e reti
