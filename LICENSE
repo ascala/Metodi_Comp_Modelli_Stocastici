@@ -1,0 +1,70 @@
+=====================================================================
+LICENZA DEI MATERIALI DEL CORSO
+=====================================================================
+
+© 2025 Antonio Scala  
+SPDX-License-Identifier: (CC-BY-4.0 AND MIT)
+
+Questo repository contiene materiali didattici, testi, figure e codice
+relativi al corso "Metodi Computazionali per Modelli Stocastici".
+
+---------------------------------------------------------------------
+1. TESTI, FIGURE E CONTENUTI DIDATTICI
+---------------------------------------------------------------------
+
+Rilasciati con licenza Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+Condizioni essenziali:
+- Attribuzione: devi dare credito adeguato, fornire un link alla licenza
+  e indicare se sono state apportate modifiche.
+- Nessuna restrizione aggiuntiva: non puoi applicare termini legali o misure
+  tecnologiche che limitino i diritti concessi dalla licenza.
+
+Puoi:
+- condividere (copiare e ridistribuire il materiale in qualsiasi formato o mezzo);
+- adattare (remixare, trasformare e sviluppare il materiale per qualsiasi scopo, anche commerciale);
+
+alle seguenti condizioni:
+- devi attribuire la paternità dell’opera citando "Antonio Scala" e il titolo del corso;
+- non puoi imporre restrizioni legali o misure tecnologiche che limitino i diritti di altri.
+
+Nota su materiali di terzi: eventuali immagini, loghi, dataset o testi di autori terzi inclusi nel repository
+sono soggetti alle rispettive licenze indicate nelle sottocartelle; ove non specificato, non sono coperti
+dalla licenza CC BY 4.0.
+
+Testo completo: https://creativecommons.org/licenses/by/4.0/
+
+--------------------------------------------------------------------
+2. CODICE E SCRIPT
+---------------------------------------------------------------------
+
+Rilasciati con licenza MIT.
+
+Copyright (c) 2025 Antonio Scala
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+---------------------------------------------------------------------
+3. RISERVA DI RIUTILIZZO AUTORIALE
+---------------------------------------------------------------------
+
+L’autore si riserva il diritto di riutilizzare e pubblicare in forma
+di libro, monografia o altra opera derivata i materiali contenuti nel
+presente repository, in parte o nella loro interezza.
+=====================================================================

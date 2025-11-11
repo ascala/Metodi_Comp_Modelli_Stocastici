@@ -1,0 +1,35 @@
+# ============================================================
+# .gitignore — Metodi Computazionali per Modelli Stocastici
+# ============================================================
+
+# Output PDF e LaTeX temporanei
+*.pdf
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.toc
+*.lot
+*.lof
+*.fls
+*.fdb_latexmk
+
+# File nella cartella di output delle dispense (ma non la cartella stessa)
+dist/*
+!dist/.gitkeep
+
+# Backup ed editor temporanei
+*~
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Cache Pandoc e Zettlr
+.cache/
+zettlr.db
+zettlr.lock
