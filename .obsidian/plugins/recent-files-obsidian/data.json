@@ -1,12 +1,44 @@
 {
   "recentFiles": [
     {
+      "basename": "06_rumore_e_dinamiche_stocastiche",
+      "path": "dispense/06_rumore_e_dinamiche_stocastiche.md"
+    },
+    {
+      "basename": "05_stabilita_numerica_e_simulazioni_affidabili",
+      "path": "dispense/05_stabilita_numerica_e_simulazioni_affidabili.md"
+    },
+    {
+      "basename": "04_simulazioni_di_eventi_discreti",
+      "path": "dispense/04_simulazioni_di_eventi_discreti.md"
+    },
+    {
+      "basename": "03_catene_di_markov_e_metropolis_hastings",
+      "path": "dispense/03_catene_di_markov_e_metropolis_hastings.md"
+    },
+    {
       "basename": "02_metodi_monte_carlo",
       "path": "dispense/02_metodi_monte_carlo.md"
     },
     {
       "basename": "01_introduzione_ai_modelli_stocastici",
       "path": "dispense/01_introduzione_ai_modelli_stocastici.md"
+    },
+    {
+      "basename": "10_simulated_annealing_e_paesaggi_complessi",
+      "path": "dispense/10_simulated_annealing_e_paesaggi_complessi.md"
+    },
+    {
+      "basename": "09_boltzmann_machine_e_sampling",
+      "path": "dispense/09_boltzmann_machine_e_sampling.md"
+    },
+    {
+      "basename": "08_dinamiche_molecolari_e_sistemi_a_molti_agenti",
+      "path": "dispense/08_dinamiche_molecolari_e_sistemi_a_molti_agenti.md"
+    },
+    {
+      "basename": "07_modelli_di_crescita_e_branching",
+      "path": "dispense/07_modelli_di_crescita_e_branching.md"
     }
   ],
   "omittedPaths": [],

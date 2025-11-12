@@ -6,9 +6,11 @@ date: ""
 
 # Modelli di crescita e branching
 
-(Obiettivi della lezione: introdurre i principali modelli di crescita stocastica e di ramificazione, comprendere il ruolo della casualità nella dinamica di popolazioni o sistemi in espansione, e analizzare applicazioni interdisciplinari in biologia, epidemiologia, economia e reti.)
+La crescita è un fenomeno universale ma raramente regolare.  
+I modelli deterministici forniscono una visione media, ma non descrivono la **variabilità** e l’**imprevedibilità** osservate nei sistemi reali.  
+I modelli di crescita e branching introducono il caso come componente dinamica, permettendo di analizzare la probabilità di espansione o estinzione di popolazioni, idee o strutture sociali.
+I principali modelli di crescita stocastica e di ramificazione permettono infatti di comprendere il ruolo della casualità nella dinamica di popolazioni o sistemi in espansione, e analizzare applicazioni interdisciplinari in biologia, epidemiologia, economia e reti.
 
----
 
 ### Obiettivi didattici specifici
 
@@ -18,7 +20,6 @@ date: ""
 4. Introdurre varianti continue (Yule, logistica stocastica).  
 5. Collegare i modelli di crescita a fenomeni reali in diversi ambiti disciplinari.
 
----
 
 ### Struttura della lezione
 
@@ -30,13 +31,6 @@ La lezione è articolata in cinque parti principali:
 4. **Modelli di crescita continua e varianti** – Yule, logistica, processi moltiplicativi.  
 5. **Applicazioni interdisciplinari** – biologia, epidemie, reti, economia.
 
----
-
-### Conclusione introduttiva
-
-La crescita è un fenomeno universale ma raramente regolare.  
-I modelli deterministici forniscono una visione media, ma non descrivono la **variabilità** e l’**imprevedibilità** osservate nei sistemi reali.  
-I modelli di crescita e branching introducono il caso come componente dinamica, permettendo di analizzare la probabilità di espansione o estinzione di popolazioni, idee o strutture sociali.
 
 ---
 

@@ -2,24 +2,15 @@
 title: "Metodi Monte Carlo"
 date: ""
 ---
-
 # Metodi Monte Carlo
 
 I metodi Monte Carlo costituiscono una delle tecniche fondamentali per la risoluzione numerica di problemi stocastici e deterministici di elevata complessità. Essi si basano sull’uso sistematico del campionamento casuale per stimare quantità di interesse, come integrali, medie o distribuzioni di probabilità, quando una soluzione analitica è impraticabile o impossibile.
 
 L’approccio Monte Carlo trova applicazione in fisica statistica, finanza quantitativa, biologia, chimica computazionale e in generale in ogni ambito dove si debbano affrontare problemi ad alta dimensionalità o caratterizzati da incertezza intrinseca.
 
-Il principio di base consiste nel sostituire il calcolo deterministico di una grandezza media con una stima empirica ottenuta da campioni casuali indipendenti.  
-Se $X$ è una variabile aleatoria con densità $p(x)$ e si vuole valutare la media di una funzione $f(x)$, vale:
+### Obiettivi didattici specifici
 
-$$\langle f(X) \rangle = \int f(x) p(x)\,dx \simeq \frac{1}{N} \sum_{i=1}^N f(x_i),$$
-
-dove $\{x_i\}$ sono campioni generati secondo la distribuzione $p(x)$.  
-Per effetto della **legge dei grandi numeri**, la stima converge al valore vero al crescere di $N$, mentre per il **teorema del limite centrale** l’errore statistico decresce come $1/\sqrt{N}$.
-
----
-
-## Obiettivi della lezione
+Al termine, lo studente dovrà essere in grado di:
 
 - Comprendere i principi fondamentali dei metodi Monte Carlo.  
 - Analizzare la generazione di numeri casuali e le loro proprietà.  
@@ -27,6 +18,13 @@ Per effetto della **legge dei grandi numeri**, la stima converge al valore vero 
 - Applicare il metodo Monte Carlo all’integrazione numerica.  
 - Discutere il ruolo dell’errore statistico e delle tecniche di riduzione della varianza.  
 - Implementare semplici esempi numerici di stima Monte Carlo.
+### Struttura della lezione
+
+1. Principio di base e stima tramite media campionaria.
+2. Generazione di numeri pseudocasuali: requisiti e qualità.
+3. Campionamento da distribuzioni arbitrarie.
+4. Integrazione Monte Carlo (1D e multidimensionale).
+5. Errore statistico e tecniche di riduzione della varianza.
 
 ---
 

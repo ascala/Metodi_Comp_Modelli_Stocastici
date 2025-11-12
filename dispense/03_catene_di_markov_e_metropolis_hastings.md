@@ -6,19 +6,20 @@ date: ""
 
 # Catene di Markov e Metropolis
 
-(Obiettivi della lezione: introdurre i concetti fondamentali delle catene di Markov come modelli di evoluzione probabilistica e presentare l’algoritmo di Metropolis come metodo generale per campionare distribuzioni arbitrarie in sistemi complessi, con esempi tratti da fisica, economia e scienze sociali.)
-
----
-
+Molti sistemi reali — fisici, biologici, economici, sociali — evolvono nel tempo seguendo regole probabilistiche.  
+Le catene di Markov forniscono un quadro semplice ma generale per descrivere tali dinamiche.  
+L’algoritmo di Metropolis sfrutta questa struttura per **campionare distribuzioni complesse**, generando sequenze di stati coerenti con la probabilità che ciascuno possieda nel sistema reale o nel modello teorico.
 ### Obiettivi didattici specifici
 
-1. Comprendere la logica markoviana: il futuro dipende solo dallo stato presente.  
-2. Analizzare la nozione di distribuzione stazionaria e il concetto di equilibrio.  
-3. Intuire come l’algoritmo di Metropolis costruisce una catena coerente con una distribuzione target.  
-4. Collegare il principio di bilancio dettagliato all’idea di equilibrio in fisica, apprendimento e decisione.  
-5. Applicare concetti di Markov e Metropolis a esempi interdisciplinari (fisica statistica, mercati, reti sociali).
+Al termine della lezione, lo studente dovrà saper:
 
----
+- distinguere in modo formale tra modelli deterministici e stocastici;
+- definire una variabile aleatoria e la relativa distribuzione di probabilità;
+- riconoscere e descrivere le principali distribuzioni discrete e continue;
+- comprendere la nozione di processo stocastico e di rumore;
+- interpretare le fluttuazioni come parte strutturale della dinamica di un sistema;
+- collegare esempi tratti da fisica, biologia, finanza e scienze sociali ai corrispondenti modelli stocastici;
+- riconoscere il valore dei metodi numerici (Monte Carlo, simulazioni di processo) per l’analisi e la validazione dei modelli.
 
 ### Struttura della lezione
 
@@ -30,13 +31,6 @@ La lezione è articolata in cinque parti principali:
 4. **Esperimento numerico** – simulazione di una distribuzione target.  
 5. **Connessioni interdisciplinari** – interpretazioni e applicazioni.
 
----
-
-### Conclusione introduttiva
-
-Molti sistemi reali — fisici, biologici, economici, sociali — evolvono nel tempo seguendo regole probabilistiche.  
-Le catene di Markov forniscono un quadro semplice ma generale per descrivere tali dinamiche.  
-L’algoritmo di Metropolis sfrutta questa struttura per **campionare distribuzioni complesse**, generando sequenze di stati coerenti con la probabilità che ciascuno possieda nel sistema reale o nel modello teorico.
 
 ---
 

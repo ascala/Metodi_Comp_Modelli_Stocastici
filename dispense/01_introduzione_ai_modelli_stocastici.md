@@ -5,19 +5,17 @@ date: ""
 
 # Introduzione ai Modelli Stocastici
 
-(Obiettivi della lezione: .....)
-
----
+I modelli stocastici costituiscono un insieme di strumenti matematici per la descrizione e l’analisi di sistemi nei quali l’evoluzione temporale o spaziale è influenzata da componenti di natura aleatoria. A differenza dei modelli deterministici, nei quali uno stesso stato iniziale conduce sempre al medesimo risultato, i modelli stocastici introducono variabili casuali per rappresentare l’incertezza intrinseca dei fenomeni osservati.
 
 ### Obiettivi didattici specifici
 
-1. Comprendere il ruolo dell’incertezza e la differenza concettuale tra modelli deterministici e stocastici.  
-2. Introdurre la nozione di variabile aleatoria e di distribuzione di probabilità.  
-3. Riconoscere le principali distribuzioni discrete e continue e i loro parametri.  
-4. Capire cosa si intende per processo stocastico e per rumore.  
-5. Collegare i concetti teorici a esempi tratti da fisica, biologia, finanza e scienze sociali.  
+Al termine, lo studente dovrà essere in grado di:
 
----
+- distinguere tra modelli deterministici e stocastici;
+- comprendere il significato di variabile aleatoria e distribuzione di probabilità;
+- riconoscere le principali classi di processi stocastici;
+- interpretare il ruolo del rumore e delle fluttuazioni nei sistemi dinamici;
+- comprendere l’importanza dei metodi numerici (Monte Carlo, simulazioni stocastiche) nella pratica scientifica.
 
 ### Struttura della lezione
 
@@ -29,7 +27,13 @@ date: ""
 
 ---
 
-I modelli stocastici costituiscono un insieme di strumenti matematici per la descrizione e l’analisi di sistemi nei quali l’evoluzione temporale o spaziale è influenzata da componenti di natura aleatoria. A differenza dei modelli deterministici, nei quali uno stesso stato iniziale conduce sempre al medesimo risultato, i modelli stocastici introducono variabili casuali per rappresentare l’incertezza intrinseca dei fenomeni osservati.
+## Motivazioni e concetti fondamentali
+
+L’introduzione dei modelli stocastici nasce dall’esigenza di descrivere fenomeni in cui l’incertezza è parte integrante del sistema, non soltanto una limitazione della conoscenza.  
+Esempi classici includono il moto browniano, le fluttuazioni di popolazione in biologia o la volatilità dei mercati finanziari.  
+In ciascuno di questi casi, l’evoluzione del sistema non è completamente determinata dalle condizioni iniziali, ma influenzata da un insieme di eventi aleatori.
+
+Un modello stocastico fornisce dunque una **descrizione probabilistica** dello stato del sistema, specificando le leggi di transizione e le proprietà statistiche dei processi sottostanti.
 
 L’approccio stocastico si fonda sulla teoria della probabilità e sulle sue estensioni analitiche e numeriche. I concetti centrali includono:
 
@@ -51,18 +55,7 @@ Dal punto di vista concettuale, l’uso di un modello stocastico implica un pass
 Tale impostazione consente non solo di rappresentare la variabilità osservata nei dati, ma anche di quantificare l’incertezza e valutare la robustezza delle previsioni.
 
 In ambito computazionale, la simulazione di modelli stocastici richiede lo sviluppo di algoritmi di generazione di numeri casuali, metodi Monte Carlo, tecniche di integrazione stocastica e strategie di riduzione della varianza.  
-La sinergia tra formulazione teorica e implementazione numerica costituisce oggi uno degli aspetti più fecondi della modellizzazione stocastica moderna.
-
-
-
-## Motivazioni e concetti fondamentali
-
-L’introduzione dei modelli stocastici nasce dall’esigenza di descrivere fenomeni in cui l’incertezza è parte integrante del sistema, non soltanto una limitazione della conoscenza.  
-Esempi classici includono il moto browniano, le fluttuazioni di popolazione in biologia o la volatilità dei mercati finanziari.  
-In ciascuno di questi casi, l’evoluzione del sistema non è completamente determinata dalle condizioni iniziali, ma influenzata da un insieme di eventi aleatori.
-
-Un modello stocastico fornisce dunque una **descrizione probabilistica** dello stato del sistema, specificando le leggi di transizione e le proprietà statistiche dei processi sottostanti.
-
+La sinergia tra formulazione teorica rigorosa e implementazione numerica avanzata costituisce oggi il cuore della modellizzazione stocastica moderna, permettendo di affrontare problemi sempre più complessi in contesti multidisciplinari.
 
 ## Variabili aleatorie e distribuzioni di probabilità
 

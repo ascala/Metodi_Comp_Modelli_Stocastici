@@ -6,9 +6,9 @@ date: ""
 
 # Boltzmann Machine e Sampling
 
-(Obiettivi della lezione: comprendere come la distribuzione di Boltzmann descriva sistemi complessi con molte variabili interagenti, introdurre la logica delle *Boltzmann Machines* come modelli probabilistici apprendibili, e illustrare i metodi di campionamento Monte Carlo utilizzati per stimare quantità termodinamiche e statistiche in reti di neuroni.)
-
----
+La teoria di Boltzmann lega energia e probabilità: gli stati di un sistema hanno maggiore o minore probabilità a seconda della loro energia.  
+Questo principio, alla base della fisica statistica, è stato reinterpretato nel machine learning come un modello di apprendimento distribuito, dove le connessioni fra unità determinano la probabilità di configurazioni osservate. 
+In generale, la distribuzione di Boltzmann é uno degli strumenti principe per descrivere sistemi complessi con molte variabili interagenti, dalla materia condensata alle reti di neuroni.
 
 ### Obiettivi didattici specifici
 
@@ -18,7 +18,6 @@ date: ""
 4. Esaminare il ruolo del **campionamento Monte Carlo** (Metropolis, Gibbs).  
 5. Collegare i concetti fisici di equilibrio e temperatura all’ottimizzazione e al learning.
 
----
 
 ### Struttura della lezione
 
@@ -29,13 +28,6 @@ La lezione è articolata in cinque parti principali:
 3. **La Boltzmann Machine** – architettura, funzione di energia e apprendimento.  
 4. **Sampling e algoritmi di simulazione** – Metropolis, Gibbs sampling.  
 5. **Applicazioni e connessioni interdisciplinari** – reti neurali, inferenza, ottimizzazione.
-
----
-
-### Conclusione introduttiva
-
-La teoria di Boltzmann lega energia e probabilità: gli stati di un sistema hanno maggiore o minore probabilità a seconda della loro energia.  
-Questo principio, alla base della fisica statistica, è stato reinterpretato nel machine learning come un modello di apprendimento distribuito, dove le connessioni fra unità determinano la probabilità di configurazioni osservate.
 
 ---
 

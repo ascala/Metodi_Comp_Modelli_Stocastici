@@ -6,9 +6,8 @@ date: ""
 
 # Rumore e dinamiche stocastiche
 
-(Obiettivi della lezione: comprendere il significato del rumore nei modelli dinamici, distinguere tra fluttuazioni deterministiche e casuali, e introdurre le equazioni di Langevin come modello generale di evoluzione sotto incertezza.)
-
----
+Il rumore non è soltanto un disturbo: in molti sistemi è parte integrante della dinamica.  
+Nei modelli stocastici, l’incertezza è rappresentata esplicitamente, e il comportamento medio emerge da molte realizzazioni del processo. La teoria di Langevin fornisce un linguaggio unificato per descrivere questi fenomeni, dal moto delle particelle al comportamento collettivo di popolazioni e agenti.
 
 ### Obiettivi didattici specifici
 
@@ -18,7 +17,6 @@ date: ""
 4. Interpretare le traiettorie stocastiche come famiglie di possibili evoluzioni.  
 5. Collegare le dinamiche stocastiche a fenomeni reali (fisici, biologici, sociali).
 
----
 
 ### Struttura della lezione
 
@@ -30,12 +28,6 @@ La lezione è articolata in cinque parti principali:
 4. **Simulazioni numeriche di traiettorie** – metodo di Euler–Maruyama (intuitivo).  
 5. **Esempi interdisciplinari** – diffusione, apprendimento, mercati, reti sociali.
 
----
-
-### Conclusione introduttiva
-
-Il rumore non è soltanto un disturbo: in molti sistemi è parte integrante della dinamica.  
-Nei modelli stocastici, l’incertezza è rappresentata esplicitamente, e il comportamento medio emerge da molte realizzazioni del processo. La teoria di Langevin fornisce un linguaggio unificato per descrivere questi fenomeni, dal moto delle particelle al comportamento collettivo di popolazioni e agenti.
 
 ---
 

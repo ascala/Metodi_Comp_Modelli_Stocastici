@@ -6,9 +6,8 @@ date: ""
 
 # Dinamiche molecolari e sistemi a molti agenti
 
-(Obiettivi della lezione: introdurre i principi della dinamica molecolare come metodo di simulazione di sistemi a molte componenti interagenti, mostrare le analogie con i modelli multi–agente, e discutere il ruolo delle forze, dell’energia e delle collisioni nella rappresentazione computazionale di sistemi complessi.)
-
----
+La dinamica molecolare nasce per studiare l’evoluzione di sistemi fisici con molte particelle, ma i suoi principi si estendono naturalmente a ogni sistema formato da **unità interagenti**: atomi, cellule, individui, imprese o nodi di una rete.  
+Ogni agente segue regole locali (forze, scelte, vincoli), ma dall’insieme emergono comportamenti collettivi complessi.
 
 ### Obiettivi didattici specifici
 
@@ -17,8 +16,6 @@ date: ""
 3. Descrivere l’evoluzione di un sistema a **molti agenti interagenti**.  
 4. Analizzare l’effetto delle interazioni locali (collisioni, attrazioni, repulsioni).  
 5. Estendere il concetto di simulazione molecolare a contesti sociali o economici.
-
----
 
 ### Struttura della lezione
 
@@ -29,13 +26,6 @@ La lezione è articolata in cinque parti principali:
 3. **Aspetti computazionali** – integrazione numerica e conservazione dell’energia.  
 4. **Dal micro al macro: sistemi a molti agenti** – analogie con modelli sociali e biologici.  
 5. **Applicazioni interdisciplinari** – simulazioni fisiche, economiche, sociali.
-
----
-
-### Conclusione introduttiva
-
-La dinamica molecolare nasce per studiare l’evoluzione di sistemi fisici con molte particelle, ma i suoi principi si estendono naturalmente a ogni sistema formato da **unità interagenti**: atomi, cellule, individui, imprese o nodi di una rete.  
-Ogni agente segue regole locali (forze, scelte, vincoli), ma dall’insieme emergono comportamenti collettivi complessi.
 
 ---
 

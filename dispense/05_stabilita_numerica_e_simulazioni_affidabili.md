@@ -6,9 +6,7 @@ date: ""
 
 # Stabilità numerica e simulazioni affidabili
 
-(Obiettivi della lezione: comprendere che cosa si intende per stabilità numerica, riconoscere gli errori più comuni nelle simulazioni e imparare a progettare esperimenti numerici che diano risultati riproducibili e coerenti con il modello teorico.)
-
----
+Una simulazione non è mai esatta: produce un’approssimazione del modello matematico. Tuttavia, se lo schema numerico è stabile, piccoli errori locali non si amplificano e la traiettoria simulata resta “vicina” a quella teorica. Comprendere questo principio è essenziale per costruire modelli affidabili, anche quando non si dispone di una soluzione analitica. Evitare gli errori più comuni nelle simulazioni é fondamentale per progettare esperimenti numerici che diano risultati riproducibili e coerenti con il modello teorico.
 
 ### Obiettivi didattici specifici
 
@@ -17,8 +15,6 @@ date: ""
 3. Imparare a scegliere un **passo temporale** appropriato e a verificarne la convergenza empiricamente.  
 4. Riconoscere i segnali di instabilità o divergenza nei risultati.  
 5. Applicare semplici strategie di controllo dell’errore e di confronto fra schemi numerici.
-
----
 
 ### Struttura della lezione
 
@@ -30,11 +26,6 @@ La lezione è articolata in cinque parti principali:
 4. **Scelta del passo temporale e convergenza** – metodo empirico di verifica.  
 5. **Esempi interdisciplinari** – modelli sociali, economici e fisici con rumore.
 
----
-
-### Conclusione introduttiva
-
-Una simulazione non è mai esatta: produce un’approssimazione del modello matematico. Tuttavia, se lo schema numerico è stabile, piccoli errori locali non si amplificano e la traiettoria simulata resta “vicina” a quella teorica. Comprendere questo principio è essenziale per costruire modelli affidabili, anche quando non si dispone di una soluzione analitica.
 
 ---
 

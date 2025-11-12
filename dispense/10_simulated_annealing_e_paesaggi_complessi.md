@@ -6,9 +6,8 @@ date: ""
 
 # Simulated Annealing e Paesaggi Complessi
 
-(Obiettivi della lezione: introdurre l’algoritmo di *simulated annealing* come metodo stocastico di ottimizzazione ispirato alla fisica statistica, comprendere il concetto di paesaggio di energia o costo, e discutere le implicazioni per problemi complessi, apprendimento e adattamento.)
-
----
+Molti sistemi naturali e computazionali devono trovare configurazioni “ottimali” tra un numero enorme di possibilità.  
+Il *simulated annealing* traduce il processo fisico di **raffreddamento lento** di un materiale in un algoritmo di esplorazione globale del paesaggio di energia o costo, capace di evitare minimi locali e di avvicinarsi a configurazioni ottimali: é uno strumento di base per affrontare problemi complessi come l´apprendimento e l´adattamento.
 
 ### Obiettivi didattici specifici
 
@@ -17,8 +16,6 @@ date: ""
 3. Analizzare il ruolo della **temperatura** e del **raffreddamento** nel controllo dell’esplorazione.  
 4. Implementare e interpretare esempi di ottimizzazione stocastica.  
 5. Collegare SA a sistemi complessi, reti, e apprendimento.
-
----
 
 ### Struttura della lezione
 
@@ -29,13 +26,6 @@ La lezione è articolata in cinque parti principali:
 3. **Algoritmo e parametri** – temperatura, schedule, criteri di accettazione.  
 4. **Esempi numerici e interpretazioni** – funzioni multimodali, combinatoriali.  
 5. **Applicazioni interdisciplinari** – fisica, machine learning, reti e società.
-
----
-
-### Conclusione introduttiva
-
-Molti sistemi naturali e computazionali devono trovare configurazioni “ottimali” tra un numero enorme di possibilità.  
-Il *simulated annealing* traduce il processo fisico di **raffreddamento lento** di un materiale in un algoritmo di esplorazione globale del paesaggio di energia o costo, capace di evitare minimi locali e di avvicinarsi a configurazioni ottimali.
 
 ---
 

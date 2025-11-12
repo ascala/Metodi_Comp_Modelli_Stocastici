@@ -6,9 +6,7 @@ date: ""
 
 # Simulazioni di eventi discreti (Gillespie e oltre)
 
-(Obiettivi della lezione: comprendere come simulare processi stocastici in cui gli eventi avvengono in tempi discreti e casuali, a partire dal metodo di Gillespie per reazioni chimiche e sue estensioni a modelli epidemiologici e di diffusione.)
-
----
+Molti sistemi reali non evolvono in modo continuo, ma attraverso **eventi discreti**: un’infezione, una nascita, una reazione chimica. Il metodo di Gillespie fornisce una procedura esatta per generare simulazioni coerenti con le leggi di probabilità del processo sottostante. Questa lezione mostra come funziona e come adattarlo a contesti diversi in cui gli eventi avvengono in tempi discreti e casuali.
 
 ### Obiettivi didattici specifici
 
@@ -18,7 +16,6 @@ date: ""
 4. Estendere il metodo a sistemi complessi (epidemie, reti, agent–based).  
 5. Confrontare diversi approcci: simulazione esatta, tau-leaping, approssimazioni continue.
 
----
 
 ### Struttura della lezione
 
@@ -29,12 +26,6 @@ La lezione è articolata in cinque parti principali:
 3. **Algoritmo di Gillespie (Direct Method)** – simulazione passo per passo.  
 4. **Estensioni e approssimazioni** – tau-leaping e metodi ibridi.  
 5. **Applicazioni interdisciplinari** – reazioni chimiche, epidemie, dinamiche sociali.
-
----
-
-### Conclusione introduttiva
-
-Molti sistemi reali non evolvono in modo continuo, ma attraverso **eventi discreti**: un’infezione, una nascita, una reazione chimica. Il metodo di Gillespie fornisce una procedura esatta per generare simulazioni coerenti con le leggi di probabilità del processo sottostante. Questa lezione mostra come funziona e come adattarlo a contesti diversi.
 
 ---
 
