@@ -58,6 +58,7 @@ Il termine $r^{-12}$ rappresenta la repulsione a corta distanza, il termine $r^{
 ### 2.2 Potenziali semplici e modelli granulari
 
 In simulazioni didattiche o sociali, si possono usare potenziali semplificati:
+
 - **potenziale duro (hard spheres):** urto elastico, nessuna interazione a distanza,  
 - **potenziale armonico:** interazione tipo molla,  
 - **potenziale sociale:** repulsione a breve raggio, attrazione a lungo raggio (es. modelli di coesione).
@@ -81,7 +82,7 @@ def verlet_step(r, v, F, m, dt, force_func):
     F_new = force_func(r_new)
     v_new = v + 0.5*(F + F_new)/m*dt
     return r_new, v_new, F_new
-````
+```
 
 ### 3.2 Condizioni al contorno
 
@@ -154,7 +155,7 @@ Simulazioni di mercati e di reti di scambio, con agenti che reagiscono a incenti
 * Allen, M. P., & Tildesley, D. J. (1987). *Computer Simulation of Liquids*. Oxford University Press.
 * Frenkel, D., & Smit, B. (2002). *Understanding Molecular Simulation*. Academic Press.
 * Helbing, D. (2012). *Social Self-Organization: Agent-Based Simulations and Experiments to Study Emergent Social Behavior*. Springer.
-* Castellano, C., Fortunato, S., & Loreto, V. (2009). *Statistical physics of social dynamics*. Rev. Mod. Phys. 81: 591–646.
+* Castellano, C., Fortuito, S., & Loreto, V. (2009). *Statistical physics of social dynamics*. Rev. Mod. Phys. 81: 591–646.
 * Bonabeau, E. (2002). *Agent-based modeling: Methods and techniques for simulating human systems*. PNAS, 99(3): 7280–7287.
 
 ---

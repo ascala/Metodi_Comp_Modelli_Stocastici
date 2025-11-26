@@ -11,7 +11,6 @@ I modelli deterministici forniscono una visione media, ma non descrivono la **va
 I modelli di crescita e branching introducono il caso come componente dinamica, permettendo di analizzare la probabilità di espansione o estinzione di popolazioni, idee o strutture sociali.
 I principali modelli di crescita stocastica e di ramificazione permettono infatti di comprendere il ruolo della casualità nella dinamica di popolazioni o sistemi in espansione, e analizzare applicazioni interdisciplinari in biologia, epidemiologia, economia e reti.
 
-
 ### Obiettivi didattici specifici
 
 1. Comprendere la differenza tra crescita deterministica e stocastica.  
@@ -19,7 +18,6 @@ I principali modelli di crescita stocastica e di ramificazione permettono infatt
 3. Analizzare esempi numerici e simulazioni di crescita casuale.  
 4. Introdurre varianti continue (Yule, logistica stocastica).  
 5. Collegare i modelli di crescita a fenomeni reali in diversi ambiti disciplinari.
-
 
 ### Struttura della lezione
 
@@ -30,7 +28,6 @@ La lezione è articolata in cinque parti principali:
 3. **Distribuzioni e probabilità di estinzione** – comportamento medio e varianza.  
 4. **Modelli di crescita continua e varianti** – Yule, logistica, processi moltiplicativi.  
 5. **Applicazioni interdisciplinari** – biologia, epidemie, reti, economia.
-
 
 ---
 
@@ -63,6 +60,7 @@ $$N_{t+1} = \sum_{i=1}^{N_t} K_i.$$
 ### 2.2 Valore medio e soglia critica
 
 Il numero medio di figli è $m = \mathbb{E}[K]$:
+
 - Se $m < 1$: estinzione certa.  
 - Se $m = 1$: crescita marginale, forte varianza.  
 - Se $m > 1$: crescita potenzialmente illimitata.
@@ -85,7 +83,7 @@ def branching_process(N0, p_offspring, steps):
 p = {0:0.3, 1:0.4, 2:0.3}
 trajectory = branching_process(1, p, 20)
 print(trajectory)
-````
+```
 
 Ogni realizzazione può portare a estinzione o crescita esplosiva, anche con gli stessi parametri.
 
@@ -183,4 +181,3 @@ La formazione di nuove connessioni in una rete segue spesso una dinamica di tipo
 * Mitzenmacher, M. (2004). *A Brief History of Generative Models for Power Law and Lognormal Distributions*. Internet Mathematics, 1(2): 226–251.
 
 ---
-

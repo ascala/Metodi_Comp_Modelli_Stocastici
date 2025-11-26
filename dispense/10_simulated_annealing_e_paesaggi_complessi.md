@@ -34,6 +34,7 @@ La lezione è articolata in cinque parti principali:
 ### 1.1 Paesaggio di energia
 
 Ogni sistema o problema può essere rappresentato da una funzione di energia o costo $E(x)$ che associa a ogni configurazione $x$ un valore:
+
 - basso → stato desiderabile o ottimale,  
 - alto → stato sfavorevole.
 
@@ -52,12 +53,14 @@ L’algoritmo riproduce la dinamica di un sistema termico che esplora configuraz
 $$P(x) \propto e^{-E(x)/T}.$$
 
 A ogni passo:
+
 1. Si propone una nuova configurazione $x'$.  
 2. Si calcola la variazione di energia $\Delta E = E(x') - E(x)$.  
 3. Si accetta la mossa con probabilità
-$$p_{\text{acc}} = \min(1, e^{-\Delta E/T}).$$
+   $$p_{\text{acc}} = \min(1, e^{-\Delta E/T}).$$
 
 La temperatura $T$ controlla il grado di esplorazione:
+
 - alta $T$ → accettazione di molte mosse, anche peggiorative;  
 - bassa $T$ → esplorazione fine intorno ai minimi.
 
@@ -83,7 +86,7 @@ def simulated_annealing(E, x0, T0, alpha, steps):
         history.append(E_curr)
         T *= alpha  # raffreddamento geometrico
     return x, history
-````
+```
 
 ### 3.2 Parametri principali
 

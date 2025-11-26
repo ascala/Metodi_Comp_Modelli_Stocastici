@@ -18,7 +18,6 @@ In generale, la distribuzione di Boltzmann é uno degli strumenti principe per d
 4. Esaminare il ruolo del **campionamento Monte Carlo** (Metropolis, Gibbs).  
 5. Collegare i concetti fisici di equilibrio e temperatura all’ottimizzazione e al learning.
 
-
 ### Struttura della lezione
 
 La lezione è articolata in cinque parti principali:
@@ -37,8 +36,11 @@ Un sistema con molte variabili interagenti può trovarsi in diversi stati $x$.
 A ciascuno stato si associa un’energia $E(x)$, che misura la sua “compatibilità” interna.
 
 L’idea chiave è che gli stati a bassa energia siano più probabili:
-$$P(x) \propto e^{-E(x)/T},$$
-dove $T$ rappresenta la temperatura (grado di rumore o incertezza del sistema).
+$P(x) \propto e^{-E(x)/T},$
+
+
+
+dove  $T$ rappresenta la temperatura (grado di rumore o incertezza del sistema).
 
 Nei modelli computazionali, $E(x)$ è una funzione che rappresenta le interazioni tra le variabili e i vincoli del sistema.
 
@@ -99,9 +101,10 @@ Poiché $Z$ è in genere inaccessibile (richiede somma su troppi stati), si usan
 ### 4.1 Metropolis–Hastings
 
 A ogni passo:
+
 1. si propone una modifica dello stato (es. invertire un bit);  
 2. si accetta con probabilità
-$$p_{\text{acc}} = \min\left(1, e^{-\Delta E/T}\right);$$
+   $$p_{\text{acc}} = \min\left(1, e^{-\Delta E/T}\right);$$
 3. si ripete per ottenere una sequenza di stati distribuiti secondo $P(x)$.
 
 ### 4.2 Gibbs sampling
@@ -132,7 +135,7 @@ def energy(s):
 s = np.random.randint(0,2,3)
 for _ in range(1000):
     s = metropolis_step(s, energy, T=1.0)
-````
+```
 
 ---
 
