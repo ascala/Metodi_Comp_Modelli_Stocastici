@@ -1,9 +1,7 @@
 ---
-title: "Introduzione ai modelli stocastici"
+title: "00: Introduzione ai modelli stocastici"
 date: "24 Feb 2026"
 ---
-
-# Introduzione ai Modelli Stocastici
 
 I modelli stocastici costituiscono un insieme di strumenti matematici per la descrizione e l’analisi di sistemi nei quali l’evoluzione temporale o spaziale è influenzata da componenti di natura aleatoria. A differenza dei modelli deterministici, nei quali uno stesso stato iniziale conduce sempre al medesimo risultato, i modelli stocastici introducono variabili casuali per rappresentare l’incertezza intrinseca dei fenomeni osservati.
 

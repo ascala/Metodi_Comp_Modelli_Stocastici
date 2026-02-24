@@ -6,7 +6,7 @@ I modelli stocastici sono strumenti matematici che descrivono sistemi in cui l�
 
 Sono importanti perché trovano applicazione in molte aree: fisica, biologia computazionale, epidemiologia, chimica teorica, finanza quantitativa, data science, ingegneria dei sistemi, scienze sociali computazionali. In altre parole, sono essenziali ogni volta che si studia un processo dinamico reale soggetto a incertezza.
 
-Il corso introduce i fondamenti teorici e computazionali di questi modelli, integrando metodi matematici, simulazione numerica e attività di laboratorio, in linea con gli obiettivi della <mark>??? Laurea Magistrale in Scienze Computazionali ???</mark>.
+Il corso introduce i fondamenti teorici e computazionali di questi modelli, integrando metodi matematici, simulazione numerica e attività di laboratorio, in linea con gli obiettivi della Laurea LM-40 in Scienze Computazionali. 
 
 ## Obiettivi formativi
 
@@ -71,9 +71,9 @@ Al termine del corso lo/la studente/essa sarà in grado di:
 7. **Simulated annealing, ottimizzazione stocastica e modelli energetici**  
    Paesaggi energetici complessi, minimi locali, Boltzmann machines
 
-## Prerequisiti
+## Conoscenze preliminari utili
 
-- <mark>Calcolo delle probabilità</mark> e analisi matematica di base.
+- Calcolo delle probabilità e analisi matematica di base.
 - Algebra lineare.
 - Programmazione (preferibilmente Python o C++).
 
