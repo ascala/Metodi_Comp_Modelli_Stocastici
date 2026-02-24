@@ -1,10 +1,8 @@
 ---
-title: "Boltzmann Machine e Sampling"
+title: "10: Boltzmann Machine e Sampling"
 author: ""
 date: ""
 ---
-
-# Boltzmann Machine e Sampling
 
 La teoria di Boltzmann lega energia e probabilità: gli stati di un sistema hanno maggiore o minore probabilità a seconda della loro energia.  
 Questo principio, alla base della fisica statistica, è stato reinterpretato nel machine learning come un modello di apprendimento distribuito, dove le connessioni fra unità determinano la probabilità di configurazioni osservate. 
@@ -35,26 +33,14 @@ La lezione è articolata in cinque parti principali:
 Un sistema con molte variabili interagenti può trovarsi in diversi stati $x$.  
 A ciascuno stato si associa un’energia $E(x)$, che misura la sua “compatibilità” interna.
 
-L’idea chiave è che gli stati a bassa energia siano più probabili:
-$P(x) \propto e^{-E(x)/T},$
-
-
-
-dove  $T$ rappresenta la temperatura (grado di rumore o incertezza del sistema).
-
-Nei modelli computazionali, $E(x)$ è una funzione che rappresenta le interazioni tra le variabili e i vincoli del sistema.
-
----
+L’idea chiave è che gli stati a bassa energia siano più probabili: $$P(x) \propto e^{-E(x)/T}\,,$$dove  $T$ rappresenta la temperatura (grado di rumore o incertezza del sistema). Nei modelli computazionali, $E(x)$ è una funzione che rappresenta le interazioni tra le variabili e i vincoli del sistema.
 
 ## 2. La distribuzione di Boltzmann
 
 ### 2.1 Forma generale
 
-La probabilità di uno stato $x$ in equilibrio termico:
-$$P(x) = \frac{1}{Z} e^{-E(x)/T},$$
-dove
-$$Z = \sum_x e^{-E(x)/T}$$
-è la **funzione di partizione**, necessaria per normalizzare la distribuzione.
+La probabilità di uno stato $x$ in equilibrio termico è $P(x) = Z^{-1} e^{-E(x)/T}$ dove
+$$Z = \sum_x e^{-E(x)/T}$$è la **funzione di partizione**, necessaria per normalizzare la distribuzione.
 
 ### 2.2 Interpretazione
 
@@ -65,8 +51,6 @@ $$Z = \sum_x e^{-E(x)/T}$$
   - $T$ piccola → sistema “bloccato” vicino ai minimi di energia.
 
 Questa distribuzione è il ponte fra **fisica** e **intelligenza artificiale**: la probabilità di uno stato riflette quanto esso è coerente con i vincoli appresi.
-
----
 
 ## 3. La Boltzmann Machine
 
@@ -91,8 +75,6 @@ L’obiettivo dell’apprendimento è modificare $w_{ij}$ e $b_i$ per ridurre la
 Il gradiente dell’errore implica due termini:
 $$\Delta w_{ij} \propto \langle s_i s_j \rangle_{\text{data}} - \langle s_i s_j \rangle_{\text{model}},$$
 cioè la differenza fra correlazioni osservate e correlate generate dal modello.
-
----
 
 ## 4. Sampling e algoritmi di simulazione
 
@@ -137,27 +119,12 @@ for _ in range(1000):
     s = metropolis_step(s, energy, T=1.0)
 ```
 
----
-
 ## 5. Applicazioni e connessioni interdisciplinari
 
-### 5.1 Fisica statistica
-
-Le Boltzmann Machines sono formalmente equivalenti a reti di spin di Ising, con il campionamento che simula l’equilibrio termico.
-
-### 5.2 Machine learning
-
-Le BM e le **Restricted Boltzmann Machines (RBM)** costituiscono la base di molte architetture di *deep learning* (es. autoencoder probabilistici, Deep Belief Networks).
-
-### 5.3 Neuroscienze
-
-Il modello energetico descrive reti neurali che si auto-organizzano per minimizzare l’energia, analogamente al cervello che riduce l’errore predittivo.
-
-### 5.4 Economia e scienze sociali
-
-L’equilibrio di Boltzmann può interpretarsi come una distribuzione di preferenze o scelte in un sistema collettivo con vincoli globali (es. mercati, reti di interazione).
-
----
+- **Fisica statistica :** le Boltzmann Machines sono formalmente equivalenti a reti di spin di Ising, con il campionamento che simula l’equilibrio termico.
+- **Machine learning:** le BM e le **Restricted Boltzmann Machines (RBM)** costituiscono la base di molte architetture di *deep learning* (es. autoencoder probabilistici, Deep Belief Networks).
+- **Neuroscienze:** il modello energetico descrive reti neurali che si auto-organizzano per minimizzare l’energia, analogamente al cervello che riduce l’errore predittivo.
+- **Economia e scienze sociali:** l’equilibrio di Boltzmann può interpretarsi come una distribuzione di preferenze o scelte in un sistema collettivo con vincoli globali (es. mercati, reti di interazione).
 
 ## Riferimenti
 

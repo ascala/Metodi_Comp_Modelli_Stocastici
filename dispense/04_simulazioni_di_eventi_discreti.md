@@ -1,10 +1,8 @@
 ---
-title: "Simulazioni di eventi discreti (Gillespie e oltre)"
+title: "04: Simulazioni di eventi discreti (Gillespie e oltre)"
 author: ""
 date: ""
 ---
-
-# Simulazioni di eventi discreti (Gillespie e oltre)
 
 Molti sistemi reali non evolvono in modo continuo, ma attraverso **eventi discreti**: un’infezione, una nascita, una reazione chimica. Il metodo di Gillespie fornisce una procedura esatta per generare simulazioni coerenti con le leggi di probabilità del processo sottostante. Questa lezione mostra come funziona e come adattarlo a contesti diversi in cui gli eventi avvengono in tempi discreti e casuali.
 

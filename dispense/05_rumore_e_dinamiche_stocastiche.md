@@ -1,10 +1,8 @@
 ---
-title: "Rumore e dinamiche stocastiche"
+title: "05: Rumore e dinamiche stocastiche"
 author: ""
 date: ""
 ---
-
-# Rumore e dinamiche stocastiche
 
 Il rumore non è soltanto un disturbo: in molti sistemi è parte integrante della dinamica.  
 Nei modelli stocastici, l’incertezza è rappresentata esplicitamente, e il comportamento medio emerge da molte realizzazioni del processo. La teoria di Langevin fornisce un linguaggio unificato per descrivere questi fenomeni, dal moto delle particelle al comportamento collettivo di popolazioni e agenti.

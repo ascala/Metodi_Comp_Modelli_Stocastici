@@ -1,8 +1,7 @@
 ---
-title: "Metodi Monte Carlo"
+title: "02: Metodi Monte Carlo"
 date: ""
 ---
-# Metodi Monte Carlo
 
 I metodi Monte Carlo costituiscono una delle tecniche fondamentali per la risoluzione numerica di problemi stocastici e deterministici di elevata complessità. Essi si basano sull’uso sistematico del campionamento casuale per stimare quantità di interesse, come integrali, medie o distribuzioni di probabilità, quando una soluzione analitica è impraticabile o impossibile.
 

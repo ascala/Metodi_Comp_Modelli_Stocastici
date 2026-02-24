@@ -1,10 +1,11 @@
 ---
 title: "Introduzione ai modelli stocastici (Lezione 00)"
 author: "Antonio Scala"
-date: ""
-theme: "Madrid"
-colortheme: "default"
-fontsize: 11pt
+date: "24 Feb 2026"
+theme: "boxes"
+colortheme: "wolverine"
+fontsize: 12pt
+aspectratio: 169
 ---
 
 # Obiettivi e struttura
@@ -159,16 +160,17 @@ $$
 # Dalla teoria alla simulazione
 
 ## Generazione di campioni: metodo dell'inversione
-Dato un generatore uniforme $U\in[0,1)$:
+Dato un generatore uniforme $U\in[0,1)$, definiamo
 $$
 X = F^{-1}(U)
 $$
+dove $F$ è la distribuzione cumulativa della distribuzione $p=F´$ che vogliamo generare.
 
-- Con $u=F(x)$: $p_X(x)=p_U(u)\left|\frac{du}{dx}\right|=1\cdot F'(x)=p(x)$.
+$$u=F(x) \rightarrow p_X(x) = F'(x) = p(x)$$
+quindi per generare numeri distribuiti secondo $p(x)$, devo essere in grado di (a) di costruire (anche numericamente) una $F(x)=\int^x p(y)dy$; (b) generare numeri $u$ uniformemente distribuiti; (c) implementare $F^{-1}$ in modo da trasformare $u$ in $x=F^{-1}(u)$
 
 ## Generazione di campioni: metodo dell'inversione
 
- Poni $u=F(x)$ e scegli $U\sim\mathrm{Unif}[0,1)$, $X=F^{-1}(U)$.
 - Cambio di variabile:
 $$
 p_X(x)\,dx = p_U(u)\,du, \qquad du = F'(x)\,dx = p(x)\,dx.

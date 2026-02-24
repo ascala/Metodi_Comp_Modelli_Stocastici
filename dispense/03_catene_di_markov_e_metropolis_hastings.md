@@ -1,10 +1,8 @@
 ---
-title: "Catene di Markov e Metropolis"
+title: "03: Catene di Markov e Metropolis"
 author: ""
 date: ""
 ---
-
-# Catene di Markov e Metropolis
 
 Molti sistemi reali — fisici, biologici, economici, sociali — evolvono nel tempo seguendo regole probabilistiche.  
 Le catene di Markov forniscono un quadro semplice ma generale per descrivere tali dinamiche.  

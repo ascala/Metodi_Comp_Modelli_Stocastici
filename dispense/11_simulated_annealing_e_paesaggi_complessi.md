@@ -1,10 +1,8 @@
 ---
-title: "Simulated Annealing e Paesaggi Complessi"
+title: "11: Simulated Annealing e Paesaggi Complessi"
 author: ""
 date: ""
 ---
-
-# Simulated Annealing e Paesaggi Complessi
 
 Molti sistemi naturali e computazionali devono trovare configurazioni “ottimali” tra un numero enorme di possibilità.  
 Il *simulated annealing* traduce il processo fisico di **raffreddamento lento** di un materiale in un algoritmo di esplorazione globale del paesaggio di energia o costo, capace di evitare minimi locali e di avvicinarsi a configurazioni ottimali: é uno strumento di base per affrontare problemi complessi come l´apprendimento e l´adattamento.
@@ -126,24 +124,10 @@ Le “mosse” corrispondono a piccole permutazioni, e l’energia è il costo t
 
 ## 5. Applicazioni interdisciplinari
 
-### 5.1 Fisica statistica
-
-Il SA è un’estensione algoritmica del processo di termalizzazione: trova minimi globali del potenziale di energia in sistemi con molti gradi di libertà.
-
-### 5.2 Machine learning
-
-Può essere usato per inizializzare reti neurali o per ottimizzare funzioni di perdita non convexe.
-In modelli energetici (Boltzmann Machines, Hopfield Networks), il raffreddamento corrisponde al processo di apprendimento.
-
-### 5.3 Biologia
-
-Descrizione di folding proteico: la proteina “esplora” configurazioni energetiche e si stabilizza nella conformazione più stabile.
-
-### 5.4 Economia e reti sociali
-
-Interpretazione come **processo di decisione collettiva**: gli agenti esplorano strategie o opinioni e gradualmente convergono verso stati più stabili o coerenti.
-
----
+- **Fisica statistica:** il SA è un’estensione algoritmica del processo di termalizzazione: trova minimi globali del potenziale di energia in sistemi con molti gradi di libertà.
+- **Machine learning:** può essere usato per inizializzare reti neurali o per ottimizzare funzioni di perdita non convesse. In modelli energetici (Boltzmann Machines, Hopfield Networks), il raffreddamento corrisponde al processo di apprendimento.
+- **Biologia:** descrizione di folding proteico: la proteina “esplora” configurazioni energetiche e si stabilizza nella conformazione più stabile.
+- **Economia e reti sociali:** interpretazione come **processo di decisione collettiva**: gli agenti esplorano strategie o opinioni e gradualmente convergono verso stati più stabili o coerenti.
 
 ## Riferimenti
 

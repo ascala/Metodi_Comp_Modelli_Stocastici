@@ -1,10 +1,8 @@
 ---
-title: "Stabilità numerica e simulazioni affidabili"
+title: "06: Stabilità numerica e simulazioni affidabili"
 author: ""
 date: ""
 ---
-
-# Stabilità numerica e simulazioni affidabili
 
 Una simulazione non è mai esatta: produce un’approssimazione del modello matematico. Tuttavia, se lo schema numerico è stabile, piccoli errori locali non si amplificano e la traiettoria simulata resta “vicina” a quella teorica. Comprendere questo principio è essenziale per costruire modelli affidabili, anche quando non si dispone di una soluzione analitica. Evitare gli errori più comuni nelle simulazioni é fondamentale per progettare esperimenti numerici che diano risultati riproducibili e coerenti con il modello teorico.
 
@@ -100,7 +98,7 @@ Non esiste una regola universale, ma si possono seguire alcune linee guida prati
 
 Il concetto chiave è la **convergenza empirica**: uno schema è accettabile se le sue stime si stabilizzano al diminuire del passo temporale.
 
-***
+---
 
 ### 1.4 Esempi interdisciplinari
 
@@ -114,11 +112,11 @@ Il concetto chiave è la **convergenza empirica**: uno schema è accettabile se 
 
 ---
 
-## Diagnostica e misurazione dell’instabilità nelle simulazioni stocastiche
+## 2. Diagnostica e misurazione dell’instabilità nelle simulazioni stocastiche
 
 A differenza delle simulazioni deterministiche, dove l’instabilità si manifesta spesso con divergenze numeriche esplicite, nei modelli stocastici l’instabilità può assumere forme più subdole: distribuzioni errate, varianze anomale, drift sistematici o stati fisicamente impossibili. Per questo motivo è necessario disporre di strumenti dedicati alla diagnosi e alla quantificazione dell’instabilità. Questa sezione presenta tecniche operative che permettono di individuare precocemente problemi numerici e di valutarne l’impatto sulla validità statistica della simulazione.
 
-### 1. Controllo di dominio e stati fisicamente impossibili
+### 2.1 Controllo di dominio e stati fisicamente impossibili
 
 La verifica più immediata consiste nell’osservare se la simulazione produce stati inammissibili per il modello:
 
@@ -128,7 +126,7 @@ La verifica più immediata consiste nell’osservare se la simulazione produce s
 
 La presenza anche occasionale di tali valori indica una violazione del dominio ammesso e suggerisce instabilità locale dello schema numerico.
 
-### 2. Confronto con quantità analitiche (medie, varianze, distribuzioni)
+### 2.2 Confronto con quantità analitiche (medie, varianze, distribuzioni)
 
 Molti modelli stocastici ammettono soluzioni analitiche per alcuni momenti o per la distribuzione in casi limite. Anche quando la soluzione completa non è nota, è spesso disponibile almeno la dinamica della media o della varianza.
 
@@ -140,7 +138,7 @@ Per diagnosticare instabilità si confrontano:
 
 Differenze sistematiche crescenti al variare del passo temporale sono segnale di instabilità.
 
-### 3. Analisi di convergenza empirica
+### 2.3 Analisi di convergenza empirica
 
 Una simulazione stocastica è stabile se i risultati convergono, in senso statistico, al diminuire di $\Delta t$ o del passo di salto. Le tecniche più utilizzate includono:
 
@@ -150,7 +148,7 @@ Una simulazione stocastica è stabile se i risultati convergono, in senso statis
 
 * **Step-doubling:** una simulazione con $\Delta t$ viene confrontata con due step consecutivi di $\Delta t/2$. Se i risultati differiscono in modo significativo, lo schema non è stabile o la scelta del passo non è appropriata.
 
-### 4. Replica delle simulazioni e sensibilità al seme
+### 2.4 Replica delle simulazioni e sensibilità al seme
 
 Poiché i modelli stocastici dipendono dal generatore pseudocasuale, è utile diagnosticare instabilità numerica anche tramite replicazioni multiple:
 
@@ -159,7 +157,7 @@ Poiché i modelli stocastici dipendono dal generatore pseudocasuale, è utile di
 
 Una simulazione affidabile deve produrre distribuzioni stabili al variare del seme.
 
-### 5. Monitoraggio della varianza e della crescita del rumore
+### 2.5 Monitoraggio della varianza e della crescita del rumore
 
 La varianza numerica è un indicatore particolarmente sensibile dell’instabilità di una SDE o di un processo di salto. Segnali tipici:
 
@@ -169,7 +167,7 @@ La varianza numerica è un indicatore particolarmente sensibile dell’instabili
 
 Il controllo della varianza permette di identificare errori di discretizzazione che non sono immediatamente visibili nella media.
 
-### 6. Test sugli invarianti del modello
+### 2.6 Test sugli invarianti del modello
 
 Molti sistemi stocastici possiedono invarianti: massa totale, energia media, distribuzione di equilibrio, momento di ordine zero, o conservazione di un vincolo geometrico.
 
@@ -183,7 +181,7 @@ Esempi:
 
 Deviazioni persistenti indicano instabilità numerica o scelta errata del passo temporale.
 
-### 7. Conclusioni operative
+### 2.7 Conclusioni operative
 
 La diagnosi dell’instabilità nelle simulazioni stocastiche richiede un approccio
 multifattoriale, basato su:
@@ -196,9 +194,9 @@ multifattoriale, basato su:
 
 Solo una combinazione coerente di queste tecniche permette di garantire che la simulazione sia non solo numericamente stabile, ma anche statisticamente affidabile e coerente con la dinamica stocastica teorica.
 
---- 
+---
 
-### 7.6 Stabilità nelle simulazioni Monte Carlo e MCMC
+### 3 Stabilità nelle simulazioni Monte Carlo e MCMC
 
 Nelle simulazioni Monte Carlo basate su catene di Markov (MCMC), il concetto di stabilità non è di tipo numerico, poiché non si discretizza un’equazione differenziale. La stabilità riguarda invece la capacità della catena di esplorare correttamente lo spazio degli stati e di convergere alla distribuzione invariante desiderata.
 
