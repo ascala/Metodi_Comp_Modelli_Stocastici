@@ -1,5 +1,6 @@
 ---
 title: "00: Introduzione ai modelli stocastici"
+author: "Antonio Scala"
 date: "24 Feb 2026"
 ---
 

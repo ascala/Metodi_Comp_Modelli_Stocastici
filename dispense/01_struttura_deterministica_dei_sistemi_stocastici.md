@@ -1,7 +1,7 @@
 ---
 title: "01: Struttura deterministica dei sistemi stocastici"
 author: "Antonio Scala"
-date: "24 Feb 2026"
+date: "4 Apr 2026"
 ---
 
 In molti modelli stocastici, la componente casuale si innesta su una struttura deterministica di base.  

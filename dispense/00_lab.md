@@ -1,7 +1,7 @@
 ---
 title: "Introduzione ai modelli stocastici (Laboratorio 00)"
 author: "Antonio Scala"
-date: "24 Feb 2026"
+date: "25 Feb 2026"
 ---
 
 # Obiettivi del laboratorio

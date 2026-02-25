@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 
 # Parameters
 seed = 1234
-M = 20000
-Nlist = [1, 2, 100]
+M = 1000000
+Nlist = [1, 2, 10]
 
 rng = np.random.default_rng(seed)
 
