@@ -1,4 +1,8 @@
-# Appendice -- Richiami di metodi numerici per modelli stocastici
+---
+title: "A01: Richiami di metodi numerici per modelli stocastici"
+author: "Antonio Scala"
+date: "10 Mar 2026"
+---
 
 Questa appendice richiama strumenti numerici di base che ricorrono continuamente in simulazioni e stima di parametri: ricerca di zeri, ottimizzazione (anche vincolata), risoluzione di sistemi lineari, condizionamento, criteri di arresto e diagnostica di fallimenti. L’obiettivo non è l’esaustività, ma una “cassetta degli attrezzi” concreta, con enfasi su robustezza, controlli e patologie tipiche.
 

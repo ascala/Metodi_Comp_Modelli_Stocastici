@@ -1,5 +1,11 @@
-# Lab A02 -- Zeri, minimi locali, vincoli box
+---
+title: "Lab A01: Zeri, minimi locali, vincoli box"
+author: "Antonio Scala"
+date: "10 Mar 2026"
+---
+
 **Materiale di partenza:** i tre script
+
 - `01_zero_newton_vs_bisection.py`
 - `02_minimi_two_basins_multistart.py`
 - `03_box_constraint_penalty_vs_projection.py`
