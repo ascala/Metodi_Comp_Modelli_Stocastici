@@ -12,7 +12,7 @@ python 03_saddle_node_bifurcation_and_tipping.py
 
 Ogni script:
 - ha pochi parametri in testa da modificare
-- produce UNA figura principale (una finestra, eventualmente con 2 pannelli)
+- produce UNA figura principale 
 - non usa classi (solo numpy + matplotlib)
 - non richiede dati esterni
 

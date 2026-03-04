@@ -1,112 +1,81 @@
-# 03_saddle_node_bifurcation_and_tipping.py
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
-r_min = -1.0
-r_max = 0.6
-Nr = 401
+# ----- Parameters
+r = 0.2
+x0 = -0.45
+T = 8.0
+dt = 0.05
+xmax = 50.0   # stop when |x| exceeds this (both exact and Euler)
 
-eps = 0.2
-r_before = -eps
-r_after = +eps
-
-delta = 0.05
-dt = 0.01
-T = 4.0
-
-# Model: dx/dt = r + x^2
+# Model
 def f(x, r):
-    return r + x * x
+    return r + x*x
 
-def euler_trajectory(x0, r, dt, T):
+# Euler with stop
+def euler_trajectory(x0, r, dt, T, xmax):
     nsteps = int(T / dt)
     t = dt * np.arange(nsteps + 1, dtype=float)
     x = np.zeros(nsteps + 1, dtype=float)
     x[0] = x0
+    stop = nsteps
     for n in range(nsteps):
         x[n + 1] = x[n] + dt * f(x[n], r)
-    return t, x
+        if (not np.isfinite(x[n + 1])) or (abs(x[n + 1]) > xmax):
+            stop = n + 1
+            break
+    return t[:stop + 1], x[:stop + 1]
 
-# --- Critical points map (analytic)
-r_list = np.linspace(r_min, r_max, Nr)
+# Exact solution
+def exact_solution(t, x0, r):
+    if abs(r) < 1e-14:
+        return x0 / (1.0 - x0 * t)  # dx/dt = x^2
+    if r > 0.0:
+        a = np.sqrt(r)
+        return a * np.tan(a * t + np.arctan(x0 / a))
+    a = np.sqrt(-r)
+    y0 = (x0 - a) / (x0 + a)
+    y = y0 * np.exp(2.0 * a * t)
+    return a * (1.0 + y) / (1.0 - y)
 
-r_st, x_st = [], []
-r_un, x_un = [], []
-r_mg, x_mg = [], []
+# Optional: exact blow-up time for r>0 (to show tipping clearly)
+def blowup_time(x0, r):
+    if r <= 0.0:
+        return None
+    a = np.sqrt(r)
+    return (0.5*np.pi - np.arctan(x0 / a)) / a
 
-for r in r_list:
-    if r < 0.0:
-        a = np.sqrt(-r)
-        crit = [-a, +a]
-        for xstar in crit:
-            fp = 2.0 * xstar
-            if fp < 0.0:
-                r_st.append(r); x_st.append(xstar)
-            elif fp > 0.0:
-                r_un.append(r); x_un.append(xstar)
-            else:
-                r_mg.append(r); x_mg.append(xstar)
-    elif r == 0.0:
-        # marginal double root
-        r_mg.append(r); x_mg.append(0.0)
-    else:
-        # no real equilibria
-        pass
+# Compute Euler
+t_eu, x_eu = euler_trajectory(x0, r, dt, T, xmax)
 
-r_st = np.array(r_st); x_st = np.array(x_st)
-r_un = np.array(r_un); x_un = np.array(x_un)
-r_mg = np.array(r_mg); x_mg = np.array(x_mg)
+# Compute exact on a fine grid up to the same stop time, then stop when it exceeds xmax
+t_stop = min(T, t_eu[-1])
+t_ex_full = np.linspace(0.0, t_stop, 4000)
+x_ex_full = exact_solution(t_ex_full, x0, r)
 
-# --- Trajectories before/after
-a_before = np.sqrt(-r_before)
-x_stable_before = -a_before
-x_unstable_before = +a_before
+mask = np.isfinite(x_ex_full) & (np.abs(x_ex_full) <= xmax)
+if np.any(~mask):
+    last = np.argmax(~mask)  # first index where it fails
+    t_ex = t_ex_full[:last]
+    x_ex = x_ex_full[:last]
+else:
+    t_ex, x_ex = t_ex_full, x_ex_full
 
-IC_before = [
-    x_stable_before + delta, x_stable_before - delta,
-    x_unstable_before + delta, x_unstable_before - delta
-]
+# Plot
+plt.figure(figsize=(7.2, 4.2))
+plt.plot(t_ex, x_ex, linewidth=2.0, linestyle="--", label="exact")
+plt.plot(t_eu, x_eu, linestyle="none", marker="o", markersize=3.0,
+         label=f"Euler (dt={dt:g})")
 
-# after: no equilibrium; start near where the stable branch was just before
-IC_after = [x_stable_before + delta, x_stable_before - delta]
+tb = blowup_time(x0, r)
+if tb is not None and tb <= T:
+    plt.axvline(tb, linestyle=":", linewidth=1.5, label=f"blow-up time ~ {tb:.3f}")
 
-fig, ax = plt.subplots(1, 2, figsize=(12, 4))
-
-# Left panel: bifurcation diagram
-ax[0].plot(r_st, x_st, marker="o", linestyle="none", label="stable")
-ax[0].plot(r_un, x_un, marker="o", linestyle="none", markerfacecolor="none", label="unstable")
-if len(r_mg) > 0:
-    ax[0].plot(r_mg, x_mg, marker="x", linestyle="none", label="marginal")
-
-ax[0].axvline(r_before, linestyle="--", linewidth=1.5, label=r"$r_{\mathrm{before}}$")
-ax[0].axvline(r_after, linestyle="--", linewidth=1.5, label=r"$r_{\mathrm{after}}$")
-
-ax[0].set_title(r"critical points: $f(x;r)=0$")
-ax[0].set_xlabel(r"$r$")
-ax[0].set_ylabel(r"$x^*(r)$")
-ax[0].legend()
-
-# Right panel: trajectories
-first = True
-for x0 in IC_before:
-    t, x = euler_trajectory(x0, r_before, dt, T)
-    lab = fr"before $r={r_before:g}$" if first else None
-    ax[1].plot(t, x, linestyle="-", alpha=0.8, label=lab)
-    first = False
-
-first = True
-for x0 in IC_after:
-    t, x = euler_trajectory(x0, r_after, dt, T)
-    lab = fr"after $r={r_after:g}$" if first else None
-    ax[1].plot(t, x, linestyle="--", alpha=0.8, label=lab)
-    first = False
-
-ax[1].set_title(r"tipping: trajectories before/after (Euler)")
-ax[1].set_xlabel(r"$t$")
-ax[1].set_ylabel(r"$x(t)$")
-ax[1].legend()
-
-fig.suptitle(r"Saddle--node bifurcation: $\dot x = r + x^2$")
+plt.title(rf"$\dot x = r + x^2$   with   $r={r:g}$,  $x(0)={x0:g}$")
+plt.xlabel("t")
+plt.ylabel("x(t)")
+plt.ylim(-1.0, xmax)  # keep scale readable for the lab
+plt.grid(True, alpha=0.25)
+plt.legend()
 plt.tight_layout()
 plt.show()

@@ -1,7 +1,7 @@
 ---
 title: "Struttura deterministica dei sistemi stocastici (Lezione 00)"
 author: "Antonio Scala"
-date: "4 Apr 2026"
+date: "4 Mar 2026"
 theme: "boxes"
 colortheme: "wolverine"
 fontsize: 12pt
@@ -47,7 +47,27 @@ In 1D spesso non serve risolvere analiticamente:
 - tra due zeri consecutivi il segno di $f$ fissa la direzione del moto
 - si rappresenta tutto su un asse reale con frecce (linea di fase)
 
-![Obiettivo: classificare attrattori e repulsori.](./immagini/ODEfixpoints1d.png "Obiettivo: classificare attrattori e repulsori."){ height=50% } 
+![](./immagini/ODEfixpoints1d.png){ height=70% } 
+
+## Da 2d in poi la situazione si arricchisce
+- compaiono i **punti sella** (con **varietà stabile/instabile**)
+- compaiono **orbite chiuse** e **cicli limite**
+- non ci sono solo **punti** stazionari: possono emergere **insiemi invarianti** (attrattori, repulsori, o con stabilità “mista”)
+
+![](./immagini/Stazionary2d.png){ height=70% }
+
+## Oltre 2d: nuove possibilità
+:::: {.columns}
+::: {.column width="60%"}
+- in dimensione $\geq 3$ possono emergere **dinamiche caotiche**
+- attrattori “strani” e **sensibilità alle condizioni iniziali**
+- (spesso) utili sezioni di Poincaré e mappe discrete per visualizzare la dinamica
+:::
+
+::: {.column width="40%"}
+![](./immagini/Lorenz_attractor.png){width=100%}
+:::
+::::
 
 ## Linearizzazione e criterio locale
 Poni $x(t)=x^*+\xi(t)$ con $|\xi|$ piccolo. Allora:
@@ -95,6 +115,9 @@ Equilibri: $V'(x^*)=0$.
 - $x^*$ minimo locale di $V$ $\Rightarrow$ attrattore (stabile)
 - $x^*$ massimo locale di $V$ $\Rightarrow$ repulsore (instabile)
 - massimi separano bacini: barriere tra valli
+
+
+![](./immagini/PotentialAttractorRepeller.png){ height=50% } 
 
 ## Potenziale formale in 1D
 Per molte ODE $\dot x=f(x)$ si può definire formalmente:
@@ -297,15 +320,30 @@ $$
 
 Una scelta di schema numerico equivale a scegliere una mappa discreta che approssima il flusso continuo.
 
-## Discreto $\to$ ODE (interpretazione)
-Se $x_{n+1}=g(x_n)$ e i passi sono piccoli:
+# Equazioni alle differenze finite
+
+## Definizione
+
+Un’**equazione alle differenze finite** è una relazione che lega un numero finito di termini di una sequenza $\{x_n\}_{n\ge 0}$.
+
+- **Ordine 1 (autonoma)**:
 $$
-\frac{x_{n+1}-x_n}{\Delta t}\approx f(x_n),
-\qquad
-f(x)\approx\frac{g(x)-x}{\Delta t}.
+x_{n+1} = F(x_n).
 $$
 
-Concetto: al computer siamo sempre in discreto; le ODE entrano come modello ideale/limite.
+- **Ordine $k$**:
+$$
+x_{n+k} = F(x_{n+k-1},\dots,x_n).
+$$
+
+## Differenze finite *vs* ODE
+| Equazione alle differenze (discreto) | Soluzione discreta | ODE “analoga” (continuo) | Soluzione continua |
+|---|---|---|---|
+| $x_{n+1}=\mu x_n$ | $x_n=x_0\,\mu^n$ | $\dot x = r x$ | $x(t)=x_0 e^{rt}$ |
+| $x_{n+1}=x_n+c$ | $x_n=x_0+cn$ | $\dot x=c$ | $x(t)=x_0+ct$ |
+| $x_{n+1}=a x_n+b$ | $x_n=x^\ast+(x_0-x^\ast)a^n$, con $x^\ast=\frac{b}{1-a}$ se $a\neq 1$ | $\dot x = r x + c$ | $x(t)=x^\ast+(x(0)-x^\ast)e^{rt}$, con $x^\ast=-\frac{c}{r}$ se $r\neq 0$ |
+| $x_{n+2}=\alpha x_{n+1}+\beta x_n$ | $x_n = A\lambda_1^n+B\lambda_2^n$ (radici $\lambda_{1,2}$ di $\lambda^2-\alpha\lambda-\beta=0$; caso doppia radice: $(A+Bn)\lambda^n$) |$\ddot x = p\dot x+q x$ | $x(t)=A e^{\rho_1 t}+B e^{\rho_2 t}$ (radici $\rho_{1,2}$ di $\rho^2-p\rho-q=0$; caso doppia radice: $(A+Bt)e^{\rho t}$) |
+| $x_{n+1}=r x_n(1-x_n)$ | forma chiusa solo per casi speciali; altrimenti analisi qualitativa | $\dot x = r x(1-x/K)$ | $x(t)=\frac{K}{1+\left(\frac{K}{x_0}-1\right)e^{-rt}}$ |
 
 # Chiusura e raccordo
 

@@ -1,7 +1,7 @@
 ---
 title: "01: Struttura deterministica dei sistemi stocastici"
 author: "Antonio Scala"
-date: "4 Apr 2026"
+date: "4 Mar 2026"
 ---
 
 In molti modelli stocastici, la componente casuale si innesta su una struttura deterministica di base.  
@@ -438,12 +438,66 @@ $$
 
 Questo rende esplicito il punto concettuale: quando lavoriamo al computer, siamo sempre nel dominio delle dinamiche discrete, e le ODE entrano come limite o come modello ideale.
 
+# A3. Equazioni alle differenze finite e ODE
+
+## A3.1 Definizione
+
+Un’**equazione alle differenze finite** è una relazione che lega un numero finito di termini di una sequenza $\{x_n\}_{n\ge 0}$.
+
+- **Ordine 1 (autonoma)**:
+$$
+x_{n+1} = F(x_n).
+$$
+
+- **Ordine $k$**:
+$$
+x_{n+k} = F(x_{n+k-1},\dots,x_n).
+$$
+
+- **Lineare (ordine 1, coefficienti costanti)**:
+$$
+x_{n+1} = a x_n + b,
+\qquad a,b\in\mathbb{R}.
+$$
+
+- **Lineare (ordine $k$, coefficienti costanti)**:
+$$
+x_{n+k} = c_{k-1}x_{n+k-1}+\cdots+c_0 x_n + d.
+$$
+
+Nel seguito ci concentriamo sui “mattoni base” (ordine 1 e 2) per cui la soluzione si scrive in forma chiusa.
+
+### A3.2 casi base risolvibili 
+
+| Equazione alle differenze (discreto) | Soluzione discreta | ODE “analoga” (continuo) | Soluzione continua |
+|---|---|---|---|
+| **(D1) Moltiplicativa**: $x_{n+1}=\mu x_n$ | $x_n=x_0\,\mu^n$ | **(C1) Esponenziale**: $\dot x = r x$ | $x(t)=x_0 e^{rt}$ |
+| **(D2) Additiva**: $x_{n+1}=x_n+c$ | $x_n=x_0+cn$ | **(C2) Velocità costante**: $\dot x=c$ | $x(t)=x_0+ct$ |
+| **(D3) Affine**: $x_{n+1}=a x_n+b$ | $x_n=x^\ast+(x_0-x^\ast)a^n$, con $x^\ast=\frac{b}{1-a}$ se $a\neq 1$ | **(C3) Lineare con forcing costante**: $\dot x = r x + c$ | $x(t)=x^\ast+(x(0)-x^\ast)e^{rt}$, con $x^\ast=-\frac{c}{r}$ se $r\neq 0$ |
+| **(D4) Secondo ordine omogenea**: $x_{n+2}=\alpha x_{n+1}+\beta x_n$ | $x_n = A\lambda_1^n+B\lambda_2^n$ (radici $\lambda_{1,2}$ di $\lambda^2-\alpha\lambda-\beta=0$; caso doppia radice: $(A+Bn)\lambda^n$) | **(C4) Secondo ordine omogenea**: $\ddot x = p\dot x+q x$ | $x(t)=A e^{\rho_1 t}+B e^{\rho_2 t}$ (radici $\rho_{1,2}$ di $\rho^2-p\rho-q=0$; caso doppia radice: $(A+Bt)e^{\rho t}$) |
+| **(D5) Logistica discreta**: $x_{n+1}=r x_n(1-x_n)$ | forma chiusa solo per casi speciali; altrimenti analisi qualitativa | **(C5) Logistica continua**: $\dot x = r x(1-x/K)$ | $x(t)=\frac{K}{1+\left(\frac{K}{x_0}-1\right)e^{-rt}}$ |
+
+**il “parallelo”:**
+- nelle ODE lineari compaiono **esponenziali** $e^{rt}$;
+- nelle differenze lineari compaiono **potenze** $\mu^n$;
+- l’equilibrio $x^\ast$ (se esiste) compare in entrambi come “punto verso cui converge” la dinamica quando il fattore moltiplicativo è contrattivo (rispettivamente $r<0$ o $|a|<1$).
+
+**l' "equivalenza":**\
+Se si campiona il tempo continuo su $t_n=n\Delta t$ e si pone $\mu=e^{r\Delta t}$, allora
+$$
+x_n=x_0\mu^n = x_0 e^{r n\Delta t}=x_0 e^{r t_n}.
+$$
+Questo mostra come l'approccio discreto e quello continuo abbiano la stessa struttura di soluzione.
+
 ---
 
 ## Riferimenti
 
+* Arnol'd, V. I. *Geometric Methods in the Theory of Ordinary Differential Equations*. Springer.
+* Murray, J.D. *Mathematical Biology*. Springer.
+* Poston, T. and Stewart, I. *Catastrophe Theory (and its applications)*. Dover.
 * Strogatz, S. H. *Nonlinear Dynamics and Chaos*. Westview Press.  
 * Hirsch, M. W., Smale, S., Devaney, R. L. *Differential Equations, Dynamical Systems, and an Introduction to Chaos*. Academic Press.  
-* Hairer, E., Nørsett, S. P., Wanner, G. *Solving Ordinary Differential Equations I: Nonstiff Problems*. Springer.  
-* LeVeque, R. J. *Finite Difference Methods for Ordinary and Partial Differential Equations*. SIAM.  
 * Press, W. H. et al. *Numerical Recipes: The Art of Scientific Computing*. Cambridge University Press.
+* Elaydi, S. *An Introduction to Difference Equations*. Springer.
+*  Kelley, W. G. and Peterson, A. C. *Difference Equations: An Introduction with Applications*. Academic Press/Elsevier.
