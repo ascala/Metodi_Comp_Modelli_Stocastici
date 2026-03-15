@@ -1,5 +1,5 @@
 ---
-title: "01: Struttura deterministica dei sistemi stocastici"
+title: "01 Struttura deterministica dei sistemi stocastici"
 author: "Antonio Scala"
 date: "4 Mar 2026"
 ---

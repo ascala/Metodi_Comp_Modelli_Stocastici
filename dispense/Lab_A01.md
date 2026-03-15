@@ -1,5 +1,5 @@
 ---
-title: "Lab A01: Zeri, minimi locali, vincoli box"
+title: "LAB01b Zeri, minimi locali, vincoli box"
 author: "Antonio Scala"
 date: "10 Mar 2026"
 ---

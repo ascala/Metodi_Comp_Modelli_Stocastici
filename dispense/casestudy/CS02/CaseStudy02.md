@@ -1,5 +1,5 @@
 ---
-title: "Case Study 02: Costanti notevoli da esperimenti casuali"
+title: "CS02 Costanti notevoli da esperimenti casuali"
 author: "Antonio Scala"
 ---
 

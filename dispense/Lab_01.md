@@ -1,5 +1,5 @@
 ---
-title: "Struttura deterministica dei sistemi stocastici (Laboratorio 01)"
+title: "LAB01a Struttura deterministica dei sistemi stocastici"
 author: "Antonio Scala"
 date: "5 Mar 2026"
 ---

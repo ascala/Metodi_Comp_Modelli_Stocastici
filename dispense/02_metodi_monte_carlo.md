@@ -1,5 +1,5 @@
 ---
-title: "02: Metodi Monte Carlo"
+title: "02 Metodi Monte Carlo"
 author: "Antonio Scala"
 date: "11 Mar 2026"
 ---

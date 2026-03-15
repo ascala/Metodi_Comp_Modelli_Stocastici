@@ -1,5 +1,5 @@
 ---
-title: "Laboratorio 02 -- Metodi Monte Carlo"
+title: "LAB02 Metodi Monte Carlo"
 author: "Antonio Scala"
 date: "17 Marzo 2026"
 ---

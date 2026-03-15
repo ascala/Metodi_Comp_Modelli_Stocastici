@@ -1,5 +1,5 @@
 ---
-title: "Case Study 01: Toy model accoppiato clima--biosfera"
+title: "CS01 Toy model accoppiato clima--biosfera"
 author: "Antonio Scala"
 ---
 

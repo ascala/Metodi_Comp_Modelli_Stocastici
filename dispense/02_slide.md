@@ -1,5 +1,5 @@
 ---
-title: "Metodi Monte Carlo"
+title: "S02 Metodi Monte Carlo"
 author: "Antonio Scala"
 date: "11 mar 2026"
 theme: "boxes"

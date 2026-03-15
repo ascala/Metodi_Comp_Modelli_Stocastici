@@ -1,5 +1,5 @@
 ---
-title: "Introduzione ai modelli stocastici (Laboratorio 00)"
+title: "LAB00 Introduzione ai modelli stocastici"
 author: "Antonio Scala"
 date: "25 Feb 2026"
 ---

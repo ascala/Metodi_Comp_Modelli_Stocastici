@@ -1,20 +1,23 @@
 ---
-title: "00 Introduzione ai modelli stocastici"
-author: "Antonio Scala"
-date: "24 Feb 2026"
+title: "Introduzione ai modelli stocastici"
+date: ""
 ---
 
-I modelli stocastici costituiscono un insieme di strumenti matematici per la descrizione e l’analisi di sistemi nei quali l’evoluzione temporale o spaziale è influenzata da componenti di natura aleatoria. A differenza dei modelli deterministici, nei quali uno stesso stato iniziale conduce sempre al medesimo risultato, i modelli stocastici introducono variabili casuali per rappresentare l’incertezza intrinseca dei fenomeni osservati.
+# Introduzione ai Modelli Stocastici
+
+(Obiettivi della lezione: .....)
+
+---
 
 ### Obiettivi didattici specifici
 
-Al termine, lo studente dovrà essere in grado di:
+1. Comprendere il ruolo dell’incertezza e la differenza concettuale tra modelli deterministici e stocastici.  
+2. Introdurre la nozione di variabile aleatoria e di distribuzione di probabilità.  
+3. Riconoscere le principali distribuzioni discrete e continue e i loro parametri.  
+4. Capire cosa si intende per processo stocastico e per rumore.  
+5. Collegare i concetti teorici a esempi tratti da fisica, biologia, finanza e scienze sociali.  
 
-- distinguere tra modelli deterministici e stocastici;
-- comprendere il significato di variabile aleatoria e distribuzione di probabilità;
-- riconoscere le principali classi di processi stocastici;
-- interpretare il ruolo del rumore e delle fluttuazioni nei sistemi dinamici;
-- comprendere l’importanza dei metodi numerici (Monte Carlo, simulazioni stocastiche) nella pratica scientifica.
+---
 
 ### Struttura della lezione
 
@@ -26,13 +29,7 @@ Al termine, lo studente dovrà essere in grado di:
 
 ---
 
-## Motivazioni e concetti fondamentali
-
-L’introduzione dei modelli stocastici nasce dall’esigenza di descrivere fenomeni in cui l’incertezza è parte integrante del sistema, non soltanto una limitazione della conoscenza.  
-Esempi classici includono il moto browniano, le fluttuazioni di popolazione in biologia o la volatilità dei mercati finanziari.  
-In ciascuno di questi casi, l’evoluzione del sistema non è completamente determinata dalle condizioni iniziali, ma influenzata da un insieme di eventi aleatori.
-
-Un modello stocastico fornisce dunque una **descrizione probabilistica** dello stato del sistema, specificando le leggi di transizione e le proprietà statistiche dei processi sottostanti.
+I modelli stocastici costituiscono un insieme di strumenti matematici per la descrizione e l’analisi di sistemi nei quali l’evoluzione temporale o spaziale è influenzata da componenti di natura aleatoria. A differenza dei modelli deterministici, nei quali uno stesso stato iniziale conduce sempre al medesimo risultato, i modelli stocastici introducono variabili casuali per rappresentare l’incertezza intrinseca dei fenomeni osservati.
 
 L’approccio stocastico si fonda sulla teoria della probabilità e sulle sue estensioni analitiche e numeriche. I concetti centrali includono:
 
@@ -54,7 +51,18 @@ Dal punto di vista concettuale, l’uso di un modello stocastico implica un pass
 Tale impostazione consente non solo di rappresentare la variabilità osservata nei dati, ma anche di quantificare l’incertezza e valutare la robustezza delle previsioni.
 
 In ambito computazionale, la simulazione di modelli stocastici richiede lo sviluppo di algoritmi di generazione di numeri casuali, metodi Monte Carlo, tecniche di integrazione stocastica e strategie di riduzione della varianza.  
-La sinergia tra formulazione teorica rigorosa e implementazione numerica avanzata costituisce oggi il cuore della modellizzazione stocastica moderna, permettendo di affrontare problemi sempre più complessi in contesti multidisciplinari.
+La sinergia tra formulazione teorica e implementazione numerica costituisce oggi uno degli aspetti più fecondi della modellizzazione stocastica moderna.
+
+
+
+## Motivazioni e concetti fondamentali
+
+L’introduzione dei modelli stocastici nasce dall’esigenza di descrivere fenomeni in cui l’incertezza è parte integrante del sistema, non soltanto una limitazione della conoscenza.  
+Esempi classici includono il moto browniano, le fluttuazioni di popolazione in biologia o la volatilità dei mercati finanziari.  
+In ciascuno di questi casi, l’evoluzione del sistema non è completamente determinata dalle condizioni iniziali, ma influenzata da un insieme di eventi aleatori.
+
+Un modello stocastico fornisce dunque una **descrizione probabilistica** dello stato del sistema, specificando le leggi di transizione e le proprietà statistiche dei processi sottostanti.
+
 
 ## Variabili aleatorie e distribuzioni di probabilità
 
@@ -72,7 +80,9 @@ Le principali quantità descrittive di una variabile aleatoria sono:
 
 Una proprietà fondamentale è la **normalizzazione**:
 
-$$\sum_x P(x) = 1 \quad \text{(discreta)}, \qquad \int_{-\infty}^{\infty} p(x)\,dx = 1 \quad \text{(continua)}.$$
+$$
+\sum_x P(x) = 1 \quad \text{(discreta)}, \qquad \int_{-\infty}^{\infty} p(x)\,dx = 1 \quad \text{(continua)}.
+$$
 
 
 ### Variabili discrete e continue
@@ -106,19 +116,27 @@ La Gaussiana emerge come limite di molte distribuzioni per effetto del **teorema
 
 1. **Linearità della media**:
 
-   $$\langle aX + bY \rangle = a\langle X\rangle + b\langle Y\rangle.$$
+   $$
+   \langle aX + bY \rangle = a\langle X\rangle + b\langle Y\rangle.
+   $$
 
 2. **Varianza di una combinazione lineare**:
 
-   $$\mathrm{Var}(aX+bY)=a^2\mathrm{Var}(X)+b^2\mathrm{Var}(Y)+2ab\,\mathrm{Cov}(X,Y).$$
+   $$
+   \mathrm{Var}(aX+bY)=a^2\mathrm{Var}(X)+b^2\mathrm{Var}(Y)+2ab\,\mathrm{Cov}(X,Y).
+   $$
 
 3. **Funzione caratteristica** (trasformata di Fourier della densità):
 
-   $$\phi_X(k)=\langle e^{ikX}\rangle = \int e^{ikx}p(x)\,dx.$$
+   $$
+   \phi_X(k)=\langle e^{ikX}\rangle = \int e^{ikx}p(x)\,dx.
+   $$
 
    Essa codifica tutti i momenti di $X$ e semplifica l’analisi di somme di variabili indipendenti:
 
-   $$\phi_{X+Y}(k)=\phi_X(k)\phi_Y(k).$$
+   $$
+   \phi_{X+Y}(k)=\phi_X(k)\phi_Y(k).
+   $$
 
 
 ### Esempi e interpretazioni
@@ -132,48 +150,11 @@ La Gaussiana emerge come limite di molte distribuzioni per effetto del **teorema
 | Normale | $\mu,\sigma$ | $\mu$ | $\sigma^2$ | Rumore additivo |
 | Uniforme | $[a,b]$ | $(a+b)/2$ | $(b-a)^2/12$ | Campionamento uniforme |
 
-### Dalla teoria alla simulazione: il metodo dell’inversione
 
-Nelle simulazioni stocastiche serve generare variabili casuali $X$ con una densità assegnata $p(x)$.   L’idea è “riciclare” un generatore uniforme, cioè una variabile $U\in[0,1)$ con densità
-$$
-p_U(u)=1 \qquad \text{per } u\in[0,1).
-$$
-Si costruisce la cumulativa della distribuzione desiderata,
-$$
-F(x)=\int_{-\infty}^{x} p(y)\,dy,
-$$
-e si definisce
-$$
-X = F^{-1}(U).
-$$
-#### Perché funziona (interpretazione operativa)
-La relazione
-$$
-p_X(x)\,dx = p_U(u)\,du
-$$
-non va letta come un mero “cambio di variabile” formale, ma come un vincolo di *trasferimento di probabilità*: se il generatore uniforme produce valori in un intervallo $[u,u+du]$ con probabilità $p_U(u)\,du$, allora i corrispondenti valori trasformati $x=F^{-1}(u)$ cadono nell’intervallo $[x,x+dx]$ con la **stessa** probabilità, perché la trasformazione è deterministica e monotona.
+### Dalla teoria alla simulazione
 
-In particolare, per definizione di cumulativa, un incremento infinitesimo in $u$ corrisponde a un incremento di probabilità sotto $p$:
-$$
-du = dF(x) = \lim_{\Delta x\to 0}\big(F(x+\Delta x)-F(x)\big) = F'(x)\,dx = p(x)\,dx.
-$$
-Poiché $p_U(u)=1$, segue immediatamente
-$$
-p_X(x)\,dx = 1\cdot du = p(x)\,dx \quad\Rightarrow\quad p_X(x)=p(x).
-$$
-
-#### Versione via CDF (più robusta)
-Quando $F$ è monotona (quindi invertibile) e *regolare quasi ovunque*, si può anche ragionare direttamente sulla cumulativa:
-$$
-P(X\le x)=P(F^{-1}(U)\le x)=P(U\le F(x))=F(x),
-$$
-da cui $X$ ha proprio cumulativa $F$ (e quindi densità $p=F'$ dove derivabile).
-
-#### In pratica: cosa serve implementare
-1. costruire (anche numericamente) $F(x)=\int_{-\infty}^{x}p(y)\,dy$;
-2. generare $u$ uniformi in $[0,1)$;
-3. calcolare $x=F^{-1}(u)$ (analiticamente o con inversione numerica).
-  
+Per scopi computazionali, è spesso necessario **generare campioni casuali** secondo una distribuzione assegnata $p(x)$.  
+Il punto di partenza è un **generatore uniforme** $U \in [0,1)$, da cui si ottiene $X = F^{-1}(U)$, dove $F^{-1}$ è la funzione inversa della distribuzione cumulativa.  
 Questo principio, detto **metodo dell’inversione**, è alla base delle tecniche Monte Carlo.
 
 Esempi pratici:
@@ -181,7 +162,8 @@ Esempi pratici:
 - Campionare una variabile esponenziale: $X = -\frac{1}{\lambda} \ln(1-U)$.
 - Campionare una Gaussiana: trasformazione di Box–Muller o metodo di Marsaglia.
 
-Questi concetti saranno approfonditi nella lezione sui **Metodi Monte Carlo**, dove il calcolo di medie e integrali sarà basato su campionamenti casuali da tali distribuzioni.
+Questi concetti saranno approfonditi nella prossima lezione sui **Metodi Monte Carlo**, dove il calcolo di medie e integrali sarà basato su campionamenti casuali da tali distribuzioni.
+
 
 ### Punti chiave
 
@@ -189,6 +171,7 @@ Questi concetti saranno approfonditi nella lezione sui **Metodi Monte Carlo**, d
 - I momenti e la funzione caratteristica descrivono completamente la distribuzione.
 - Le distribuzioni canoniche emergono naturalmente in molti fenomeni fisici e computazionali.
 - La simulazione di variabili casuali è il fondamento di tutti gli algoritmi stocastici.
+
 
 ## Processi stocastici: definizione e proprietà
 
@@ -203,14 +186,18 @@ Caratteristiche principali:
 
 Un caso fondamentale è il **processo di Markov**, per il quale vale:
 
-$$P(X_{t+1}|X_t, X_{t-1}, \ldots) = P(X_{t+1}|X_t).$$
-In altre parole, **tutta l’informazione rilevante sul futuro è riassunta nello stato presente**: il passato influenza il futuro solo attraverso $X_t$.
+$$
+P(X_{t+1}|X_t, X_{t-1}, \ldots) = P(X_{t+1}|X_t).
+$$
+
 
 ## Rumore e media: dal determinismo alla fluttuazione
 
 In molti modelli, l’evoluzione temporale di una variabile è descritta come:
 
-$$x_{t+1} = f(x_t) + \eta_t,$$
+$$
+x_{t+1} = f(x_t) + \eta_t,
+$$
 
 dove $\eta_t$ rappresenta un termine di rumore.
 
@@ -225,6 +212,7 @@ Concetti chiave:
 - **Media temporale** $\bar{x}_T = \frac{1}{T} \int_0^T x(t)\,dt$;
 - **Ergodicità**: uguaglianza tra media temporale e media statistica.
 
+
 ## Modellizzazione stocastica e interpretazione
 
 La modellizzazione stocastica combina la struttura dinamica deterministica con termini di rumore che rappresentano fluttuazioni, incertezze o interazioni non risolte.
@@ -237,6 +225,7 @@ Esempi:
 
 Questi modelli consentono di descrivere sia la **dinamica media** sia la **dispersione statistica** intorno ad essa.
 
+
 ## Esempi interdisciplinari
 
 - **Fisica**: diffusione di una particella, rumore termico, dinamiche non lineari con rumore.
@@ -244,6 +233,7 @@ Questi modelli consentono di descrivere sia la **dinamica media** sia la **dispe
 - **Finanza**: dinamica stocastica dei prezzi, modelli di rischio e volatilità.
 - **Ingegneria**: affidabilità di sistemi complessi, traffico di rete, segnali rumorosi.
 - **Scienze sociali e comunicazione**: diffusione di opinioni, comportamenti o informazioni su reti sociali, modellabili come processi stocastici discreti o continui con transizioni probabilistiche tra stati di adozione o credenza.
+
 
 ## Connessioni con i metodi numerici e le lezioni successive
 
