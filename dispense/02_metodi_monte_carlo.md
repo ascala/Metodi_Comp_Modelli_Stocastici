@@ -631,6 +631,366 @@ Questo esempio mostra bene una caratteristica generale dei metodi Monte Carlo: i
 
 La matrice di covarianza descrive completamente la dipendenza tra variabili solo nel caso gaussiano. Per distribuzioni non gaussiane, due vettori aleatori possono avere la stessa matrice di covarianza ma strutture di dipendenza molto diverse: ad esempio, possono concordare quasi sempre oppure concordare nelle situazioni normali ma divergere fortemente nelle code. La covarianza non distingue questi casi.
 
+> ![](./immagini/correlate_diverse.jpg)
+> **Esempi di nuvole di punti con strutture di dipendenza molto diverse.** Alcuni pannelli possono avere covarianze simili, o anche vicine a zero, pur mostrando configurazioni geometriche profondamente differenti. Questo suggerisce che la covarianza non basta, in generale, a descrivere la dipendenza, che e` invece contenuta nell'intera distribuzione congiunta.
+
+In generale, l'informazione completa sulla dipendenza tra due variabili è contenuta solo nella covarianza, ma nell'intera distribuzione congiunta
+
+$$
+F_{X,Y}(x,y) = \mathbb{P}(X \le x, Y \le y).
+$$
+
+Il punto cruciale è che questa distribuzione mescola due ingredienti distinti:
+
+1. il comportamento individuale delle variabili, cioè le distribuzioni marginali $F_X$ e $F_Y$;
+2. la struttura di dipendenza tra le variabili.
+
+Le copule servono precisamente a separare questi due aspetti. Se $X$ e $Y$ sono variabili aleatorie continue con marginali $F_X(x)$ e $F_Y(y)$, allora esiste una funzione $C(u,v)$ tale che
+
+$$
+F_{X,Y}(x,y) = C(F_X(x), F_Y(y)).
+$$
+
+La funzione $C$ si chiama **copula**. Essa è una funzione di ripartizione bivariata definita sul quadrato unita` $[0,1]^2$, con marginali uniformi. In altre parole,
+
+$$
+C(u,v) = \mathbb{P}(U \le u, V \le v),
+$$
+
+dove $U$ e $V$ sono uniformi in $[0,1]$.
+
+Questo risultato è il contenuto del **teorema di Sklar**: data una distribuzione congiunta *di piú variabili*  $F(x_1, \dots, x_d)$ con marginali $F_1(x_1), \dots, F_d(x_d)$, esiste una funzione $C : [0,1]^d \to [0,1]$, detta **copula**, tale che
+
+$$ F(x_1, \dots, x_d) = C\!\left(F_1(x_1), \dots, F_d(x_d)\right). $$
+
+La copula $C$ contiene tutta e sola la struttura di dipendenza, separata dal comportamento marginale; nel caso di marginali continue la copula è unica.Quindi, mentre le marginali descrivono il comportamento delle singole variabili, la copula descrive esclusivamente come esse sono dipendenti.
+
+### Interpretazione geometrica
+
+Il modo piu` intuitivo per capire una copula è passare dalle variabili originali ai loro ranghi o percentili. Si definiscono
+
+$$
+U = F_X(X), \qquad V = F_Y(Y).
+$$
+
+Poiche' $F_X$ e $F_Y$ sono funzioni di ripartizione continue, $U$ e $V$ sono uniformi in $[0,1]$. Quindi ogni osservazione $(X,Y)$ viene trasformata in un punto $(U,V)$ interno al quadrato unita`.
+
+A questo punto tutta l'informazione sulle scale, sulle unita` di misura e sulla forma delle marginali è stata rimossa. Rimane soltanto la geometria della dipendenza:
+
+- se $X$ e $Y$ sono indipendenti, i punti immagine riempiono il quadrato in modo uniforme;
+- se $X$ e $Y$ tendono a crescere insieme, i punti immagine si concentrano vicino alla diagonale $u=v$;
+- se una variabile tende ad essere grande quando l'altra è piccola, i punti immagine si dispongono vicino all'antidiagonale $u=1-v$.
+
+In questo senso una copula può essere vista come la "geometria dei ranghi" nel quadrato unita`.
+
+### Dalla copula alle variabili originali
+
+Una volta generata una coppia $(U,V)$ con copula $C$, si recuperano le variabili originali applicando le inverse delle marginali:
+
+$$
+X = F_X^{-1}(U), \qquad Y = F_Y^{-1}(V).
+$$
+
+Questa parte è semplice: l'inversione delle marginali trasforma i percentili in valori fisici o osservabili.
+
+Il punto concettualmente piu` delicato è il passaggio precedente: come si genera la coppia $(U,V)$ a partire dalla copula $C$?
+
+### Come si campiona da una copula
+
+Qui è importante evitare un equivoco. In generale, una copula non si "inverte" direttamente come si fa con una distribuzione univariata. Infatti $C(u,v)$ è una funzione di ripartizione bivariata, non una funzione monotona di una sola variabile.
+
+La procedura generale consiste invece nel campionare una coordinata alla volta.
+
+#### Passo 1: estrarre la prima coordinata
+
+Poiche' le marginali di una copula sono uniformi, si estrae
+
+$$
+U \sim \mathrm{Unif}(0,1).
+$$
+
+#### Passo 2: estrarre la seconda coordinata condizionatamente alla prima
+
+Fissato $U=u$, si considera la distribuzione condizionata di $V$ dato $U=u$. Se la copula è sufficientemente regolare, la funzione di ripartizione condizionata è
+
+$$
+F_{V|U=u}(v) = \frac{\partial C(u,v)}{\partial u}.
+$$
+
+Questa funzione, vista come funzione di $v$ a $u$ fissato, è una cdf su $[0,1]$. Per capire da dove viene questa formula basta ricordare che una copula è una funzione di ripartizione bivariata. Se esiste una densità $c(u,v)$ (copula density), allora la CDF puo` essere scritta come
+
+$$
+C(u,v) = \int_0^u \int_0^v c(a,b)\, db\, da .
+$$
+
+Derivando rispetto a $u$ otteniamo
+
+$$
+\frac{\partial C(u,v)}{\partial u}
+= \int_0^v c(u,b)\, db .
+$$
+
+(analogamente rispetto a v). Ma $\int_0^v c(u,b)\,db$ è proprio la probabilita` che $V \le v$ quando la prima coordinata è fissata a $U=u$, cioè la funzione di ripartizione condizionata di $V$ dato $U=u$:
+
+$$
+F_{V|U=u}(v) = \int_0^v c(u,b)\, db .
+$$
+
+In altre parole, derivare la copula rispetto a $u$ equivale a fissare la coordinata orizzontale e integrare la densita` lungo la direzione verticale fino a $v$, ottenendo la distribuzione condizionata di $V$.
+
+A questo punto si può procedere con un'inversione univariata ordinaria:
+
+1. si estrae $Z \sim \mathrm{Unif}(0,1)$;
+2. si risolve l'equazione
+   $$
+   \frac{\partial C(u,v)}{\partial u} = Z
+   $$
+   rispetto a $v$;
+3. il valore ottenuto è la realizzazione di $V$.
+
+In formula, il campionamento si può riassumere come
+
+$$
+U \sim \mathrm{Unif}(0,1), \qquad
+Z \sim \mathrm{Unif}(0,1), \qquad
+V = F_{V|U}^{-1}(Z).
+$$
+
+Una volta ottenuti $U$ e $V$, si torna alle variabili originali con
+
+$$
+X = F_X^{-1}(U), \qquad Y = F_Y^{-1}(V).
+$$
+
+### Interpretazione della procedura
+
+Geometricamente il procedimento è molto naturale.
+
+Prima si estrae la coordinata orizzontale
+
+$$
+U \sim \mathrm{Unif}(0,1)
+$$
+
+e si osserva il valore realizzato $u$. Nel quadrato dei ranghi questo significa che il punto deve trovarsi sulla retta verticale $u=\text{costante}$.
+
+La copula determina quindi come distribuire il punto lungo questa retta, cioè la distribuzione della coordinata verticale $V$ dato $U=u$. Se la copula è regolare, questa distribuzione ha funzione di ripartizione $\partial C/\partial u$.
+
+Quindi la copula non dice "quanto valgono" $X$ e $Y$, ma stabilisce come i percentili delle due variabili siano accoppiati.
+
+### Caso di indipendenza
+
+Se $X$ e $Y$ sono indipendenti, per definizione $F_{X,Y}(x,y) = F_X(x)\, F_Y(y)$; a quensto punto è banale individuare la copula tele che  $F_{X,Y}(x,y) = C(F_X(x), F_Y(y))$ :
+
+$$
+C(u,v) = uv.
+$$
+
+Con marginali
+
+$$
+\frac{\partial C}{\partial u} = v\quad,\quad\frac{\partial C}{\partial v} = u\;.
+$$
+
+Quindi la distribuzione condizionata di $V$ dato $U=u$ è semplicemente uniforme su $[0,1]$, indipendente da $u$. Il che significa che si possono estrarre $U$ e $V$ in modo indipendente:
+
+$$
+U \sim \mathrm{Unif}(0,1), \qquad V \sim \mathrm{Unif}(0,1).
+$$
+
+Questa è esattamente la situazione attesa.
+
+### Caso di dipendenza perfetta positiva
+
+Consideriamo il caso estremo in cui le due variabili coincidono:
+
+$$
+V = U .
+$$
+
+Poiche' $U$ e $V$ sono uniformi in $[0,1]$, tutti i punti $(U,V)$ cadono sulla diagonale del quadrato unita`:
+
+$$
+v = u .
+$$
+
+La copula è per definizione
+
+$$
+C(u,v) = \mathbb{P}(U \le u, V \le v).
+$$
+
+Ma se $V=U$, l'evento
+
+$$
+U \le u, \quad V \le v
+$$
+
+diventa semplicemente
+
+$$
+U \le u, \quad U \le v.
+$$
+
+Quindi deve valere contemporaneamente
+
+$$
+U \le \min(u,v).
+$$
+
+Poiche' $U$ è uniforme in $[0,1]$,
+
+$$
+\mathbb{P}(U \le t) = t,
+$$
+
+e dunque
+
+$$
+C(u,v) = \min(u,v).
+$$
+
+Geometricamente significa che tutta la massa di probabilita` è concentrata sulla diagonale del quadrato. Una volta estratto $U$, il valore di $V$ è completamente determinato:
+
+$$
+V = U.
+$$
+
+Quindi non c'è piu` nulla da campionare: la dipendenza è totale.
+
+### Caso opposto: dipendenza perfetta negativa
+
+Il caso estremo opposto è quando una variabile cresce esattamente quando l'altra diminuisce. Nel quadrato dei ranghi i punti stanno tutti sull'antidiagonale
+
+$$
+v = 1 - u.
+$$
+
+In questo caso
+
+$$
+V = 1 - U.
+$$
+
+La copula corrispondente (detta copula contro-monotona o limite inferiore di Frechet) è
+
+$$
+C(u,v) = \max(u+v-1,\,0).
+$$
+
+Per capirlo, osserviamo di nuovo che
+
+$$
+C(u,v) = \mathbb{P}(U \le u, V \le v).
+$$
+
+Sostituendo $V = 1-U$, la condizione $V \le v$ diventa
+
+$$
+1-U \le v
+\quad \Rightarrow \quad
+U \ge 1-v.
+$$
+
+Quindi devono valere simultaneamente
+
+$$
+1-v \le U \le u.
+$$
+
+Se $u < 1-v$ l'intervallo è vuoto e la probabilita` è zero.  
+Se invece $u \ge 1-v$, l'intervallo ha lunghezza
+
+$$
+u - (1-v) = u+v-1.
+$$
+
+Poiche' $U$ è uniforme, la probabilita` coincide con questa lunghezza. Da qui
+
+$$
+C(u,v) = \max(u+v-1,0).
+$$
+
+### Riassunto geometrico
+
+I due casi estremi delimitano tutte le possibili copule:
+
+- dipendenza perfetta positiva:
+  $$
+  C(u,v)=\min(u,v)
+  $$
+  punti sulla diagonale $v=u$;
+
+- indipendenza:
+  $$
+  C(u,v)=uv
+  $$
+  punti distribuiti uniformemente nel quadrato;
+
+- dipendenza perfetta negativa:
+  $$
+  C(u,v)=\max(u+v-1,0)
+  $$
+  punti sull'antidiagonale $v=1-u$.
+
+Queste tre geometrie aiutano molto a visualizzare il ruolo della copula: essa stabilisce come i ranghi delle due variabili si dispongono nel quadrato unita`.
+
+### Esempio importante: copula gaussiana
+
+Una delle copule piu` usate si costruisce a partire da una coppia gaussiana correlata. Si consideri una variabile bivariata normale $(Z_1,Z_2)$ con correlazione $\rho$, e si indichi con $\Phi$ la cdf della normale standard. Si definiscono
+
+$$
+U = \Phi(Z_1), \qquad V = \Phi(Z_2).
+$$
+
+Allora $U$ e $V$ sono uniformi in $[0,1]$, ma non indipendenti: la loro dipendenza è descritta dalla copula gaussiana.
+
+In questo caso la simulazione è particolarmente semplice:
+
+1. si estrae una coppia gaussiana correlata $(Z_1,Z_2)$;
+2. si applica la trasformazione marginale
+   $$
+   U = \Phi(Z_1), \qquad V = \Phi(Z_2);
+   $$
+3. si trasformano infine i percentili nelle variabili desiderate:
+   $$
+   X = F_X^{-1}(U), \qquad Y = F_Y^{-1}(V).
+   $$
+
+Questo mostra con chiarezza la logica generale delle copule: prima si costruisce la dipendenza nel quadrato unita`, poi si impongono le marginali desiderate.
+
+### Procedura completa di simulazione
+
+Riassumendo, per simulare una coppia $(X,Y)$ con marginali assegnate e dipendenza descritta da una copula $C$:
+
+1. si genera una coppia $(U,V)$ con copula $C$;
+2. si applicano le inverse delle marginali:
+   $$
+   X = F_X^{-1}(U), \qquad Y = F_Y^{-1}(V).
+   $$
+
+Il passo 1 si può realizzare:
+- con il metodo generale basato sulla distribuzione condizionata;
+- oppure, per famiglie particolari di copule, usando una costruzione specifica piu` efficiente.
+
+### Messaggio concettuale finale
+
+La copula separa due operazioni concettualmente diverse:
+
+- la scelta della struttura di dipendenza, che produce una nuvola di punti nel quadrato unita`;
+- la trasformazione delle coordinate uniformi nei valori finali, mediante le inverse delle marginali.
+
+In termini molto sintetici:
+
+- la copula stabilisce dove cade il punto nel piano dei ranghi;
+- le marginali trasformano quel punto in un'osservazione nel piano originale.
+
+Questo è il motivo per cui le copule sono utili: permettono di modellare in modo indipendente la forma delle marginali e la struttura della dipendenza.
+
+---
+
+
+
 ### Il teorema di Sklar
 
 Il risultato fondamentale è il seguente: data una distribuzione congiunta $F(x_1, \dots, x_d)$ con marginali $F_1(x_1), \dots, F_d(x_d)$, esiste una funzione $C : [0,1]^d \to [0,1]$, detta **copula**, tale che
