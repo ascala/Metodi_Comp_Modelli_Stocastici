@@ -1,184 +1,863 @@
 ---
-title: "03: Catene di Markov e Metropolis"
-author: ""
+title: "03 Metodi Markov Chain Monte Carlo (MCMC)"
+author: "Antonio Scala"
 date: ""
 ---
 
-Molti sistemi reali — fisici, biologici, economici, sociali — evolvono nel tempo seguendo regole probabilistiche.  
-Le catene di Markov forniscono un quadro semplice ma generale per descrivere tali dinamiche.  
-L’algoritmo di Metropolis sfrutta questa struttura per **campionare distribuzioni complesse**, generando sequenze di stati coerenti con la probabilità che ciascuno possieda nel sistema reale o nel modello teorico.
-### Obiettivi didattici specifici
+# Catene di Markov e metodi MCMC
 
-Al termine della lezione, lo studente dovrà saper:
+Le catene di Markov costituiscono uno degli strumenti fondamentali della modellizzazione stocastica e della simulazione numerica. Esse descrivono sistemi che evolvono nel tempo secondo regole probabilistiche locali: il futuro dipende dallo stato presente, ma non dall’intera storia passata. Questa proprietà permette di costruire modelli dinamici molto generali, applicabili in fisica statistica, biologia, finanza quantitativa, teoria delle reti, inferenza bayesiana e apprendimento automatico.
 
-- distinguere in modo formale tra modelli deterministici e stocastici;
-- definire una variabile aleatoria e la relativa distribuzione di probabilità;
-- riconoscere e descrivere le principali distribuzioni discrete e continue;
-- comprendere la nozione di processo stocastico e di rumore;
-- interpretare le fluttuazioni come parte strutturale della dinamica di un sistema;
-- collegare esempi tratti da fisica, biologia, finanza e scienze sociali ai corrispondenti modelli stocastici;
-- riconoscere il valore dei metodi numerici (Monte Carlo, simulazioni di processo) per l’analisi e la validazione dei modelli.
+Dal punto di vista computazionale, le catene di Markov diventano particolarmente importanti quando si vogliono campionare distribuzioni di probabilità complesse. Nei metodi Monte Carlo elementari, studiati nella lezione precedente, i campioni vengono generati in modo indipendente. In molti problemi reali, tuttavia, non è possibile generare direttamente campioni indipendenti dalla distribuzione desiderata. In questi casi si costruisce una catena di Markov la cui distribuzione stazionaria coincida con la distribuzione target: gli stati visitati dalla catena diventano allora campioni da utilizzare per stimare medie, integrali e osservabili.
 
-### Struttura della lezione
+L’algoritmo di Metropolis, e la sua generalizzazione Metropolis-Hastings, rappresentano il prototipo di questo approccio. Essi sono il nucleo dei metodi di Markov Chain Monte Carlo (MCMC): invece di campionare direttamente da $\pi(x)$, si progetta una dinamica artificiale che abbia $\pi(x)$ come distribuzione di equilibrio.
 
-La lezione è articolata in cinque parti principali:
+## Obiettivi didattici specifici
 
-1. **Sistemi markoviani e proprietà di memoria corta** – definizione, esempi e significato.  
-2. **Equilibrio e distribuzioni stazionarie** – cosa significa che una catena “si stabilizza”.  
-3. **Algoritmo di Metropolis** – idea, logica e schema operativo.  
-4. **Esperimento numerico** – simulazione di una distribuzione target.  
-5. **Connessioni interdisciplinari** – interpretazioni e applicazioni.
+Al termine della lezione, lo studente dovrà essere in grado di:
 
+- definire formalmente una catena di Markov a tempo discreto;
+- interpretare il significato della matrice di transizione;
+- distinguere tra irriducibilità, aperiodicità, ricorrenza, transienza ed ergodicità;
+- comprendere il ruolo delle distribuzioni stazionarie;
+- discutere il significato del bilancio dettagliato e della reversibilità;
+- spiegare perché i metodi MCMC sono utili quando il campionamento diretto fallisce;
+- derivare la regola di accettazione di Metropolis e di Metropolis-Hastings;
+- confrontare Metropolis, Metropolis-Hastings e heat bath;
+- riconoscere i principali problemi di efficienza nei metodi MCMC.
 
----
+## Struttura della lezione
 
-## 1. Sistemi markoviani e proprietà di memoria corta
-
-### 1.1 Definizione intuitiva
-
-Un sistema markoviano è un sistema in cui **il futuro dipende solo dal presente**, non dall’intera storia passata.  
-In simboli:
-$$P(X_{t+1}=j \mid X_t=i, X_{t-1},\ldots,X_0) = P(X_{t+1}=j \mid X_t=i).$$
-
-È una proprietà sorprendentemente generale: la ritroviamo nei giochi di sorte, nei processi biologici, nelle scelte degli individui, nei modelli economici e nei flussi di informazione.
-
-### 1.2 Esempio: gioco della moneta truccata
-
-Un giocatore può trovarsi in due stati:
-- **0:** ha perso il turno precedente;  
-- **1:** ha vinto.
-
-Le probabilità di transizione sono:
-$$P_{01}=0.4,\quad P_{00}=0.6,\quad P_{10}=0.2,\quad P_{11}=0.8.$$
-
-Questa matrice di transizione
-$$P=\begin{pmatrix}0.6 & 0.4 \\ 0.2 & 0.8\end{pmatrix}$$
-descrive l’intero processo.  
-Dopo alcuni passi, la frequenza dei due stati tende a valori stabili indipendenti dalle condizioni iniziali — il sistema “dimentica il passato”.
+1. Processi stocastici discreti e definizione di catena di Markov.
+2. Proprietà fondamentali delle catene di Markov.
+3. Distribuzioni stazionarie, reversibilità e convergenza.
+4. Metodi Monte Carlo basati su catene di Markov.
+5. Algoritmo di Metropolis.
+6. Algoritmo di Metropolis-Hastings.
+7. Heat bath e Gibbs sampling.
+8. Efficienza, autocorrelazione e limiti pratici.
+9. Estensioni e collegamenti.
+10. Esercizi.
 
 ---
 
-## 2. Equilibrio e distribuzioni stazionarie
+# 1. Processi stocastici discreti e definizione di catena di Markov
 
-### 2.1 Concetto di equilibrio
+Un processo stocastico è una successione di variabili aleatorie
 
-Una **distribuzione stazionaria** $\pi$ è tale che
-$$\pi = \pi P,$$
-cioè la probabilità media di essere in ciascuno stato non cambia più nel tempo.  
+$$
+X_0, X_1, X_2, \dots
+$$
 
-Nel gioco della moneta truccata, risolvendo le equazioni:
-$$\pi_0 = 0.6\pi_0 + 0.2\pi_1, \quad \pi_0+\pi_1=1,$$
-si ottiene
-$$\pi = \left(\tfrac{1}{3}, \tfrac{2}{3}\right).$$
+che descrive l’evoluzione temporale di un sistema soggetto a casualità. Nel caso che ci interessa in questa lezione, il tempo è discreto e lo stato del sistema appartiene a un insieme finito o numerabile $\mathcal{S}$, detto spazio degli stati.
 
-Il giocatore trascorre circa un terzo del tempo perdendo e due terzi vincendo: questa è la condizione di equilibrio.
+L’idea è semplice: a ogni istante il sistema si trova in uno stato, e al passo successivo può spostarsi in un altro stato con una certa probabilità. Se il sistema si trova nello stato $i$ al tempo $t$, la probabilità di trovarsi nello stato $j$ al tempo $t+1$ è data da
 
-### 2.2 Reversibilità e bilancio dettagliato
+$$
+P(X_{t+1}=j \mid X_t=i).
+$$
 
-In equilibrio, i flussi di probabilità da $i$ a $j$ e da $j$ a $i$ si compensano:
-$$\pi_i P_{ij} = \pi_j P_{ji}.$$
+Una catena di Markov è un processo stocastico in cui il futuro dipende solo dallo stato presente, e non dall’intera storia del sistema. Formalmente,
 
-È il cosiddetto **bilancio dettagliato**, equivalente all’assenza di correnti nette.  
-In fisica rappresenta l’equilibrio microscopico; in economia o sociologia, una condizione di stabilità dinamica — gli scambi o le opinioni cambiano, ma il profilo medio resta costante.
+$$
+P(X_{t+1}=j \mid X_t=i, X_{t-1}, \dots, X_0) =
+P(X_{t+1}=j \mid X_t=i).
+$$
+
+Questa proprietà si chiama proprietà markoviana.
+
+## 1.1 Interpretazione intuitiva
+
+Dire che un processo è markoviano non significa che il sistema non abbia storia fisica. Significa piuttosto che, per prevedere statisticamente il prossimo passo, tutta l’informazione rilevante è già contenuta nello stato attuale. Lo stato presente funziona quindi come una descrizione sufficiente del passato.
+
+In molti modelli questa ipotesi è naturale. Ad esempio:
+
+- in un random walk su una rete, la posizione attuale del camminatore è sufficiente per determinare la prossima mossa;
+- in un modello di popolazione semplice, il numero attuale di individui può bastare a determinare le probabilità di nascita o morte al passo successivo;
+- in un algoritmo Monte Carlo, la configurazione attuale del sistema è sufficiente per proporre e accettare la prossima configurazione.
+
+## 1.2 Matrice di transizione
+
+Le probabilità di passaggio vengono raccolte in una matrice di transizione $P$, definita da
+
+$$
+P_{ij} = P(X_{t+1}=j \mid X_t=i).
+$$
+
+Gli elementi di $P$ soddisfano due proprietà fondamentali: $P_{ij} \ge 0$ e $\sum_j P_{ij} = 1$ per ogni $i$. Ogni riga rappresenta quindi una distribuzione di probabilità.
+
+Se $\mu^{(t)}$ è il vettore riga che descrive la distribuzione del sistema al tempo $t$, allora l’evoluzione è data da
+
+$$
+\mu^{(t+1)} = \mu^{(t)} P.
+$$
+
+Iterando questa relazione,
+
+$$
+\mu^{(t)} = \mu^{(0)} P^t.
+$$
+
+Lo studio del comportamento a lungo termine della catena coincide quindi con lo studio delle potenze della matrice di transizione.
+
+## 1.3 Esempio elementare: gioco vincita-perdita
+
+Consideriamo un gioco in cui un giocatore può trovarsi in due stati:
+
+- stato $0$: ha perso il turno precedente;
+- stato $1$: ha vinto il turno precedente.
+
+Supponiamo che la matrice di transizione sia
+
+$$
+P =
+\begin{pmatrix}
+0.6 & 0.4 \\
+0.2 & 0.8
+\end{pmatrix}.
+$$
+
+Questo significa che:
+
+- se il giocatore ha perso, al turno successivo vince con probabilità $0.4$;
+- se il giocatore ha vinto, al turno successivo perde con probabilità $0.2$.
+
+Se inizialmente il giocatore parte certamente nello stato $0$, allora
+
+$$
+\mu^{(0)} = (1,0).
+$$
+
+Dopo un passo,
+
+$$
+\mu^{(1)} = \mu^{(0)} P = (0.6,0.4).
+$$
+
+Dopo due passi,
+
+$$
+\mu^{(2)} = \mu^{(1)} P.
+$$
+
+Il calcolo esplicito mostra che la distribuzione tende verso un equilibrio, che studieremo più avanti.
+
+## 1.4 Un secondo esempio: random walk su tre stati
+
+Consideriamo ora tre stati disposti linearmente, $\mathcal{S}=\{1,2,3\}$, con la seguente dinamica:
+
+- dallo stato 1 si va sempre allo stato 2;
+- dallo stato 3 si va sempre allo stato 2;
+- dallo stato 2 si va a 1 o a 3 con probabilità uguale.
+
+La matrice di transizione è
+
+$$
+P=
+\begin{pmatrix}
+0 & 1 & 0 \\
+1/2 & 0 & 1/2 \\
+0 & 1 & 0
+\end{pmatrix}.
+$$
+
+Questa catena è utile per mostrare un punto importante: non basta poter visitare più stati, bisogna anche studiare la struttura temporale dei ritorni. In questo caso la catena oscilla tra il centro e i bordi, e dunque ha periodicità. Questo esempio mostrerà più avanti perché l’aperiodicità è una condizione importante per la convergenza.
 
 ---
 
-## 3. Algoritmo di Metropolis
+# 2. Proprietà fondamentali delle catene di Markov
 
-### 3.1 Idea generale
+Per usare bene una catena di Markov non basta saper scrivere la matrice di transizione. Occorre capire quali proprietà qualitative determinano il comportamento a lungo termine della dinamica.
 
-Spesso vogliamo campionare da una distribuzione $\pi(x)$ che non possiamo generare direttamente.  
-L’idea dell’algoritmo di **Metropolis** è costruire una catena di Markov che abbia $\pi(x)$ come distribuzione di equilibrio.
+## 2.1 Comunicazione tra stati
 
-A ogni passo:
-1. Si propone una nuova configurazione $x'$ (da una distribuzione di proposta simmetrica $q(x'|x)$).  
-2. Si accetta o rifiuta la mossa con probabilità:
-$$A(x\to x') = \min\left(1, \frac{\pi(x')}{\pi(x)}\right).$$
+Si dice che uno stato $j$ è raggiungibile da uno stato $i$ se esiste un intero $n \ge 1$ tale che
 
-Se $\pi(x')>\pi(x)$ la mossa è sempre accettata; se è peggiore, può comunque essere accettata con una probabilità che consente al sistema di “uscire dai minimi locali”.
+$$
+(P^n)_{ij} > 0.
+$$
 
-### 3.2 Interpretazione intuitiva
+In tal caso, partendo da $i$, esiste una probabilità positiva di trovarsi in $j$ dopo $n$ passi.
 
-- **Alta temperatura:** il sistema esplora liberamente (molte accettazioni).  
-- **Bassa temperatura:** il sistema si concentra intorno alle regioni di alta probabilità.  
-- **Equilibrio:** la frequenza degli stati generati riproduce $\pi(x)$.
+Se due stati sono reciprocamente raggiungibili, si dice che comunicano. La relazione di comunicazione suddivide lo spazio degli stati in classi.
 
-L’algoritmo è semplice ma universale: funziona in fisica statistica, economia computazionale, ecologia o analisi di reti.
+## 2.2 Irriducibilità
 
-### 3.3 Schema operativo (pseudocodice)
+Una catena si dice irriducibile se tutti gli stati comunicano tra loro. In una catena irriducibile non esistono regioni dello spazio degli stati isolate dal resto.
+
+Per i metodi MCMC questa proprietà è essenziale. Se la catena non è irriducibile, essa non può esplorare tutto lo spazio su cui la distribuzione target è definita, e il campionamento risulta scorretto o parziale.
+
+Nel caso del gioco a due stati, la catena è irriducibile se entrambe le probabilità di cambio stato sono positive.
+
+## 2.3 Periodicità e aperiodicità
+
+Uno stato $i$ ha periodo $d$ se i ritorni possibili in $i$ avvengono solo a tempi multipli di $d$, e $d$ è il massimo intero con questa proprietà. Formalmente,
+
+$$
+d(i) = \gcd \{n \ge 1 : (P^n)_{ii} > 0\}.
+$$
+
+Se $d(i)=1$, lo stato è aperiodico. In una catena irriducibile tutti gli stati hanno lo stesso periodo, quindi si può parlare del periodo della catena.
+
+L’esempio del random walk su tre stati mostrato sopra ha periodo 2. Se il sistema parte dal centro, torna al centro solo dopo un numero pari di passi. Questa periodicità impedisce una convergenza regolare della distribuzione nel tempo.
+
+## 2.4 Ricorrenza e transienza
+
+Uno stato è ricorrente se, una volta lasciato, il sistema vi ritorna quasi certamente. È transiente se esiste una probabilità positiva di non ritornarvi mai.
+
+Nel caso di catene finite e irriducibili, tutti gli stati sono ricorrenti positivi. Questo semplifica molto la teoria. In spazi infiniti la distinzione tra ricorrenza e transienza diventa invece molto più delicata e importante.
+
+## 2.5 Ergodicità
+
+Una catena finita, irriducibile e aperiodica è ergodica. In tal caso esiste un’unica distribuzione stazionaria $\pi$ e vale
+
+$$
+\mu^{(t)} \to \pi
+\qquad \text{per } t \to \infty,
+$$
+
+qualunque sia la distribuzione iniziale $\mu^{(0)}$.
+
+L’ergodicità garantisce quindi che il sistema dimentichi la condizione iniziale e che la statistica a lungo termine sia ben definita.
+
+## 2.6 Perchè queste proprietà contano in simulazione
+
+Nel contesto Monte Carlo, vogliamo che la catena:
+
+- possa visitare tutte le configurazioni rilevanti;
+- non resti intrappolata in cicli rigidi;
+- converga a un’unica distribuzione di equilibrio.
+
+Queste richieste corrispondono precisamente a irriducibilità, aperiodicità ed ergodicità. Per questo motivo, quando si progetta un algoritmo MCMC, tali proprietà sono importanti quanto la correttezza formale del criterio di accettazione.
+
+---
+
+# 3. Distribuzioni stazionarie, reversibilità e convergenza
+
+## 3.1 Distribuzione stazionaria
+
+Una distribuzione di probabilità $\pi$ si dice stazionaria per la catena se soddisfa
+
+$$
+\pi = \pi P.
+$$
+
+Equivalentemente,
+
+$$
+\pi_j = \sum_i \pi_i P_{ij}.
+$$
+
+Se il sistema parte distribuito secondo $\pi$, allora resta distribuito secondo $\pi$ a ogni passo successivo.
+
+La distribuzione stazionaria descrive l’equilibrio statistico della catena.
+
+## 3.2 Esempio esplicito
+
+Riprendiamo il gioco a due stati, con
+
+$$
+P =
+\begin{pmatrix}
+0.6 & 0.4 \\
+0.2 & 0.8
+\end{pmatrix}.
+$$
+
+Cerchiamo $\pi=(\pi_0,\pi_1)$ tale che $\pi = \pi P$. Le equazioni sono $\pi_0 = 0.6\,\pi_0 + 0.2\,\pi_1$ e $\pi_1 = 0.4\,\pi_0 + 0.8\,\pi_1$, insieme al vincolo di normalizzazione $\pi_0 + \pi_1 = 1$. Dalla prima si ricava $0.4\,\pi_0 = 0.2\,\pi_1$, cioè $\pi_1 = 2\pi_0$. Sostituendo nella normalizzazione si ottiene $3\pi_0=1$, quindi
+
+$$
+\pi_0 = \frac{1}{3}, \qquad \pi_1 = \frac{2}{3}.
+$$
+
+Questa è la distribuzione di equilibrio della catena.
+
+## 3.3 Bilancio globale
+
+La relazione
+
+$$
+\pi_j = \sum_i \pi_i P_{ij}
+$$
+
+esprime il fatto che, in equilibrio, la probabilità totale che entra nello stato $j$ coincide con la probabilità che ne esce. Si parla di bilancio globale.
+
+Questa è la condizione minima necessaria per la stazionarietà.
+
+## 3.4 Bilancio dettagliato
+
+Una condizione più forte è il bilancio dettagliato:
+
+$$
+\pi_i P_{ij} = \pi_j P_{ji}
+\qquad \text{per ogni } i,j.
+$$
+
+Questa condizione implica la stazionarietà, ma non è equivalente a essa in generale.
+
+Il significato è il seguente: in equilibrio, il flusso medio di probabilità che va da $i$ a $j$ è uguale al flusso medio da $j$ a $i$.
+
+È importante sottolineare che il bilancio dettagliato non implica che $i$ e $j$ siano equiprobabili. Le probabilità $\pi_i$ e $\pi_j$ possono essere molto diverse; ciò che si bilancia sono i flussi, non le occupazioni dei singoli stati.
+
+## 3.5 Reversibilità
+
+Se una catena soddisfa il bilancio dettagliato rispetto a $\pi$, si dice reversibile rispetto a $\pi$.
+
+La reversibilità è molto utile in fisica statistica e nei metodi Monte Carlo perché fornisce un criterio semplice per costruire dinamiche corrette. Gli algoritmi di Metropolis e Metropolis-Hastings sono progettati precisamente in modo da soddisfare questa proprietà.
+
+## 3.6 Significato e interpretazioni
+
+Il concetto di reversibilità ha significato concreto in ambiti molto diversi.
+
+In fisica statistica, la distribuzione di equilibrio canonica ha la forma $\pi(x) \propto e^{-\beta E(x)}$, dove $E(x)$ è l'energia della configurazione e $\beta=1/T$. Una dinamica reversibile rispetto a $\pi$ realizza un equilibrio microscopico: il sistema continua a muoversi nello spazio delle configurazioni, ma non c'è corrente netta di probabilità tra coppie di stati. Le configurazioni a energia più bassa restano comunque più probabili di quelle a energia più alta.
+
+In statistica bayesiana, la distribuzione target è la distribuzione a posteriori $\pi(\theta \mid y) \propto L(y \mid \theta)\,p(\theta)$, dove $L$ è la verosimiglianza e $p(\theta)$ il prior. La costante di normalizzazione — l'evidenza marginale — è spesso intrattabile, ma i metodi MCMC richiedono solo rapporti tra densità, nei quali essa si cancella. Una dinamica reversibile rispetto a $\pi(\theta \mid y)$ permette quindi di campionare la distribuzione a posteriori senza mai calcolarla esplicitamente.
+
+## 3.7 Convergenza all’equilibrio
+
+Se la catena è ergodica, allora la distribuzione al tempo $t$ converge a $\pi$. Questo significa che, per $t$ grande, la statistica degli stati visitati lungo la traiettoria si avvicina alla statistica imposta dalla distribuzione stazionaria.
+
+Questo è il principio matematico alla base dei metodi MCMC.
+
+---
+
+# 4. Metodi Monte Carlo basati su catene di Markov
+
+## 4.1 Motivazione
+
+Supponiamo di voler calcolare una media rispetto a una distribuzione target $\pi(x)$:
+
+$$
+\langle A \rangle_\pi = \sum_x A(x)\pi(x)
+$$
+
+oppure, nel caso continuo,
+
+$$
+\langle A \rangle_\pi = \int A(x)\pi(x)\,dx.
+$$
+
+Se non sappiamo generare campioni indipendenti da $\pi$, possiamo costruire una catena di Markov che abbia $\pi$ come distribuzione stazionaria.
+
+## 4.2 Distribuzioni note solo a meno di una costante
+
+Molto spesso la distribuzione target è nota solo nella forma
+
+$$
+\pi(x) = \frac{1}{Z} \tilde{\pi}(x),
+$$
+
+dove $\tilde{\pi}(x)$ è calcolabile, mentre $Z$ non lo è.
+
+In fisica statistica, $Z$ è la funzione di partizione. In statistica e in machine learning, lo stesso oggetto viene spesso chiamato costante di normalizzazione. Nei problemi bayesiani può coincidere con l’evidenza marginale.
+
+Gli algoritmi MCMC sono utili proprio perché richiedono spesso solo rapporti tra densità non normalizzate, nei quali $Z$ si cancella.
+
+## 4.3 Stima tramite medie temporali
+
+Se $\{X_t\}$ è una catena ergodica con distribuzione stazionaria $\pi$, allora per un’osservabile $A$ vale il principio ergodico:
+
+$$
+\frac{1}{N}\sum_{t=1}^N A(X_t) \to \langle A \rangle_\pi
+\qquad \text{per } N \to \infty.
+$$
+
+Le medie temporali lungo una singola traiettoria diventano quindi stime delle medie teoriche rispetto a $\pi$.
+
+## 4.4 Burn-in
+
+Poiché la catena parte da una configurazione arbitraria, i primi passi risentono della condizione iniziale. Questa fase viene chiamata burn-in o termalizzazione. In pratica, una parte iniziale della traiettoria viene scartata prima di iniziare la misura delle osservabili.
+
+## 4.5 Campioni correlati
+
+A differenza del Monte Carlo con campioni indipendenti, nei metodi MCMC i campioni successivi sono correlati. Questa correlazione riduce l’efficienza statistica: il numero effettivo di campioni indipendenti è minore del numero totale di passi simulati.
+
+Di conseguenza, oltre alla correttezza teorica della distribuzione stazionaria, conta anche la velocità con cui la catena esplora lo spazio degli stati.
+
+# 5. Algoritmo di Metropolis
+
+## 5.1 Struttura generale
+
+Supponiamo di voler campionare una distribuzione target $\pi(x)$ su uno spazio degli stati discreto o continuo. L’algoritmo di Metropolis si basa su due ingredienti:
+
+- una proposta di nuova configurazione $x'$ a partire da quella corrente $x$;
+- una regola di accettazione o rifiuto.
+
+Nel caso classico, la proposta è simmetrica:
+
+$$
+q(x' \mid x) = q(x \mid x').
+$$
+
+## 5.2 Regola di accettazione
+
+Una volta proposta $x'$, si accetta la mossa con probabilità
+
+$$
+A(x \to x') =
+\min\left(1,\frac{\pi(x')}{\pi(x)}\right).
+$$
+
+Se la mossa è accettata, si pone $X_{t+1}=x'$; se è rifiutata, si resta nello stato corrente: $X_{t+1}=x$.
+
+## 5.3 Interpretazione della regola
+
+La logica della regola è molto chiara:
+
+- se $x'$ è più probabile di $x$, allora la mossa viene sempre accettata;
+- se $x'$ è meno probabile di $x$, allora può essere accettata con una probabilità positiva.
+
+Questo permette al sistema di muoversi verso configurazioni favorevoli, ma anche di uscire da minimi locali e di esplorare lo spazio in modo non puramente deterministico.
+
+## 5.4 Caso di Boltzmann
+
+Se la distribuzione target è della forma $\pi(x) \propto e^{-\beta E(x)}$, allora $\pi(x')/\pi(x) = e^{-\beta (E(x')-E(x))}$ e la probabilità di accettazione diventa
+
+$$
+A(x \to x') = \min\left(1,\,e^{-\beta (E(x')-E(x))}\right).
+$$
+
+Configurazioni a energia più bassa sono sempre accettate, mentre configurazioni a energia più alta sono accettate con probabilità esponenzialmente decrescente.
+
+## 5.5 Dimostrazione del detailed balance
+
+Per $x \ne x'$, il kernel di transizione della catena è $P(x \to x') = q(x' \mid x) A(x \to x')$. Moltiplicando per $\pi(x)$,
+
+$$
+\pi(x) P(x \to x') =
+\pi(x) q(x' \mid x) \min\left(1,\frac{\pi(x')}{\pi(x)}\right).
+$$
+
+Poiché la proposta è simmetrica, $q(x' \mid x)=q(x \mid x')$, si può riscrivere
+
+$$
+\pi(x) P(x \to x') = q(x' \mid x)\min(\pi(x),\pi(x')).
+$$
+
+Questa espressione è simmetrica nello scambio $x \leftrightarrow x'$, quindi
+
+$$
+\pi(x) P(x \to x') = \pi(x') P(x' \to x).
+$$
+
+Il detailed balance è verificato, e dunque $\pi$ è stazionaria.
+
+## 5.6 Esempio numerico semplice
+
+Supponiamo di voler campionare tre stati con pesi non normalizzati
+
+$$
+\tilde{\pi}(1)=1, \qquad \tilde{\pi}(2)=3, \qquad \tilde{\pi}(3)=2.
+$$
+
+Usiamo una proposta simmetrica che da ogni stato propone uniformemente uno dei due rimanenti.
+
+Se il sistema si trova in $1$ e propone $2$, il rapporto è
+
+$$
+\frac{\tilde{\pi}(2)}{\tilde{\pi}(1)} = 3,
+$$
+
+quindi la mossa è sempre accettata.
+
+Se si trova in $2$ e propone $1$, il rapporto è
+
+$$
+\frac{\tilde{\pi}(1)}{\tilde{\pi}(2)} = \frac{1}{3},
+$$
+
+quindi la mossa viene accettata con probabilità $1/3$.
+
+Si vede già da questo piccolo esempio che il sistema tende a trascorrere più tempo negli stati di peso maggiore.
+
+## 5.7 Pseudocodice essenziale
 
 ```python
-import numpy as np
-
-def metropolis(E, x0, T, steps):
-    x = x0
-    samples = [x]
-    for _ in range(steps):
-        x_new = x + np.random.normal(0, 1)
-        dE = E(x_new) - E(x)
-        if np.random.rand() < np.exp(-dE/T):
-            x = x_new
-        samples.append(x)
-    return np.array(samples)
+def metropolis_step(x):
+    x_new = propose_symmetric(x)
+    r = pi_tilde(x_new) / pi_tilde(x)
+    alpha = min(1.0, r)
+    if uniform_0_1() < alpha:
+        return x_new
+    else:
+        return x
 ````
 
----
+# 6. Algoritmo di Metropolis-Hastings
 
-## 4. Esperimento numerico
+## 6.1 Perchè serve una generalizzazione
 
-### 4.1 Obiettivo
+In molti casi una proposta simmetrica non è naturale o non è efficiente. Si può voler proporre mosse direzionali, oppure usare una proposta che dipende in modo asimmetrico dallo stato corrente. In questi casi l’algoritmo di Metropolis non è più sufficiente.
 
-Campionare una distribuzione gaussiana:
-$$\pi(x) \propto e^{-x^2/2}.$$
+Metropolis-Hastings corregge l’asimmetria della proposta introducendo un fattore aggiuntivo nel criterio di accettazione.
 
-Definiamo $E(x)=x^2/2$ come “energia” del sistema e applichiamo Metropolis con temperatura $T=1$.
+## 6.2 Regola generale
 
-### 4.2 Esempio in Python
+Se la proposta è $q(x' \mid x)$, la probabilità di accettazione è
+
+$$
+A(x \to x') =
+\min\left(
+1,
+\frac{\pi(x') q(x \mid x')}{\pi(x) q(x' \mid x)}
+\right).
+$$
+
+Se si lavora con densità non normalizzate,
+
+$$
+A(x \to x') =
+\min\left(
+1,
+\frac{\tilde{\pi}(x') q(x \mid x')}{\tilde{\pi}(x) q(x' \mid x)}
+\right).
+$$
+
+## 6.3 Derivazione del criterio
+
+Vogliamo imporre il detailed balance:
+
+$$
+\pi(x) P(x \to x') = \pi(x') P(x' \to x).
+$$
+
+Per $x \ne x'$, si ha $P(x \to x') = q(x' \mid x) A(x \to x')$. Quindi vogliamo che
+
+$$
+\pi(x) q(x' \mid x) A(x \to x') = \pi(x') q(x \mid x') A(x' \to x).
+$$
+
+La scelta
+
+$$
+A(x \to x') =
+\min\left(
+1,
+\frac{\pi(x') q(x \mid x')}{\pi(x) q(x' \mid x)}
+\right)
+$$
+
+soddisfa esattamente questa condizione.
+
+## 6.4 Verifica del detailed balance
+
+Infatti,
+
+$$
+\pi(x) P(x \to x') = \pi(x) q(x' \mid x)
+\min\left( 1,\frac{\pi(x') q(x \mid x')}{\pi(x) q(x' \mid x)} \right).
+$$
+
+Questa quantità si può riscrivere come
+
+$$
+\min\left( \pi(x) q(x' \mid x), \pi(x') q(x \mid x') \right),
+$$
+
+che è simmetrica in $x$ e $x'$. Segue dunque che
+
+$$
+\pi(x) P(x \to x') = \pi(x') P(x' \to x).
+$$
+
+## 6.5 Metropolis come caso particolare
+
+Se la proposta è simmetrica, cioè $q(x' \mid x)=q(x \mid x')$, il rapporto delle proposte si semplifica e si recupera il criterio di Metropolis:
+
+$$
+A(x \to x')=
+\min\left(1,\frac{\pi(x')}{\pi(x)}\right).
+$$
+
+## 6.6 Un esempio di proposta asimmetrica
+
+Supponiamo di avere uno spazio discreto ordinato, e di costruire una proposta che favorisca il passo verso destra piuttosto che verso sinistra. Ad esempio,
+
+$$
+q(i+1 \mid i)=0.7, \qquad q(i-1 \mid i)=0.3.
+$$
+
+Senza correzione, questa proposta introdurrebbe un drift artificiale nella dinamica. Il fattore di Hastings compensa esattamente questo sbilanciamento, in modo che la distribuzione stazionaria finale rimanga quella desiderata.
+
+## 6.7 Pseudocodice essenziale
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-E = lambda x: 0.5*x**2
-samples = metropolis(E, x0=0.0, T=1.0, steps=10000)
-plt.hist(samples[2000:], bins=50, density=True)
-plt.xlabel("x")
-plt.ylabel("frequenza")
-plt.title("Distribuzione campionata con Metropolis")
-plt.show()
+def metropolis_hastings_step(x):
+    x_new = propose(x)
+    r = pi_tilde(x_new) * q(x, x_new, reverse=True) / (pi_tilde(x) * q(x, x_new, reverse=False))
+    alpha = min(1.0, r)
+    if uniform_0_1() < alpha:
+        return x_new
+    else:
+        return x
 ```
 
-Il risultato mostra che l’istogramma dei campioni si sovrappone alla forma della distribuzione gaussiana: il sistema “simula” l’equilibrio statistico.
+# 7. Heat bath e Gibbs sampling
+
+## 7.1 Idea generale
+
+Metropolis e Metropolis-Hastings funzionano proponendo una mossa e decidendo poi se accettarla o rifiutarla. In alcuni casi, però, si può fare qualcosa di più efficiente: aggiornare direttamente una parte del sistema campionandola dalla sua distribuzione condizionata esatta.
+
+Questo approccio prende il nome di heat bath, e la sua forma più generale è nota come Gibbs sampling.
+
+## 7.2 Aggiornamento condizionato
+
+Supponiamo che la configurazione sia composta da molte variabili,
+
+$$
+x = (x_1, x_2, \dots, x_n).
+$$
+
+Scegliamo una componente, ad esempio $x_i$, e la aggiorniamo campionando da
+
+$$
+\pi(x_i \mid x_1,\dots,x_{i-1},x_{i+1},\dots,x_n).
+$$
+
+In questo modo il nuovo valore di $x_i$ è già distribuito correttamente rispetto alla legge condizionata, e non serve alcun rifiuto.
+
+## 7.3 Perchè l’accettazione è uguale a 1
+
+Il punto chiave è che la proposta coincide con la distribuzione condizionata target. Di conseguenza, il bilancio dettagliato risulta automaticamente verificato, e ogni aggiornamento è accettato con probabilità 1.
+
+## 7.4 Esempio qualitativo: spin Ising
+
+In un modello di Ising, ogni spin $s_i$ può assumere valori $\pm 1$. Se si fissano gli spin vicini, la probabilità condizionata di $s_i$ dipende dal campo locale. L’aggiornamento heat bath consiste nel scegliere direttamente il nuovo valore di $s_i$ con la corretta probabilità condizionata.
+
+Questo evita il rifiuto tipico del metodo di Metropolis.
+
+## 7.5 Gibbs sampling
+
+Il Gibbs sampling consiste nell’aggiornare ripetutamente, una alla volta, tutte le componenti di una configurazione campionando dalle loro distribuzioni condizionate complete.
+
+È molto usato in statistica bayesiana, in modelli gerarchici, in grafi probabilistici e in fisica statistica.
+
+## 7.6 Confronto con Metropolis
+
+Metropolis ha il vantaggio della generalità: basta conoscere la distribuzione target a meno di costante e saper calcolare rapporti di probabilità.
+
+Heat bath e Gibbs richiedono invece di conoscere e saper campionare esplicitamente le distribuzioni condizionate.
+
+In sintesi:
+
+* Metropolis è più generale;
+* heat bath non ha rifiuti;
+* Gibbs può essere molto efficiente se le condizionate sono semplici;
+* Metropolis è spesso più facile da implementare in problemi complessi.
+
+# 8. Efficienza, autocorrelazione e limiti pratici
+
+La correttezza asintotica dell’algoritmo non basta. Una catena può essere formalmente giusta ma esplorare lo spazio degli stati in modo molto lento.
+
+## 8.1 Tasso di accettazione
+
+Nel random walk Metropolis, se i passi proposti sono troppo piccoli, quasi tutte le mosse vengono accettate ma la catena si muove lentamente nello spazio degli stati. Se i passi sono troppo grandi, la maggior parte delle proposte viene rifiutata.
+
+L’efficienza dipende dal compromesso tra ampiezza delle mosse e tasso di accettazione.
+
+## 8.2 Autocorrelazione
+
+Se definiamo un’osservabile lungo la traiettoria come
+
+$$
+A_t = A(X_t),
+$$
+
+la funzione di autocorrelazione è
+
+$$
+C(\tau) = \langle A_t A_{t+\tau} \rangle - \langle A \rangle^2.
+$$
+
+Un decadimento lento di $C(\tau)$ indica che la catena conserva memoria per tempi lunghi e che i campioni sono fortemente correlati.
+
+## 8.3 Tempo di autocorrelazione
+
+Il tempo di autocorrelazione integrato misura quanti passi sono necessari per ottenere l’equivalente di un nuovo campione quasi indipendente. Maggiore è questo tempo, minore è l’efficienza statistica della simulazione.
+
+## 8.4 Burn-in insufficiente
+
+Se si inizia a misurare troppo presto, prima che la catena abbia raggiunto l’equilibrio, si introducono errori sistematici. Questo problema è particolarmente grave quando la condizione iniziale è molto lontana dalla regione tipica della distribuzione target.
+
+## 8.5 Metastabilità e multimodalità
+
+Quando la distribuzione target ha più modi separati da barriere elevate, la catena può restare intrappolata a lungo in una sola regione dello spazio. In questi casi i tempi di mixing possono diventare enormi, e la stima numerica può risultare gravemente distorta pur in presenza di un algoritmo formalmente corretto.
+
+## 8.6 Diagnostica empirica
+
+Nella pratica si controllano spesso:
+
+* andamento temporale delle osservabili;
+* stabilità delle medie cumulative;
+* confronto tra catene inizializzate in punti diversi;
+* autocorrelazioni empiriche;
+* frequenza di accettazione.
+
+Questi strumenti non sostituiscono la teoria, ma sono essenziali per valutare l’affidabilità di una simulazione concreta.
+
+# 9. Estensioni e collegamenti
+
+## 9.1 Metropolis adattivo
+
+Nei metodi adattivi, la proposta viene modificata durante la simulazione per adattarsi alla geometria empirica della distribuzione target. Questo può migliorare molto l’efficienza, ma richiede attenzione per non compromettere la convergenza asintotica.
+
+## 9.2 Hamiltonian Monte Carlo
+
+Nei problemi continui ad alta dimensionalità, il random walk diventa molto inefficiente. Hamiltonian Monte Carlo introduce variabili ausiliarie di momento e una dinamica quasi deterministica che consente di proporre mosse lunghe con alta probabilità di accettazione.
+
+## 9.3 Simulated annealing
+
+Se invece di campionare una distribuzione si vuole cercare un minimo globale, si può usare una dinamica di tipo Metropolis con temperatura progressivamente decrescente. Questo porta al metodo del simulated annealing, che verrà discusso più avanti nel corso.
+
+## 9.4 Collegamento con modelli di spin e machine learning
+
+Le dinamiche di Metropolis e heat bath sono centrali nella simulazione di modelli di spin, nelle Boltzmann machines e in molti modelli probabilistici usati in machine learning. Esse costituiscono quindi un ponte naturale tra fisica statistica, inferenza e computazione.
+
+# 10. Esercizi
+
+## 10.1 Esercizi di base
+
+1. Considerare la catena a due stati con matrice
+
+$$
+P=
+\begin{pmatrix}
+1-p & p \\
+q & 1-q
+\end{pmatrix}.
+$$
+
+Determinare la distribuzione stazionaria in funzione di $p$ e $q$.
+
+2. Verificare per quali valori di $p$ e $q$ la catena del punto precedente è irriducibile e aperiodica.
+
+3. Per la catena su tre stati con matrice
+
+$$
+P=
+\begin{pmatrix}
+0 & 1 & 0 \\
+1/2 & 0 & 1/2 \\
+0 & 1 & 0
+\end{pmatrix},
+$$
+
+mostrare che la catena è periodica.
+
+## 10.2 Esercizi su Metropolis
+
+4. Si consideri una distribuzione discreta con pesi non normalizzati
+
+$$
+\tilde{\pi}(1)=1,\qquad \tilde{\pi}(2)=4,\qquad \tilde{\pi}(3)=2.
+$$
+
+Costruire un algoritmo di Metropolis con proposta simmetrica uniforme tra stati distinti e calcolare le probabilità di accettazione per tutte le possibili mosse.
+
+5. Dimostrare esplicitamente il detailed balance per l’algoritmo di Metropolis nel caso discreto.
+
+## 10.3 Esercizi su Metropolis-Hastings
+
+6. Considerare una proposta asimmetrica su stati interi, con probabilità di muoversi a destra uguale a $0.7$ e a sinistra uguale a $0.3$. Scrivere il rapporto di Hastings per una distribuzione target assegnata $\pi(i)$.
+
+7. Mostrare che l’algoritmo di Metropolis si ottiene come caso particolare di Metropolis-Hastings quando la proposta è simmetrica.
+
+## 10.4 Esercizi concettuali
+
+8. Spiegare perché il bilancio dettagliato è sufficiente ma non necessario per la stazionarietà.
+
+9. Discutere perché una catena con alta probabilità di accettazione non è necessariamente efficiente.
+
+10. Confrontare vantaggi e svantaggi di Metropolis e heat bath in un modello di Ising.
 
 ---
 
-## 5. Connessioni interdisciplinari
+# Conclusioni
 
-### 5.1 Fisica
+Le catene di Markov forniscono un quadro matematico estremamente potente per descrivere sistemi stocastici e per costruire algoritmi di campionamento. La nozione di distribuzione stazionaria chiarisce cosa significhi equilibrio probabilistico; l’ergodicità spiega quando tale equilibrio venga effettivamente raggiunto; il bilancio dettagliato fornisce un principio costruttivo semplice per progettare dinamiche corrette.
 
-In fisica statistica, l’algoritmo simula il comportamento di un sistema termico:
-ogni stato ha un’energia $E(x)$ e una probabilità proporzionale a $e^{-E(x)/T}$.
-L’equilibrio di Boltzmann corrisponde alla distribuzione stazionaria della catena.
+L’algoritmo di Metropolis rappresenta la prima realizzazione concreta di questa idea. Metropolis-Hastings ne estende la portata a proposte asimmetriche, mentre heat bath e Gibbs mostrano che, in presenza di informazioni condizionate più ricche, si possono costruire aggiornamenti ancora più efficienti.
 
-### 5.2 Economia
+Dal punto di vista pratico, tuttavia, la correttezza teorica non basta: burn-in, autocorrelazione, metastabilità e scelta della proposta determinano la qualità reale di una simulazione. Per questo i metodi MCMC sono al tempo stesso uno strumento teorico e una tecnica computazionale raffinata.
 
-In economia computazionale, la catena rappresenta un mercato che esplora configurazioni di portafoglio:
-le mosse accettate sono strategie più redditizie o variazioni casuali mantenute con probabilità proporzionale al “guadagno relativo”.
+# Riferimenti
 
-### 5.3 Scienze sociali e reti
-
-Nel comportamento collettivo o nei modelli di opinione, l’algoritmo Metropolis descrive un gruppo di agenti che adattano le proprie scelte o idee:
-mosse che aumentano la coerenza (o l’utilità) vengono adottate più facilmente, ma esiste sempre una componente casuale che favorisce la diversità e l’esplorazione.
-
----
-
-## Riferimenti
-
-* Metropolis, N., et al. (1953). *Equation of State Calculations by Fast Computing Machines*. J. Chem. Phys.
-* Hastings, W. K. (1970). *Monte Carlo Sampling Methods Using Markov Chains and Their Applications*. Biometrika.
-* Newman, M. E. J. (2010). *Networks: An Introduction*. Oxford University Press.
-* Bishop, C. M. (2006). *Pattern Recognition and Machine Learning*. Springer.
-* Landau, D. P., & Binder, K. (2021). *A Guide to Monte Carlo Simulations in Statistical Physics*. Cambridge University Press.
-* Gintis, H. (2017). *Individuality and Entanglement: The Moral and Material Bases of Social Life*. Princeton University Press.
+* Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., Teller, E. (1953). Equation of State Calculations by Fast Computing Machines.
+* Hastings, W. K. (1970). Monte Carlo Sampling Methods Using Markov Chains and Their Applications.
+* Norris, J. R. (1997). Markov Chains.
+* Robert, C. P., Casella, G. (2004). Monte Carlo Statistical Methods.
+* Landau, D. P., Binder, K. (2021). A Guide to Monte Carlo Simulations in Statistical Physics.
+* Newman, M. E. J. (2010). Networks: An Introduction.
 
 ---
+
+# Appendice A. Dimostrazione che il detailed balance implica la stazionarietà
+
+Supponiamo che per una distribuzione $\pi$ valga
+
+$$
+\pi_i P_{ij} = \pi_j P_{ji}
+\qquad \text{per ogni } i,j.
+$$
+
+Sommiamo su $i$:
+
+$$
+\sum_i \pi_i P_{ij} = \sum_i \pi_j P_{ji}.
+$$
+
+Poiché $\pi_j$ non dipende da $i$,
+
+$$
+\sum_i \pi_j P_{ji} = \pi_j \sum_i P_{ji} = \pi_j,
+$$
+
+dove nell'ultimo passaggio si è usato il fatto che ogni colonna di $P$ (o equivalentemente ogni riga, per le righe sommate su $i$) soddisfa $\sum_i P_{ji} = 1$. Sostituendo nella somma originale si ottiene
+
+$$
+\sum_i \pi_i P_{ij} = \pi_j,
+$$
+
+che è precisamente la definizione di distribuzione stazionaria $\pi = \pi P$. Il detailed balance implica quindi la stazionarietà.
+
+# Appendice B. Pseudocodice di Metropolis
+
+```python
+def metropolis(x0, n_steps):
+    x = x0
+    samples = []
+    for _ in range(n_steps):
+        x_new = propose_symmetric(x)
+        r = pi_tilde(x_new) / pi_tilde(x)
+        alpha = min(1.0, r)
+        if uniform_0_1() < alpha:
+            x = x_new
+        samples.append(x)
+    return samples
+```
+
+# Appendice C. Pseudocodice di Metropolis-Hastings
+
+```python
+def metropolis_hastings(x0, n_steps):
+    x = x0
+    samples = []
+    for _ in range(n_steps):
+        x_new = propose(x)
+        r = (pi_tilde(x_new) * q_reverse(x, x_new)) / (pi_tilde(x) * q_forward(x, x_new))
+        alpha = min(1.0, r)
+        if uniform_0_1() < alpha:
+            x = x_new
+        samples.append(x)
+    return samples
+```
+
+# Appendice D. Schema di Gibbs sampling
+
+```python
+for t in range(T):
+    x1 = sample_from_conditional_x1(x2, x3, ..., xn)
+    x2 = sample_from_conditional_x2(x1, x3, ..., xn)
+    ...
+    xn = sample_from_conditional_xn(x1, ..., x_{n-1})
+```
