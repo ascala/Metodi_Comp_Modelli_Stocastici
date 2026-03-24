@@ -255,13 +255,46 @@ Da un punto di vista didattico, il passaggio da $\pi$ geometrico a $e$ tramite s
 
 # Appendice A. Formula per $\mathbb{E}[N]$
 
-La formula $\mathbb{E}[N] = \sum_{n\ge 0}\mathbb{P}(N>n)$ e' una semplice riscrittura della media, ottenuta "contando per strati". L'idea e' questa: se $N=k$, allora $N$ contribuisce $1$ alle probabilita' $\mathbb{P}(N>0), \mathbb{P}(N>1), \dots, \mathbb{P}(N>k-1)$, cioe' esattamente $k$ volte. Facendo la media su tutti i possibili valori si ricostruisce $\mathbb{E}[N]$.
+Partiamo dalla definizione discreta del valore atteso:
+$$
+\mathbb{E}[N]=\sum_{k\ge 0} k\,\mathbb{P}(N=k).
+$$
 
-Piu' formalmente, si osserva che $N = \sum_{n\ge 0}\mathbf{1}_{\{N>n\}}$, perche' se $N=k$ a destra compaiono esattamente $k$ indicatori uguali a $1$. Prendendo il valore atteso:
+Poiché $k=\sum_{n=0}^{k-1}1$, si ha
+
 $$
 \mathbb{E}[N] =
-\sum_{n\ge 0}\mathbb{E}\big[\mathbf{1}_{\{N>n\}}\big]=
-\sum_{n\ge 0}\mathbb{P}(N>n).
+\sum_{k\ge 0}\sum_{n=0}^{k-1}\mathbb{P}(N=k)=\sum_{k\ge 0}\sum_{n=0} \mathbf{1}_{\{n<k\}} \mathbb{P}(N=k)
+$$
+
+Ora scambiamo l'ordine delle somme:
+
+$$
+\mathbb{E}[N] =
+\sum_{n\ge 0}\sum_{k\ge 0}\mathbf{1}_{\{n<k\}}\mathbb{P}(N=k).
+$$
+
+(in pratica sto applicando Tonelli , ovvero $\mathbb{E}\left[\sum_{n\geq 0} X_n\right]=\sum_{n\geq 0} \mathbb{E}\left[X_n\right]$ valido per $X_n\ge 0$; siccome con termini non negativi non ci sono cancellazioni tra positivi e negativi, il passaggio è sempre lecito, anche se la serie diverge)
+
+Fissato $n$, la condizione $n<k$ equivale a $k\ge n+1$, dunque
+$$
+\sum_{k\ge 0}\mathbf{1}_{\{n<k\}}\mathbb{P}(N=k) =
+\sum_{k\ge n+1}\mathbb{P}(N=k) = 
+\mathbb{P}(N>n).
+$$
+
+Pertanto
+$$
+\mathbb{E}[N]
+= \sum_{n\ge 0}\mathbb{P}(N>n).
+$$
+
+In forma del tutto esplicita:
+$$
+\sum_{k\ge 0} k\,\mathbb{P}(N=k)
+= \sum_{k\ge 0}\sum_{n=0}^{k-1}\mathbb{P}(N=k)
+= \sum_{n\ge 0}\sum_{k\ge n+1}\mathbb{P}(N=k)
+= \sum_{n\ge 0}\mathbb{P}(N>n).
 $$
 
 # Appendice B. Numeri di Catalan
@@ -273,13 +306,74 @@ $$
 C_k = \frac{1}{k+1}\binom{2k}{k},
 \qquad k=0,1,2,\dots
 $$
-I primi valori sono $C_0=1$, $C_1=1$, $C_2=2$, $C_3=5$, $C_4=14$. Compaiono in moltissimi problemi combinatori: numero di parentesizzazioni corrette, cammini aleatori che non scendono sotto un asse, alberi binari pieni, triangolazioni di un poligono convesso. Nel nostro caso compaiono perche' contano traiettorie di una passeggiata aleatoria con un vincolo di non attraversamento.
+I primi valori sono $C_0=1$, $C_1=1$, $C_2=2$, $C_3=5$, $C_4=14$. Soddisfano inoltre la ricorrenza
+
+$$
+C_{k+1}=\sum_{i=0}^k C_i\,C_{k-i},
+\qquad
+C_0=1
+$$
+
+che ne caratterizza la successione in modo equivalente alla formula esplicita. Compaiono in moltissimi problemi combinatori: numero di parentesizzazioni corrette, cammini aleatori che non scendono sotto un asse, alberi binari pieni, triangolazioni di un poligono convesso. Nel nostro caso compaiono perche' contano traiettorie di una passeggiata aleatoria con un vincolo di non attraversamento.
 
 ## B.2 Struttura delle traiettorie ammissibili
+Sia
+$$
+X_i=
+\begin{cases}
++1 & \text{se il }i\text{-esimo lancio \`e testa},\\
+-1 & \text{se il }i\text{-esimo lancio \`e croce}.
+\end{cases}
+$$
+Definiamo il saldo dopo $n$ lanci come
+$$
+S_n=\sum_{i=1}^n X_i,
+\qquad S_0=0.
+$$
+Consideriamo quindi il tempo di primo passaggio al livello $+1$:
+$$
+\tau=\inf\{n\ge 0:\ S_n=1\}.
+$$
+Vogliamo contare le traiettorie tali che
+$$
+\tau=2k+1.
+$$
+Ciò significa che dopo $2k+1$ lanci il saldo vale $+1$, mentre prima dell'istante finale il saldo non è mai stato positivo:
+$$
+S_{2k+1}=1,
+\qquad
+S_j\le 0 \quad \text{per ogni } j<2k+1.
+$$
+Necessariamente l'ultimo passo deve essere una testa, poiché solo così il saldo può passare da $0$ a $+1$ all'ultimo istante. Dunque
+$$
+S_{2k}=0,
+$$
+e la condizione $S_j\le 0$ per $j<2k+1$ si restringe ai primi $2k$ passi:
+$$
+S_j\le 0 \quad \text{per ogni } j\in\{1,\dots,2k\}.
+$$
+Nei primi $2k$ passi la traiettoria parte da $0$, termina in $0$, e non supera mai il livello $0$.
 
-Vogliamo contare le traiettorie tali che $\tau=2k+1$: dopo $2k+1$ lanci il saldo e' $+1$, e prima dell'istante finale il saldo non e' mai stato positivo (condizione di primo passaggio). L'ultimo passo deve essere una testa, perche' solo cosi' il saldo puo' passare da $0$ a $+1$ all'ultimo istante. Quindi nei primi $2k$ passi ci sono $k$ teste e $k$ croci, e la traiettoria non deve mai essere positiva.
+Introduciamo allora $a_k$ uguale al numero di cammini di lunghezza $2k$ che partono da $0$, finiscono in $0$, e soddisfano $S_j\le 0$ per ogni $j\in\{1,\dots,2k\}$. Il numero di traiettorie con $\tau=2k+1$ coincide quindi con $a_k$.
 
-Stiamo dunque contando cammini di lunghezza $2k$ che partono da $0$, finiscono a $0$, e non superano mai $0$. Per simmetria, invertendo il segno, questi sono equivalenti ai cammini che partono da $0$, finiscono a $0$, e non scendono mai sotto $0$: precisamente i cammini contati dal numero di Catalan $C_k$.
+Invertendo il segno del saldo, questi cammini sono in corrispondenza biunivoca con i cammini di lunghezza $2k$ che partono da $0$, finiscono in $0$, e non scendono mai sotto $0$. Questi sono i cammini di Dyck di semi-lunghezza $k$.
+
+Per mostrare che $a_k$ è il numero di Catalan, basta osservare che ogni cammino di Dyck non banale ammette una decomposizione unica della forma
+$$
+U\,P\,D\,Q,
+$$
+dove $U$ è il primo passo verso l'alto (una testa), $D$ è il passo verso il basso che realizza il primo ritorno a quota $0$ (una croce), mentre $P$ e $Q$ sono a loro volta cammini di Dyck. La scelta di $D$ come primo ritorno a $0$ garantisce l'unicità della decomposizione.
+
+Se il cammino totale ha semi-lunghezza $k+1$, esiste un unico indice $i\in\{0,\dots,k\}$ tale che $P$ abbia semi-lunghezza $i$ e $Q$ abbia semi-lunghezza $k-i$. Ne segue la ricorrenza
+$$
+a_{k+1}=\sum_{i=0}^k a_i\,a_{k-i},
+\qquad
+a_0=1.
+$$
+Questa è precisamente la ricorrenza dei numeri di Catalan. Pertanto
+$$
+a_k=C_k=\frac{1}{k+1}\binom{2k}{k}.
+$$
 
 ## B.3 Dal conteggio alla probabilita'
 

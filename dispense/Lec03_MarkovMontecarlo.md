@@ -122,23 +122,7 @@ Questo significa che:
 - se il giocatore ha perso, al turno successivo vince con probabilità $0.4$;
 - se il giocatore ha vinto, al turno successivo perde con probabilità $0.2$.
 
-Se inizialmente il giocatore parte certamente nello stato $0$, allora
-
-$$
-\mu^{(0)} = (1,0).
-$$
-
-Dopo un passo,
-
-$$
-\mu^{(1)} = \mu^{(0)} P = (0.6,0.4).
-$$
-
-Dopo due passi,
-
-$$
-\mu^{(2)} = \mu^{(1)} P.
-$$
+Se inizialmente il giocatore parte certamente nello stato $0$, allora $\mu^{(0)} = (1,0)$; dopo un passo, $\mu^{(1)} = \mu^{(0)} P = (0.6,0.4)$; dopo due, $\mu^{(2)} = \mu^{(1)} P = \mu^{(0)} P^2$ ...
 
 Il calcolo esplicito mostra che la distribuzione tende verso un equilibrio, che studieremo più avanti.
 
@@ -163,15 +147,69 @@ $$
 
 Questa catena è utile per mostrare un punto importante: non basta poter visitare più stati, bisogna anche studiare la struttura temporale dei ritorni. In questo caso la catena oscilla tra il centro e i bordi, e dunque ha periodicità. Questo esempio mostrerà più avanti perché l’aperiodicità è una condizione importante per la convergenza.
 
----
-
 # 2. Proprietà fondamentali delle catene di Markov
 
 Per usare bene una catena di Markov non basta saper scrivere la matrice di transizione. Occorre capire quali proprietà qualitative determinano il comportamento a lungo termine della dinamica.
 
-## 2.1 Comunicazione tra stati
+## 2.1 Matrice stocastica e rappresentazione come grafo
 
-Si dice che uno stato $j$ è raggiungibile da uno stato $i$ se esiste un intero $n \ge 1$ tale che
+La matrice di transizione $P=(P_{ij})$ di una catena di Markov è una **matrice stocastica**: i suoi elementi sono non negativi e la somma degli elementi di ogni riga è uguale a 1,
+
+$$
+P_{ij} \ge 0, 
+\qquad \sum_j P_{ij} = 1
+\quad \text{per ogni } i.
+$$
+
+Questa condizione esprime il fatto che, fissato lo stato corrente $i$, le probabilità di transizione verso tutti gli stati possibili devono sommare a 1.
+
+A ogni matrice di transizione si può associare un **grafo orientato**: i nodi rappresentano gli stati, e si disegna un arco $i \to j$ quando
+
+$$
+P_{ij} > 0.
+$$
+
+In questo linguaggio grafico molte proprietà della catena diventano immediatamente intuitive:
+
+- l'esistenza di un cammino da $i$ a $j$ corrisponde alla possibilità di raggiungere $j$ partendo da $i$ in un numero finito di passi;
+- l'irriducibilità corrisponde al fatto che il grafo sia fortemente connesso;
+- la periodicità è legata alla struttura dei cicli del grafo;
+- la presenza di un auto-arco $i \to i$ con $P_{ii}>0$ rende aperiodico lo stato $i$.
+
+Nel caso particolare in cui tutti gli elementi della matrice siano strettamente positivi, cioè
+
+$$
+P_{ij} > 0
+\qquad \text{per ogni } i,j,
+$$
+
+il grafo è completo orientato con auto-archi. In questo caso la catena è automaticamente irriducibile e aperiodica.
+
+Dal punto di vista algebrico, ogni matrice stocastica possiede sempre almeno un autovalore uguale a 1. Inoltre, tutti gli autovalori $\lambda$ soddisfano
+
+$$
+|\lambda| \le 1.
+$$
+
+La distribuzione stazionaria $\pi$, quando esiste, soddisfa
+
+$$
+\pi = \pi P,
+$$
+
+e quindi è un autovettore sinistro associato all'autovalore 1.
+
+Nel caso di una catena **finita**, **irriducibile** e **aperiodica**, l'autovalore 1 è semplice e tutti gli altri autovalori soddisfano
+
+$$
+|\lambda| < 1.
+$$
+
+Questa caratterizzazione spettrale è la controparte algebrica dell'ergodicità: le potenze $P^t$ sopprimono progressivamente i modi associati agli altri autovalori, e la distribuzione converge all'unica distribuzione stazionaria.
+
+## 2.2 Comunicazione tra stati
+
+Si dice che uno stato $j$ è **raggiungibile** da uno stato $i$ se esiste un intero $n \ge 1$ tale che
 
 $$
 (P^n)_{ij} > 0.
@@ -179,37 +217,55 @@ $$
 
 In tal caso, partendo da $i$, esiste una probabilità positiva di trovarsi in $j$ dopo $n$ passi.
 
-Se due stati sono reciprocamente raggiungibili, si dice che comunicano. La relazione di comunicazione suddivide lo spazio degli stati in classi.
+Se due stati sono reciprocamente raggiungibili, si dice che **comunicano**. La relazione di comunicazione suddivide lo spazio degli stati in classi di equivalenza, dette classi comunicanti.
 
-## 2.2 Irriducibilità
+Nel linguaggio dei grafi, due stati comunicano se esistono cammini orientati sia da $i$ a $j$ sia da $j$ a $i$.
 
-Una catena si dice irriducibile se tutti gli stati comunicano tra loro. In una catena irriducibile non esistono regioni dello spazio degli stati isolate dal resto.
+## 2.3 Irriducibilità
+
+Una catena si dice **irriducibile** se tutti gli stati comunicano tra loro. In una catena irriducibile non esistono regioni dello spazio degli stati isolate dal resto.
+
+Dal punto di vista grafico, ciò significa che il grafo associato è fortemente connesso: da ogni nodo si può raggiungere ogni altro nodo attraverso un cammino orientato.
 
 Per i metodi MCMC questa proprietà è essenziale. Se la catena non è irriducibile, essa non può esplorare tutto lo spazio su cui la distribuzione target è definita, e il campionamento risulta scorretto o parziale.
 
 Nel caso del gioco a due stati, la catena è irriducibile se entrambe le probabilità di cambio stato sono positive.
 
-## 2.3 Periodicità e aperiodicità
+## 2.4 Periodicità e aperiodicità
 
-Uno stato $i$ ha periodo $d$ se i ritorni possibili in $i$ avvengono solo a tempi multipli di $d$, e $d$ è il massimo intero con questa proprietà. Formalmente,
+Uno stato $i$ ha **periodo** $d$ se i ritorni possibili in $i$ avvengono solo a tempi multipli di $d$, e $d$ è il massimo intero con questa proprietà. Formalmente,
 
 $$
-d(i) = \gcd \{n \ge 1 : (P^n)_{ii} > 0\}.
+d(i) = \gcd \{ n \ge 1 : (P^n)_{ii} > 0 \}.
 $$
 
-Se $d(i)=1$, lo stato è aperiodico. In una catena irriducibile tutti gli stati hanno lo stesso periodo, quindi si può parlare del periodo della catena.
+Se $d(i)=1$, lo stato è **aperiodico**.
 
-L’esempio del random walk su tre stati mostrato sopra ha periodo 2. Se il sistema parte dal centro, torna al centro solo dopo un numero pari di passi. Questa periodicità impedisce una convergenza regolare della distribuzione nel tempo.
+In una catena irriducibile tutti gli stati hanno lo stesso periodo, quindi si può parlare del periodo della catena nel suo complesso.
 
-## 2.4 Ricorrenza e transienza
+Dal punto di vista intuitivo, una catena periodica è costretta a muoversi secondo un ritmo rigido: certi stati possono essere visitati solo a tempi appartenenti a determinate classi modulari. Questo ostacola una convergenza regolare della distribuzione nel tempo.
 
-Uno stato è ricorrente se, una volta lasciato, il sistema vi ritorna quasi certamente. È transiente se esiste una probabilità positiva di non ritornarvi mai.
+Un criterio semplice ma molto utile è il seguente: se una catena irriducibile contiene almeno uno stato con
 
-Nel caso di catene finite e irriducibili, tutti gli stati sono ricorrenti positivi. Questo semplifica molto la teoria. In spazi infiniti la distinzione tra ricorrenza e transienza diventa invece molto più delicata e importante.
+$$
+P_{ii} > 0,
+$$
 
-## 2.5 Ergodicità
+allora l'intera catena è aperiodica. Infatti la possibilità di restare nello stesso stato spezza la rigidità dei cicli.
 
-Una catena finita, irriducibile e aperiodica è ergodica. In tal caso esiste un’unica distribuzione stazionaria $\pi$ e vale
+L'esempio del random walk su tre stati mostrato sopra ha periodo 2. Se il sistema parte dal centro, torna al centro solo dopo un numero pari di passi. Questa periodicità impedisce una convergenza regolare della distribuzione nel tempo, anche se una distribuzione stazionaria può comunque esistere.
+
+## 2.5 Ricorrenza e transienza
+
+Uno stato è **ricorrente** se, una volta lasciato, il sistema vi ritorna quasi certamente. È invece **transiente** se esiste una probabilità positiva di non ritornarvi mai.
+
+La distinzione tra ricorrenza e transienza è particolarmente importante quando lo spazio degli stati è infinito. In quel caso alcune regioni possono essere visitate solo un numero finito di volte, mentre altre possono attrarre la dinamica in modo persistente.
+
+Nel caso di catene finite e irriducibili, tutti gli stati sono ricorrenti positivi. Questo semplifica molto la teoria e garantisce l'esistenza di almeno una distribuzione stazionaria.
+
+## 2.6 Ergodicità
+
+Una catena finita, irriducibile e aperiodica è **ergodica**. In tal caso esiste un'unica distribuzione stazionaria $\pi$ e vale
 
 $$
 \mu^{(t)} \to \pi
@@ -218,19 +274,23 @@ $$
 
 qualunque sia la distribuzione iniziale $\mu^{(0)}$.
 
-L’ergodicità garantisce quindi che il sistema dimentichi la condizione iniziale e che la statistica a lungo termine sia ben definita.
+L'ergodicità garantisce quindi che il sistema dimentichi la condizione iniziale e che la statistica a lungo termine sia ben definita.
 
-## 2.6 Perchè queste proprietà contano in simulazione
+Dal punto di vista spettrale, l'ergodicità corrisponde al fatto che l'autovalore 1 domina il comportamento asintotico, mentre tutti gli altri contributi decadono con il numero di passi.
+
+## 2.7 Perché queste proprietà contano in simulazione
 
 Nel contesto Monte Carlo, vogliamo che la catena:
 
 - possa visitare tutte le configurazioni rilevanti;
 - non resti intrappolata in cicli rigidi;
-- converga a un’unica distribuzione di equilibrio.
+- converga a un'unica distribuzione di equilibrio.
 
-Queste richieste corrispondono precisamente a irriducibilità, aperiodicità ed ergodicità. Per questo motivo, quando si progetta un algoritmo MCMC, tali proprietà sono importanti quanto la correttezza formale del criterio di accettazione.
+Queste richieste corrispondono precisamente a irriducibilità, aperiodicità ed ergodicità.
 
----
+Per questo motivo, quando si progetta un algoritmo MCMC, tali proprietà sono importanti quanto la correttezza formale del criterio di accettazione. Un algoritmo può infatti soddisfare il detailed balance rispetto a una certa distribuzione target, ma risultare inutile in pratica se la catena non esplora efficacemente lo spazio degli stati o se converge in modo troppo lento.
+
+La rappresentazione tramite grafo e il punto di vista spettrale sono due strumenti complementari per analizzare questi aspetti: il grafo rende visibile la struttura delle transizioni, mentre gli autovalori della matrice di transizione descrivono la velocità con cui la catena perde memoria della condizione iniziale.
 
 # 3. Distribuzioni stazionarie, reversibilità e convergenza
 
@@ -248,9 +308,7 @@ $$
 \pi_j = \sum_i \pi_i P_{ij}.
 $$
 
-Se il sistema parte distribuito secondo $\pi$, allora resta distribuito secondo $\pi$ a ogni passo successivo.
-
-La distribuzione stazionaria descrive l’equilibrio statistico della catena.
+Se il sistema parte distribuito secondo $\pi$, allora resta distribuito secondo $\pi$ a ogni passo successivo. La distribuzione stazionaria descrive quindi l’*equilibrio statistico della catena*.
 
 ## 3.2 Esempio esplicito
 
@@ -270,7 +328,16 @@ $$
 \pi_0 = \frac{1}{3}, \qquad \pi_1 = \frac{2}{3}.
 $$
 
-Questa è la distribuzione di equilibrio della catena.
+Questa è la distribuzione di equilibrio della catena. Potete vericare  numericamente che
+
+$$
+\lim_{t\to\infty} P^t =
+\begin{pmatrix}
+1/3 & 2/3 \\
+1/3 & 2/3
+\end{pmatrix}\,;
+$$
+in generale, $P^t$ tenderà sempre (se è finita, irriducibile e aperiodica) ad una matrice le cui righe sono esattamente $\pi$.
 
 ## 3.3 Bilancio globale
 
@@ -318,8 +385,6 @@ In statistica bayesiana, la distribuzione target è la distribuzione a posterior
 Se la catena è ergodica, allora la distribuzione al tempo $t$ converge a $\pi$. Questo significa che, per $t$ grande, la statistica degli stati visitati lungo la traiettoria si avvicina alla statistica imposta dalla distribuzione stazionaria.
 
 Questo è il principio matematico alla base dei metodi MCMC.
-
----
 
 # 4. Metodi Monte Carlo basati su catene di Markov
 
@@ -481,11 +546,11 @@ def metropolis_step(x):
         return x_new
     else:
         return x
-````
+```
 
 # 6. Algoritmo di Metropolis-Hastings
 
-## 6.1 Perchè serve una generalizzazione
+## 6.1 Perché serve una generalizzazione
 
 In molti casi una proposta simmetrica non è naturale o non è efficiente. Si può voler proporre mosse direzionali, oppure usare una proposta che dipende in modo asimmetrico dallo stato corrente. In questi casi l’algoritmo di Metropolis non è più sufficiente.
 
@@ -616,7 +681,7 @@ $$
 
 In questo modo il nuovo valore di $x_i$ è già distribuito correttamente rispetto alla legge condizionata, e non serve alcun rifiuto.
 
-## 7.3 Perchè l’accettazione è uguale a 1
+## 7.3 Perché l’accettazione è uguale a 1
 
 Il punto chiave è che la proposta coincide con la distribuzione condizionata target. Di conseguenza, il bilancio dettagliato risulta automaticamente verificato, e ogni aggiornamento è accettato con probabilità 1.
 
@@ -647,17 +712,23 @@ In sintesi:
 
 # 8. Efficienza, autocorrelazione e limiti pratici
 
-La correttezza asintotica dell’algoritmo non basta. Una catena può essere formalmente giusta ma esplorare lo spazio degli stati in modo molto lento.
+La correttezza asintotica dell'algoritmo non basta. Una catena può essere
+formalmente giusta ma esplorare lo spazio degli stati in modo molto lento.
 
 ## 8.1 Tasso di accettazione
 
-Nel random walk Metropolis, se i passi proposti sono troppo piccoli, quasi tutte le mosse vengono accettate ma la catena si muove lentamente nello spazio degli stati. Se i passi sono troppo grandi, la maggior parte delle proposte viene rifiutata.
+Nel random walk Metropolis, se i passi proposti sono troppo piccoli, quasi
+tutte le mosse vengono accettate ma la catena si muove lentamente nello
+spazio degli stati. Se i passi sono troppo grandi, la maggior parte delle
+proposte viene rifiutata e la catena rimane ferma.
 
-L’efficienza dipende dal compromesso tra ampiezza delle mosse e tasso di accettazione.
+L'efficienza dipende dal compromesso tra ampiezza delle mosse e tasso di
+accettazione. In spazi continui, un tasso di accettazione intorno al 20–40%
+è spesso un buon punto di partenza.
 
 ## 8.2 Autocorrelazione
 
-Se definiamo un’osservabile lungo la traiettoria come
+Se definiamo un'osservabile lungo la traiettoria come
 
 $$
 A_t = A(X_t),
@@ -669,19 +740,43 @@ $$
 C(\tau) = \langle A_t A_{t+\tau} \rangle - \langle A \rangle^2.
 $$
 
-Un decadimento lento di $C(\tau)$ indica che la catena conserva memoria per tempi lunghi e che i campioni sono fortemente correlati.
+Un decadimento lento di $C(\tau)$ indica che la catena conserva memoria per
+tempi lunghi e che i campioni sono fortemente correlati.
 
 ## 8.3 Tempo di autocorrelazione
 
-Il tempo di autocorrelazione integrato misura quanti passi sono necessari per ottenere l’equivalente di un nuovo campione quasi indipendente. Maggiore è questo tempo, minore è l’efficienza statistica della simulazione.
+Il tempo di autocorrelazione integrato
 
-## 8.4 Burn-in insufficiente
+$$
+\tau_{\mathrm{int}} = \frac{1}{2} \sum_{\tau=-\infty}^{+\infty}
+\frac{C(\tau)}{C(0)}
+$$
 
-Se si inizia a misurare troppo presto, prima che la catena abbia raggiunto l’equilibrio, si introducono errori sistematici. Questo problema è particolarmente grave quando la condizione iniziale è molto lontana dalla regione tipica della distribuzione target.
+misura quanti passi sono necessari per ottenere l'equivalente di un nuovo
+campione quasi indipendente. Il numero effettivo di campioni indipendenti
+ottenibili da una traiettoria di $N$ passi è
+
+$$
+N_{\mathrm{eff}} = \frac{N}{\tau_{\mathrm{int}}} \ll N.
+$$
+
+Maggiore è $\tau_{\mathrm{int}}$, minore è l'efficienza statistica della
+simulazione.
+
+## 8.4 Termalizzazione insufficiente
+
+Se si inizia a misurare troppo presto, prima che la catena abbia raggiunto
+l'equilibrio, si introducono errori sistematici. Questo problema è
+particolarmente grave quando la condizione iniziale è molto lontana dalla
+regione tipica della distribuzione target.
 
 ## 8.5 Metastabilità e multimodalità
 
-Quando la distribuzione target ha più modi separati da barriere elevate, la catena può restare intrappolata a lungo in una sola regione dello spazio. In questi casi i tempi di mixing possono diventare enormi, e la stima numerica può risultare gravemente distorta pur in presenza di un algoritmo formalmente corretto.
+Quando la distribuzione target ha più modi separati da barriere elevate, la
+catena può restare intrappolata a lungo in una sola regione dello spazio. In
+questi casi i tempi di mixing possono diventare enormi, e la stima numerica
+può risultare gravemente distorta pur in presenza di un algoritmo
+formalmente corretto.
 
 ## 8.6 Diagnostica empirica
 
@@ -693,7 +788,8 @@ Nella pratica si controllano spesso:
 * autocorrelazioni empiriche;
 * frequenza di accettazione.
 
-Questi strumenti non sostituiscono la teoria, ma sono essenziali per valutare l’affidabilità di una simulazione concreta.
+Questi strumenti non sostituiscono la teoria, ma sono essenziali per
+valutare l'affidabilità di una simulazione concreta.
 
 # 9. Estensioni e collegamenti
 
@@ -770,8 +866,6 @@ Costruire un algoritmo di Metropolis con proposta simmetrica uniforme tra stati 
 
 10. Confrontare vantaggi e svantaggi di Metropolis e heat bath in un modello di Ising.
 
----
-
 # Conclusioni
 
 Le catene di Markov forniscono un quadro matematico estremamente potente per descrivere sistemi stocastici e per costruire algoritmi di campionamento. La nozione di distribuzione stazionaria chiarisce cosa significhi equilibrio probabilistico; l’ergodicità spiega quando tale equilibrio venga effettivamente raggiunto; il bilancio dettagliato fornisce un principio costruttivo semplice per progettare dinamiche corrette.
@@ -793,32 +887,26 @@ Dal punto di vista pratico, tuttavia, la correttezza teorica non basta: burn-in,
 
 # Appendice A. Dimostrazione che il detailed balance implica la stazionarietà
 
-Supponiamo che per una distribuzione $\pi$ valga
+Supponiamo che data una distribuzione $\pi$, abbia costruito una matrice stocastica $P$ per cui valga il *bilancio dettagliato*:
 
 $$
 \pi_i P_{ij} = \pi_j P_{ji}
 \qquad \text{per ogni } i,j.
 $$
 
-Sommiamo su $i$:
+Sommando su $j$
 
 $$
-\sum_i \pi_i P_{ij} = \sum_i \pi_j P_{ji}.
+\pi_i \sum_j  P_{ij} = \sum_j \pi_j P_{ji}.
 $$
 
-Poiché $\pi_j$ non dipende da $i$,
+Il membro sinistro vale $\pi_i$ perché $\sum_j P_{ij}=1$ ($P$ è una matrice stocastica), quindi
 
 $$
-\sum_i \pi_j P_{ji} = \pi_j \sum_i P_{ji} = \pi_j,
+\pi_i = \sum_j \pi_j P_{ji} = \left( \pi \, P \right)_i
 $$
 
-dove nell'ultimo passaggio si è usato il fatto che ogni colonna di $P$ (o equivalentemente ogni riga, per le righe sommate su $i$) soddisfa $\sum_i P_{ji} = 1$. Sostituendo nella somma originale si ottiene
-
-$$
-\sum_i \pi_i P_{ij} = \pi_j,
-$$
-
-che è precisamente la definizione di distribuzione stazionaria $\pi = \pi P$. Il detailed balance implica quindi la stazionarietà.
+ovvero $\pi=\pi P$; quindi imporre il bilancio dettagliato su $P$ rispetto a $\pi$ implica che $\pi$ è proprio la distribuzione di equilibrio di $P$.
 
 # Appendice B. Pseudocodice di Metropolis
 

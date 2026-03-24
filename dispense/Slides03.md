@@ -1,37 +1,31 @@
 ---
-title: "S03 Metodi Markov Chain Monte Carlo (MCMC)"
+title: "S03 Markov Chain Monte Carlo (MCMC)"
 author: "Antonio Scala"
 date: "18 mar 2026"
 theme: "boxes"
 colortheme: "wolverine"
 fontsize: 12pt
 aspectratio: 169
+slide-level: 2
 ---
 
-# Obiettivi della lezione
+## Obiettivi della lezione
 
-## Obiettivi didattici specifici
+**Idea centrale:** Quando non possiamo campionare direttamente da $\pi(x)$, costruiamo una **dinamica artificiale** che abbia $\pi$ come distribuzione di equilibrio.
 
-Al termine della lezione lo studente dovrà essere in grado di:
+**Obiettivi:**
 
 - definire una catena di Markov e interpretare la matrice di transizione
 - distinguere irriducibilità, aperiodicità ed ergodicità
 - comprendere il ruolo della distribuzione stazionaria e del bilancio dettagliato
 - spiegare perché i metodi MCMC sono utili quando il campionamento diretto fallisce
 - derivare e applicare la regola di accettazione di Metropolis e Metropolis-Hastings
-- confrontare Metropolis, Metropolis-Hastings e heat bath / Gibbs sampling
-- riconoscere i principali problemi di efficienza (burn-in, autocorrelazione, metastabilità)
+- riconoscere i principali problemi di efficienza (termalizzazione, autocorrelazione, metastabilità)
 
-## Idea centrale
-
-Quando non possiamo campionare direttamente da $\pi(x)$, costruiamo una **dinamica artificiale** che abbia $\pi$ come distribuzione di equilibrio.
-
-# Dal Monte Carlo diretto all'MCMC
-
-## Dove eravamo rimasti
+## Da MC a MCMC
 
 :::: {.columns}
-::: {.column width="55%"}
+::: {.column width="50%"}
 
 Nella lezione precedente:
 
@@ -47,7 +41,7 @@ $$
 con $\tilde\pi$ calcolabile ma $Z = \int \tilde\pi\,dx$ **intrattabile**.
 
 :::
-::: {.column width="45%"}
+::: {.column width="50%"}
 
 ![](./immagini/direct_vs_mcmc_contours.png){width=90%}
 
@@ -55,8 +49,6 @@ con $\tilde\pi$ calcolabile ma $Z = \int \tilde\pi\,dx$ **intrattabile**.
 
 :::
 ::::
-
----
 
 # Catene di Markov
 
@@ -91,9 +83,7 @@ con $P_{ij}\ge 0$ e $\sum_j P_{ij}=1$ per ogni $i$.
 :::
 ::::
 
-# Evoluzione della distribuzione
-
-## Potenze della matrice
+## Evoluzione della distribuzione
 
 :::: {.columns}
 ::: {.column width="70%"}
@@ -106,20 +96,18 @@ $$
 \mu^{(t)} = \mu^{(0)} P^t.
 $$
 
-Il comportamento a lungo termine della catena coincide con lo studio delle potenze di $P$.
-
-**Esempio: gioco a due stati**
+Il comportamento a lungo termine della catena coincide con lo studio delle potenze di $P$. In particolare, se la catena è finita, irriducibile e aperiodica,
 
 $$
-P = \begin{pmatrix} 0.6 & 0.4 \\ 0.2 & 0.8 \end{pmatrix}
+\lim_{t\to\infty} \mu^{(0)} P^t = \pi,
 $$
 
-Partendo da $\mu^{(0)}=(1,0)$: dopo un passo $\mu^{(1)}=(0.6,\,0.4)$.
+dove $\pi$ è la distribuzione di equilibrio, cioè il punto fisso $\pi\, P = \pi$.
 
 :::
 ::: {.column width="30%"}
 
-![](./immagini/distribution_evolution_vertical.png){heigth=95%}
+![](./immagini/distribution_evolution_vertical.png){height=95%}
 
 :::
 ::::
@@ -158,22 +146,60 @@ $\Rightarrow$ niente oscillazioni rigide, convergenza regolare.
 :::
 ::::
 
-# Ergodicità
+## Convergenza ed ergodicità
 
-## Il teorema fondamentale
+:::: {.columns}
+::: {.column width="55%"}
+
+**Convergenza all'equilibrio**
+
+Se la catena è finita, irriducibile e aperiodica, allora
+
+$$
+\lim_{t\to\infty} \mu^{(0)} P^t = \pi,
+$$
+
+dove $\pi$ è la distribuzione di equilibrio, cioè il punto fisso
+
+$$
+\pi P = \pi.
+$$
+
+In questo caso la catena dimentica la condizione iniziale.
+
+:::
+::: {.column width="45%"}
+
+**Ricorrenza e transienza**
+
+- **Ricorrente**: lo stato viene rivisitato quasi certamente.
+- **Transiente**: c'è probabilità positiva di non tornarci più.
+
+Nelle catene finite irriducibili, tutti gli stati sono ricorrenti positivi.
+
+:::
+::::
+
+## Punto di vista spettrale
+
+$$
+\mu^{(0)} = \pi + \sum_{k\ge 2} c_k v_k,
+$$
+
+con $v_k P = \lambda_k v_k$, $\pi P = \pi$. Dopo $n$ passi,
+
+$$
+\mu^{(0)} P^n = \pi + \sum_{k\ge 2} c_k \lambda_k^n v_k.
+$$
+
+Se la catena è ergodica, gli autovalori diversi da $1$ soddisfano $|\lambda_k| < 1$, quindi i modi transitori decadono e resta solo la distribuzione stazionaria $\pi$.
+
+## Ergodicità e transienti
 
 :::: {.columns}
 ::: {.column width="60%"}
 
-Una catena **finita, irriducibile e aperiodica** è ergodica.
-
-Esiste un'unica distribuzione stazionaria $\pi$ e, per qualunque condizione iniziale:
-
-$$
-\mu^{(t)} \to \pi \qquad (t\to\infty).
-$$
-
-La catena "dimentica" la condizione iniziale.
+Una catena **finita, irriducibile e aperiodica** è ergodica. Siccome i *modi transienti* decadono con il numero di passi, la catena "dimentica" la condizione iniziale.
 
 **Per i metodi MCMC:**
 
@@ -186,38 +212,36 @@ La catena "dimentica" la condizione iniziale.
 :::
 ::: {.column width="40%"}
 
-*Convergenza di tre catene con condizioni iniziali diverse*
+*Convergenza di una catena con tre condizioni iniziali diverse*
 
 ![](./immagini/ergodicity_convergence.png){width=100%}
 
 :::
 ::::
 
-# Distribuzione stazionaria
+# Flussi di probabilità e stazionarietà
 
-## Equilibrio probabilistico
+## Distribuzione stazionaria e bilancio globale
 
-Una distribuzione $\pi$ è **stazionaria** se
+Per una distribuzione stazionaria $\pi$ vale
 
 $$
-\pi = \pi P,
-\qquad \text{cioè} \qquad
 \pi_j = \sum_i \pi_i P_{ij}.
 $$
 
-**Bilancio globale:** il flusso totale che entra in $j$ uguaglia quello che ne esce.
+Interpretazione:
+- il flusso totale che entra in $j$ in un passo è
+  $$
+  \sum_i \pi_i P_{ij};
+  $$
+- il flusso totale che esce da $j$ è
+  $$
+  \pi_j \sum_k P_{jk} = \pi_j.
+  $$
 
-**Esempio (gioco a due stati):**
+Quindi, in equilibrio, flusso entrante e uscente coincidono.
 
-La soluzione di $\pi = \pi P$ con $\pi_0+\pi_1=1$ dà
-
-$$
-\pi_0 = \frac{1}{3}, \qquad \pi_1 = \frac{2}{3}.
-$$
-
-# Bilancio dettagliato
-
-## Una condizione più forte
+## Bilancio dettagliato 
 
 :::: {.columns}
 ::: {.column width="60%"}
@@ -246,9 +270,7 @@ $\Rightarrow$ Metropolis e Metropolis-Hastings sono progettati esattamente per s
 :::
 ::::
 
-# Motivazione MCMC
-
-## Perché costruire una catena
+## Perché usare MCMC?
 
 :::: {.columns}
 ::: {.column width="45%"}
@@ -289,8 +311,6 @@ $$
 :::
 ::::
 
-# Termalizzazione e campioni correlati
-
 ## Due conseguenze pratiche
 
 :::: {.columns}
@@ -324,7 +344,7 @@ dove $\tau$ è il tempo di autocorrelazione.
 
 # Algoritmo di Metropolis
 
-## Struttura
+## Mossa = Proposta + Accettazione
 
 **Ingredienti:**
 
@@ -344,9 +364,7 @@ Se rifiutata: $X_{t+1}=x$ (si resta fermi).
 
 **$Z$ si cancella nel rapporto** $\Rightarrow$ non serve calcolarlo.
 
-# Metropolis: caso di Boltzmann
-
-## Applicazione fisica
+## Metropolis: caso di Boltzmann
 
 :::: {.columns}
 ::: {.column width="55%"}
@@ -365,7 +383,7 @@ $$
 
 dove $\Delta E = E(x')-E(x)$.
 
-- $\Delta E < 0$ (energia cala): accetta sempre
+- $\Delta E < 0$ (energia diminuisce): accetta sempre
 - $\Delta E > 0$ (energia cresce): accetta con probabilità $e^{-\beta\Delta E}$
 
 :::
@@ -378,11 +396,7 @@ dove $\Delta E = E(x')-E(x)$.
 :::
 ::::
 
----
-
-# Metropolis: dimostrazione del detailed balance
-
-## Perché $\pi$ è stazionaria
+## Metropolis: bilancio dettagliato
 
 Per $x\ne x'$, il kernel di transizione è $P(x\to x') = q(x'\mid x)\,A(x\to x')$.
 
@@ -400,9 +414,7 @@ $$
 
 Il detailed balance è verificato $\Rightarrow$ $\pi$ è stazionaria.
 
-# Metropolis: pseudocodice
-
-## Implementazione essenziale
+## Metropolis: pseudocodice
 
 :::: {.columns}
 ::: {.column width="60%"}
@@ -433,11 +445,54 @@ def metropolis(x0, n_steps):
 :::
 ::::
 
----
+# Algoritmo di Metropolis-Hastings
 
-# Metropolis-Hastings
+## MH: Imporre il detailed balance
 
-## Generalizzazione a proposte asimmetriche
+Vogliamo costruire $P(x \to x')$ in modo che $\pi$ sia stazionaria.
+
+Imponiamo
+
+$$
+\pi(x)\,P(x \to x') = \pi(x')\,P(x' \to x).
+$$
+
+Se scriviamo
+
+$$
+P(x \to x') = q(x' \mid x)\,A(x \to x'),
+$$
+
+allora otteniamo
+
+$$
+\pi(x)\,q(x' \mid x)\,A(x \to x') =
+\pi(x')\,q(x \mid x')\,A(x' \to x).
+$$
+
+## MH: regola di accettazione
+
+Una scelta che soddisfa il detailed balance è
+
+$$
+A(x \to x') =
+\min\!\left(\;
+1, \frac{\pi(x')\,q(x \mid x')}{\pi(x)\,q(x' \mid x)}
+\;\right)\,.
+$$
+
+Infatti allora
+
+$$
+\pi(x)\,P(x \to x') =
+\min\bigl(\;
+\pi(x)\,q(x' \mid x),\pi(x')\,q(x \mid x')
+\;\bigr)\,,
+$$
+
+che è simmetrico nello scambio $x \leftrightarrow x'$. (n.b.: se $q$ è simmetrica, usando l'identità  $\min(a,b)=a\min(1,a/b)$ valida per $a,b>0$ otteniamo la regola di Metropolis)
+
+## MH: proposta non simmetrica
 
 :::: {.columns}
 ::: {.column width="55%"}
@@ -471,81 +526,7 @@ Il fattore di Hastings **compensa** esattamente questo sbilanciamento.
 :::
 ::::
 
----
-
-# Metropolis-Hastings: derivazione
-
-## Imponendo il detailed balance
-
-Vogliamo costruire $P(x \to x')$ in modo che $\pi$ sia stazionaria.
-
-Imponiamo
-
-$$
-\pi(x)\,P(x \to x') = \pi(x')\,P(x' \to x).
-$$
-
-Se scriviamo
-
-$$
-P(x \to x') = q(x' \mid x)\,A(x \to x'),
-$$
-
-allora otteniamo
-
-$$
-\pi(x)\,q(x' \mid x)\,A(x \to x') =
-\pi(x')\,q(x \mid x')\,A(x' \to x).
-$$
----
-
-## La regola di accettazione di Metropolis-Hastings
-
-Una scelta che soddisfa il detailed balance è
-
-$$
-A(x \to x') =
-\min\!\left(\;
-1, \frac{\pi(x')\,q(x \mid x')}{\pi(x)\,q(x' \mid x)}
-\;\right)\,.
-$$
-
-Infatti allora
-
-$$
-\pi(x)\,P(x \to x') =
-\min\bigl(\;
-\pi(x)\,q(x' \mid x),\pi(x')\,q(x \mid x')
-\;\bigr)\,,
-$$
-
-che è simmetrico nello scambio $x \leftrightarrow x'$.
-
----
-
-## La regola di accettazione di Metropolis-Hastings
-
-Una scelta che soddisfa il detailed balance è
-
-$$
-A(x \to x') =
-\min\!\left(
-1,\frac{\pi(x')\,q(x \mid x')}{\pi(x)\,q(x' \mid x)}
-\right).
-$$
-
-Infatti allora
-
-$$
-\pi(x)\,P(x \to x') =
-\min \bigl(\;
-\pi(x)\,q(x' \mid x), \pi(x')\,q(x \mid x')
-\;\bigr)\,,
-$$
-
-che è simmetrico nello scambio $x \leftrightarrow x'$.
-
-# Heat bath e Gibbs sampling
+# Heat bath / Gibbs sampling
 
 ## Aggiornamento condizionato
 
@@ -572,11 +553,7 @@ La proposta **coincide** con la condizionata target $\Rightarrow$ accettazione s
 :::
 ::::
 
----
-
-# Gibbs: esempi
-
-## Due contesti
+## Due esempi
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -605,16 +582,12 @@ Si alterna: $\mu\mid\sigma,y$ poi $\sigma\mid\mu,y$.
 :::
 ::::
 
----
-
-# Confronto tra algoritmi
-
 ## Riepilogo
 
 :::: {.columns}
 ::: {.column width="60%"}
 
-| | Metropolis | MH | Heat bath |
+| | Metropolis | MH | Gibbs|
 |---|---|---|---|
 | Proposta | simmetrica | qualunque | condizionata |
 | Accettazione | $\min(1,\tilde\pi'/\tilde\pi)$ | rapporto MH | sempre 1 |
@@ -634,11 +607,10 @@ Si alterna: $\mu\mid\sigma,y$ poi $\sigma\mid\mu,y$.
 :::
 ::::
 
----
+# Efficienza
 
-# Efficienza: tasso di accettazione
 
-## Il compromesso
+## Tasso di accettazione
 
 :::: {.columns}
 ::: {.column width="55%"}
@@ -662,11 +634,7 @@ L'efficienza dipende dal compromesso tra ampiezza e tasso di accettazione.
 :::
 ::::
 
----
-
-# Efficienza: autocorrelazione
-
-## Campioni dipendenti
+## Autocorrelazione e indipendenza
 
 :::: {.columns}
 ::: {.column width="55%"}
@@ -695,11 +663,7 @@ $$
 :::
 ::::
 
----
-
-# Metastabilità e multimodalità
-
-## Trappole per la catena
+## Metastabilità e multimodalità
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -710,9 +674,9 @@ I tempi di mixing diventano enormi: la stima numerica risulta distorta pur essen
 
 **Soluzioni parziali:**
 
-- tempra parallela (parallel tempering)
+- Simulated Annealing
+- Parallel Tempering
 - Hamiltonian Monte Carlo
-- simulated annealing
 
 :::
 ::: {.column width="50%"}
@@ -724,11 +688,7 @@ I tempi di mixing diventano enormi: la stima numerica risulta distorta pur essen
 :::
 ::::
 
----
-
-# Diagnostica empirica
-
-## Come valutare la qualità
+## Diagnostica empirica
 
 :::: {.columns}
 ::: {.column width="50%"}
@@ -753,8 +713,6 @@ Questi strumenti **non sostituiscono** la teoria, ma sono indispensabili per val
 :::
 ::::
 
----
-
 # Estensioni
 
 ## Oltre Metropolis
@@ -771,8 +729,6 @@ Usa variabili ausiliarie di momento e una dinamica quasi deterministica per prop
 
 Introduce una temperatura decrescente nel tempo per trasformare il campionamento in una procedura di ottimizzazione globale.
 
----
-
 ## Dove ricompaiono queste idee
 
 | Contesto | Metodo dominante |
@@ -782,9 +738,7 @@ Introduce una temperatura decrescente nel tempo per trasformare il campionamento
 | Boltzmann machine | Gibbs, heat bath |
 | Ottimizzazione combinatoria | simulated annealing |
 
-# Take-home messages
-
-## Cosa portarsi a casa
+## Take-home message
 
 :::: {.columns}
 ::: {.column width="60%"}
@@ -807,5 +761,3 @@ Introduce una temperatura decrescente nel tempo per trasformare il campionamento
 
 :::
 ::::
-
----

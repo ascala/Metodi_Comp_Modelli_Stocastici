@@ -274,7 +274,6 @@ $$
 x_{n+1} = x_n + f(x_n)\Delta t
 $$
 
-
 ### 6.1 Derivazione (sviluppo al primo ordine)
 
 Per definizione
@@ -403,7 +402,7 @@ Confronto con ODE: per $\dot x=f(x)$ la stabilità locale dipende dal segno di $
 
 ---
 
-## A2. Mapping ODE ↔ sistemi discreti
+## A2. Mapping ODE $\Leftrightarrow$ sistemi discreti
 
 **Obiettivo della sezione**
 

@@ -229,7 +229,7 @@ Questo toy model è adatto a:
 La forza del modello è che, pur essendo minimale, contiene i concetti chiave del corso: struttura deterministica, non linearità, metastabilità, tipping, e simulazione numerica.
 
 [^soglia_centr]: Per **anomalia centrata** si intende una variabile definita come **deviazione da uno stato di riferimento (equilibrio o media)**, in modo che quel riferimento corrisponda a **zero**. Formalmente, invece di usare la temperatura assoluta $T_{\mathrm{abs}}$, si introduce
-$$ T=T_{abs}​−T_0$$​
+$$ T=T_{abs}​-T_0$$​
 dove:
 
 * $T_{\mathrm{abs}}$ = temperatura fisica (per esempio temperatura media globale),
@@ -240,7 +240,7 @@ Ci sono tre motivi principali per usarla nei modelli:
 
 1. **Semplificazione matematica**\
    Molti modelli vengono sviluppati tramite espansione vicino a un equilibrio. Scrivendo direttamente la dinamica in termini di anomalia,
-   $$dT/dt​=aT−bT^3+F$$
+   $$dT/dt​=aT-bT^3+F$$
    l’equilibrio di riferimento è automaticamente vicino a $T=0$ e la forma polinomiale è semplice. Se usassi $T_{\mathrm{abs}}$, l’equazione avrebbe molti termini costanti inutili.
 
 2. **Interpretazione fisica**\
@@ -252,7 +252,7 @@ Molti feedback climatici dipendono **dalla deviazione rispetto allo stato attual
 3. **Simmetria locale**\
    Vicino a un equilibrio spesso la dinamica è approssimativamente simmetrica:
 
-* riscaldamento di $+1^\circ$ e raffreddamento di $-1^\circ$ hanno effetti simili al primo ordine. Questo giustifica un’espansione con termini dispari tipo $aT−bT^3$
+* riscaldamento di $+1^\circ$ e raffreddamento di $-1^\circ$ hanno effetti simili al primo ordine. Questo giustifica un’espansione con termini dispari tipo $aT-bT^3$
 
 Quindi nello scrivere
 $$\mu(T)=\mu_0​+\mu_1 ​T$$
@@ -263,7 +263,7 @@ stiamo implicitamente assumendo che:
 * $T<0$ significhi clima più freddo.
 
 Se invece $T$ fosse la **temperatura assoluta**, la formula diventerebbe
-$$\mu(T)=\mu_0​+\mu_1​(T−T0​)$$
+$$\mu(T)=\mu_0​+\mu_1​(T-T0​)$$
 cioè esattamente la stessa cosa, solo con una traslazione.
 
 
