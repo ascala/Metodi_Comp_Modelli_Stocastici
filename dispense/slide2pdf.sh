@@ -6,6 +6,7 @@ for f in Slides*.md; do
         echo "Compilo slide $f → $pdf"
         pandoc "$f" -o "$pdf" \
             --pdf-engine=pdflatex \
+            -H BeamerHeader.tex \
             -t beamer --slide-level=2
     fi
 done

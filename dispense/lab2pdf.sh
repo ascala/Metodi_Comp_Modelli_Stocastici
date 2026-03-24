@@ -6,6 +6,6 @@ for f in Lab*.md; do
         echo "Compilo $f → $pdf"
         pandoc "$f" -o "$pdf" \
             --pdf-engine=pdflatex \
-            -H header.tex
+            -H PdfLatexHeader.tex
     fi
 done

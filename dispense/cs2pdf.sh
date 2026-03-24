@@ -8,8 +8,8 @@ for f in casestudy/CS*/CaseStudy*.md; do
     if [ ! -f "$pdf" ] || [ "$f" -nt "$pdf" ]; then
         echo "Compilo $f -> $pdf"
         pandoc "$f" -o "$pdf" \
-            --pdf-engine=xelatex \
+            --pdf-engine=pdflatex \
             --resource-path="$dir:." \
-            -H header.tex
+            -H PdfLatexHeader.tex
     fi
 done

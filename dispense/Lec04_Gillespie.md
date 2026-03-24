@@ -1,6 +1,6 @@
 ---
-title: "04: Simulazioni di eventi discreti (Gillespie e oltre)"
-author: ""
+title: "04: Simulazioni di eventi discreti (metodo di Gillespie)"
+author: "Antonio Scala"
 date: ""
 ---
 
@@ -14,7 +14,6 @@ Molti sistemi reali non evolvono in modo continuo, ma attraverso **eventi discre
 4. Estendere il metodo a sistemi complessi (epidemie, reti, agent–based).  
 5. Confrontare diversi approcci: simulazione esatta, tau-leaping, approssimazioni continue.
 
-
 ### Struttura della lezione
 
 La lezione è articolata in cinque parti principali:
@@ -24,8 +23,6 @@ La lezione è articolata in cinque parti principali:
 3. **Algoritmo di Gillespie (Direct Method)** – simulazione passo per passo.  
 4. **Estensioni e approssimazioni** – tau-leaping e metodi ibridi.  
 5. **Applicazioni interdisciplinari** – reazioni chimiche, epidemie, dinamiche sociali.
-
----
 
 ## 1. Processi a eventi discreti
 
@@ -41,8 +38,6 @@ Esempi:
 
 L’evoluzione è **stocastica**: il tempo e il tipo del prossimo evento sono casuali.
 
----
-
 ## 2. Tempo di attesa e legge esponenziale
 
 Quando si descrive un processo in cui gli eventi avvengono **in modo casuale ma con una frequenza media costante nel tempo**, si introduce il concetto di **tasso di evento** o **tasso di Poisson**, indicato con $\lambda$.  
@@ -55,8 +50,6 @@ Esempi intuitivi:
 
 In tutti questi casi non esiste una “memoria”: il fatto che un evento non sia ancora avvenuto **non cambia** la probabilità che accada nel prossimo istante.  
 Questa proprietà è detta **assenza di memoria** o **memorylessness**.
-
----
 
 ### Da dove nasce la distribuzione esponenziale
 
@@ -111,8 +104,6 @@ $$
 
 cioè la densità di probabilità è la **derivata** della probabilità cumulativa.  
 
----
-
 ### Interpretazione e simulazione
 
 Il significato operativo di questa legge è che il sistema “attende” un tempo casuale $\tau$ prima che accada il prossimo evento, e che tempi lunghi sono possibili ma sempre meno probabili.
@@ -131,14 +122,12 @@ Riassumendo:
 - La legge esponenziale nasce da un processo **senza memoria** in cui la probabilità di un evento per unità di tempo rimane costante.  
 - È la base del **metodo di Gillespie**, che usa proprio questa estrazione per decidere il momento del prossimo evento.
 
----
-
 ## 3. Algoritmo di Gillespie (Direct Method)
 
 ### 3.1 Idea generale
 
 L’idea alla base del metodo di Gillespie è sorprendentemente semplice: se conosciamo **quanto spesso** ciascun tipo di evento può verificarsi, possiamo simulare l’evoluzione del sistema un evento alla volta, rispettando le leggi di probabilità del processo.  
-In altre parole, invece di avanzare il tempo in piccoli passi fissi (come nelle simulazioni <u>deterministiche</u> basate sull'integrazione di equazioni differenziali), il tempo “salta” direttamente da un evento al successivo.
+In altre parole, invece di avanzare il tempo in piccoli passi fissi (come nelle simulazioni deterministiche basate sull'integrazione di equazioni differenziali), il tempo “salta” direttamente da un evento al successivo.
 
 Immaginiamo un sistema che può produrre $M$ tipi diversi di eventi: ad esempio, in un modello chimico potrebbero essere $M$ reazioni, in un’epidemia $M$ tipi di transizione (infetto → guarito, suscettibile → infetto, ecc.).  
 Per ogni evento $j$ conosciamo il suo **tasso di accadimento** $a_j(x)$, che dipende dallo stato corrente $x$ del sistema.
@@ -150,8 +139,6 @@ a_0(x) = \sum_{j=1}^{M} a_j(x).
 $$
 
 Questo valore rappresenta, intuitivamente, la **velocità complessiva** con cui il sistema “si muove” da uno stato al successivo.
-
----
 
 ### 3.2 Il passo di simulazione
 
@@ -179,8 +166,6 @@ A ogni iterazione della simulazione si compiono due scelte casuali fondamentali:
 
    In questo modo, eventi più probabili (con $a_j$ maggiore) hanno più possibilità di verificarsi.
 
----
-
 ### 3.3 Aggiornamento e ciclo
 
 Dopo aver determinato quale evento accade:
@@ -190,10 +175,8 @@ Dopo aver determinato quale evento accade:
 
 L’algoritmo genera così una sequenza di stati e tempi $(x_0, t_0), (x_1, t_1), \ldots$ che rappresentano un possibile percorso del sistema nel tempo.
 
-
 Il metodo di Gillespie è una **simulazione esatta** del processo stocastico sottostante: non usa approssimazioni di tempo, ma riproduce direttamente la sequenza casuale di eventi che il modello teorico predice.  
 Per questo è spesso definito un “microscopio” del caso: permette di vedere, passo dopo passo, come il comportamento complessivo di un sistema emerge dalla somma di eventi elementari e casuali.
-
 
 ### 3.2 Implementazione base
 
@@ -300,14 +283,13 @@ while state[0] > 0 and t < 100:
 ```
 
 **Risultato:** il numero di molecole $A$ diminuisce nel tempo in modo irregolare, con tempi di decadimento casuali.  
-Ogni traiettoria simulata mostra un andamento _a gradini_, ma la media su molte repliche segue un decadimento esponenziale con legge  
+Ogni traiettoria simulata mostra un andamento *a gradini*, ma la media su molte repliche segue un decadimento esponenziale con legge  
+
 $$  
 \langle A(t) \rangle = A_0 e^{-\lambda t}.  
 $$
 
 Questo esempio illustra chiaramente come l’algoritmo di Gillespie ricostruisca la dinamica microscopica degli eventi discreti, restituendo traiettorie individuali coerenti con il comportamento statistico previsto analiticamente.
-
-***
 
 ## 4. Estensioni e approssimazioni
 
@@ -330,16 +312,15 @@ $$
 
 dove $\nu_j$ è il vettore di variazione (la riga $j$ della matrice stechiometrica).  
 
-Tuttavia, questa approssimazione è valida solo se gli eventi sono **commutativi**, cioè se l’ordine in cui avvengono non cambia il risultato finale.[^non_commut] 
+Tuttavia, questa approssimazione è affidabile solo se, nell’intervallo $\Delta t$, l’ordine dettagliato degli eventi può essere trascurato con errore piccolo.[^non_commut]; ne caso gli eventi siano **commutativi**, l'aprrossimazione diventa esatta.
 Ciò accade nei processi puramente quantitativi, dove ciascun evento aggiunge o rimuove oggetti in modo indipendente (come nelle reazioni chimiche o nei modelli di nascita–morte).  
 Se invece gli eventi interagiscono o modificano la struttura del sistema, il tau-leaping può introdurre errori e richiede varianti più controllate.
 
 In queste condizioni, il **tau-leaping** permette di ridurre drasticamente il numero di iterazioni mantenendo una buona accuratezza, ed è un ponte naturale verso le **equazioni di Langevin chimiche**, dove le fluttuazioni vengono trattate come rumore continuo.
 
-[^non_commut]: L’assunzione di commutatività è valida quando gli eventi **cambiano solo il numero di oggetti** (molecole, individui, pacchetti, ecc.), senza introdurre vincoli o stati qualitativi, e le variazioni sono **additive** e indipendenti dal percorso.  
-Esempi tipici sono le reazioni chimiche del tipo $A \to B$ o $A + B \to C$, i modelli di nascita–morte o epidemici in cui $(S,I,R)$ rappresentano numeri di individui, e i sistemi di code o traffico dove le quantità cambiano in modo lineare.  
-In questi casi, l’ordine degli eventi in $\Delta t$ non influisce sullo stato finale.  
-Viceversa, la commutatività non vale quando gli eventi **modificano la struttura del sistema**, introducono **vincoli logici** (ad esempio: se $A$ é accaduto, $B$ non puó accadere) o **interazioni** tali che l’esito di un evento alteri la probabilità di un altro nello stesso intervallo: in tali situazioni il tau–leaping può introdurre errori sistematici (ad esempio il problema delle *negative populations*).
+[^non_commut]: Più precisamente, il tau-leaping non richiede una vera **commutatività esatta** degli eventi, ma assume che, in un intervallo $\Delta t$ sufficientemente piccolo, l’ordine interno degli eventi possa essere trascurato senza introdurre errori rilevanti. Questo accade quando i tassi $a_j(x)$ variano poco durante il salto e le variazioni prodotte dai singoli eventi sono piccole rispetto alla scala complessiva del sistema.  
+Nei sistemi puramente quantitativi, come molte reazioni chimiche o modelli di nascita--morte con popolazioni grandi, questa ipotesi è spesso ragionevole. In modelli come SIR, invece, gli eventi non sono strettamente commutativi: un’infezione modifica immediatamente il numero di infetti e quindi anche i tassi successivi, così come una guarigione. In questi casi il tau-leaping resta un’approssimazione utile solo se $\Delta t$ è scelto abbastanza piccolo.  
+Quando gli eventi modificano la struttura del sistema, introducono vincoli logici o possono produrre facilmente stati non ammissibili, l’approssimazione può deteriorarsi sensibilmente e richiedere varianti più controllate.
 
 ### 4.2 Metodi ibridi e approssimazioni continue
 
@@ -365,7 +346,6 @@ Queste approssimazioni, derivate direttamente dal formalismo stocastico di Gille
 Esse permettono di passare senza soluzione di continuità dal livello microscopico (eventi discreti) a quello mesoscopico o macroscopico (dinamiche medie e rumore continuo), mantenendo il legame formale con la teoria stocastica di partenza. 
 In questo regime non si esegue più una simulazione evento–per–evento come nel metodo di Gillespie, ma si integrano direttamente le corrispondenti equazioni stocastiche — un approccio che sarà approfondito nel capitolo *Rumore e dinamiche stocastiche*.
 
----
 ## 5. Applicazioni interdisciplinari
 
 ### 5.1 Reazioni chimiche
@@ -384,16 +364,13 @@ Lo stesso algoritmo si applica scegliendo i due tipi di eventi e aggiornando gli
 
 ### 5.3 Sistemi sociali e agent–based
 
-Ogni interazione tra agenti (adozione di un’idea, scambio, uscita da un gruppo) può essere trattata come un **evento discreto** con un proprio tasso.\
+Ogni interazione tra agenti (adozione di un’idea, scambio, uscita da un gruppo) può essere trattata come un **evento discreto** con un proprio tasso.
 Il framework di Gillespie fornisce un linguaggio unificato per descrivere tali dinamiche.
-
 
 ## 5. Applicazioni interdisciplinari
 
 L’approccio a eventi discreti non è confinato alla chimica o alla fisica statistica: è un linguaggio generale per descrivere **sistemi complessi** in cui i cambiamenti avvengono attraverso transizioni elementari, ciascuna con una certa probabilità per unità di tempo.  
 In questi contesti, l’algoritmo di Gillespie o le sue varianti forniscono un quadro unificato per simulare e analizzare l’evoluzione temporale dei sistemi.
-
----
 
 ### 5.1 Reazioni chimiche
 
@@ -429,9 +406,6 @@ Le prime due descrivono l’alternanza **stocastica** dello stato del gene (acce
 Quando le frequenze di accensione e spegnimento sono confrontabili con i tempi di produzione e degradazione, il numero di proteine mostra forti **fluttuazioni**:   la cellula produce impulsi di proteine durante i periodi “on”, separati da fasi “off” di silenzio.  
 Queste dinamiche a **burst** di espressione genica sono osservate sperimentalmente e rappresentano un esempio emblematico del ruolo del rumore intrinseco nei sistemi biologici discreti.
 
-
----
-
 ### 5.2 Modelli epidemiologici
 
 Il formalismo di Gillespie si adatta in modo naturale anche ai modelli di epidemie, dove le transizioni tra compartimenti avvengono in tempi casuali, come nel modello **SIR discreto** cha abbiamo giá incontrato allínizio del capitolo:
@@ -444,8 +418,6 @@ Il metodo riproduce le fluttuazioni casuali nel numero di infetti e permette di 
 Varianti più complesse includono:
 - **modelli a metapopolazioni** o su **reti di contatto**, dove ciascun nodo rappresenta una città o una comunità e gli eventi descrivono infezioni o spostamenti;  
 - **modelli multi–ceppo**, con eventi di mutazione o competizione fra varianti.
-
----
 
 ### 5.3 Sistemi sociali e agent–based
 
@@ -469,9 +441,6 @@ Un individuo non adottante può adottare con tasso proporzionale al numero $n_I$
 
 La logica è formalmente identica al modello epidemiologico, ma il significato del parametro $\beta$ cambia: non misura la probabilità di contagio biologico, bensì l’influenza sociale o la pressione imitativa nel processo di diffusione.
 
-
----
-
 ### 5.4 Altri contesti
 
 Il paradigma a eventi discreti trova applicazione anche in:
@@ -481,8 +450,6 @@ Il paradigma a eventi discreti trova applicazione anche in:
 - **neuroscienze** (potenziali d’azione di neuroni modellati come eventi di soglia).
 
 In tutti questi casi, ciò che conta è la possibilità di rappresentare la dinamica attraverso **transizioni stocastiche elementari**, mantenendo il legame tra livello microscopico (gli eventi) e fenomenologia macroscopica (le distribuzioni e le medie osservabili).
-
----
 
 ## Riferimenti
 
@@ -496,4 +463,3 @@ In tutti questi casi, ciò che conta è la possibilità di rappresentare la dina
 
 * Wilkinson, D. J. (2006). *Stochastic Modelling for Systems Biology*. CRC Press.
 
----
