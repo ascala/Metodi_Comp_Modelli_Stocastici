@@ -69,12 +69,12 @@ La probabilità $P(T<t)$ che sia avvenuto un evento al tempo $T<t$ soddisfa
 $$
 P(T < t+dt) = P(T < t) +[1-P(T < t)] \lambda dt
 $$
-ovvero
+da cui deriva
 $$
 P(T < t) = 1 - e^{-\lambda t}
 $$
 
-Distribuzione **esponenziale** $$p(t) = \lambda e^{-\lambda t}$$
+La corrispondente densità di probabilità è una **distribuzione esponenziale** $$p(t) = \lambda e^{-\lambda t}$$
 
 ---
 
@@ -98,7 +98,7 @@ Il sistema “attende” un tempo casuale prima del prossimo evento
 Se $U \sim \mathrm{Unif}(0,1)$:
 
 $$
-\tau = -\frac{1}{\lambda}\ln U
+\Delta t = -\frac{1}{\lambda}\ln U
 $$
 
 #### Idea
@@ -154,6 +154,7 @@ dove $x$ indica lo stato del sistema ed i tassi possono dipendere da $x$
 #### Interpretazione
 
 Tasso complessivo del sistema:
+
 \medskip
 * ogni evento ha una probabilità di accadere $a_i(x)dt$
 * gli eventi sono scorrelati/indipendenti
@@ -174,7 +175,7 @@ Tasso complessivo del sistema:
 1. tempo del prossimo evento:
 
 $$
-\tau = \frac{1}{a_0(x)}\ln\!\left(\frac{1}{U_1}\right)
+\Delta t = \frac{1}{a_0(x)}\ln\!\left(\frac{1}{U_1}\right)
 $$
 
 2. evento selezionato:
@@ -201,8 +202,8 @@ Se un evento dei possibili eventi avviene in un intervallo $[t,t+dt]$, allora:
 
 #### Evoluzione
 
-- aggiorna stato $x$
-- aggiorna tempo $t \to t+\tau$
+- aggiorna stato $x_i \to x_{i+1}$
+- aggiorna tempo $t_i \to t_{i+1} = t_i+\Delta t_i$
 - ripeti
 
 #### Output
@@ -218,7 +219,7 @@ $$
 ## Struttura del modello
 
 :::: {.columns}
-::: {.column width="60%"}
+::: {.column width="40%"}
 
 #### Due ingredienti
 \medskip
@@ -233,9 +234,9 @@ x \to x + \nu_j
 $$
 
 :::
-::: {.column width="40%"}
+::: {.column width="60%"}
 
-![](immagini/SaltiDiscretiEventDriven.png)
+![](immagini/SaltiDiscretiEventDriven.png){width=100%}
 
 :::
 ::::
@@ -269,10 +270,10 @@ $$
 
 #### Schema
 
-- calcola $a_j(x)$  
-- estrai $\tau$  
-- scegli evento  
-- aggiorna stato  
+- calcola $a_0([S,I,R])=a_1+a_2=\beta SI/N + \gamma I$  
+- estrai $\Delta t$  
+- scegli evento $\nu=[-1,1,0]$ con probabilità $a_1/a_0$ oppure evento $\nu=[0,-1,1]$ con probabilità $a_2/a_0$  
+- aggiorna stato  $[S,I,R]_t \to [S,I,R]_{t+\Delta t}=[S,I,R]_t+\nu$
 
 #### Idea
 
@@ -281,6 +282,9 @@ Codice molto semplice, modello generale
 ---
 
 ## Esempio semplice
+
+:::: {.columns}
+::: {.column width="50%"}
 
 #### Decadimento
 
@@ -294,21 +298,23 @@ $$
 a(x)=\lambda A
 $$
 
+:::
+::: {.column width="50%"}
+
 #### Risultato
 
 - traiettorie a gradini  
 - media esponenziale  
 
----
-
-## Limite del metodo
-
-#### Problema
+### Limite del metodo
 
 Se i tassi sono grandi:
 
 - troppi eventi
 - simulazione lenta
+
+:::
+::::
 
 ---
 
@@ -344,17 +350,19 @@ $$
 
 ## Validità
 
+:::: {.columns}
+::: {.column width="50%"}
+
 #### Condizione chiave
 
-Eventi **commutativi**
+Eventi **commutativi** 
 
 #### Significato
 
 L’ordine degli eventi non cambia il risultato
 
----
-
-## Quando funziona
+:::
+::: {.column width="50%"}
 
 #### Esempi
 
@@ -366,15 +374,22 @@ L’ordine degli eventi non cambia il risultato
 
 Variazioni additive sui conteggi
 
+:::
+::::
+
 ---
 
-## Collegamento continuo
+## Dal discreto al continuo
 
 #### Idea
 
-Da Gillespie → equazioni continue
+Da Gillespie → equazioni continue:
 
-#### Risultato
+* se simulo $N$ oggetti che subiscono transizioni con rate $\sim \lambda$, il sistema  ha un rate complessivo $\sim N \lambda$
+* il "passo" Gillespie (medio) scala come $\Delta t \sim 1/N\lambda$
+* per $N \to \infty$ $\Delta t \to 0$
+
+#### Risultato *(sto barando… non è così immediato)*
 
 $$
 dx = f(x)dt + G(x)dW_t
@@ -398,36 +413,6 @@ Langevin = strumento computazionale
 
 ---
 
-## Applicazioni
-
-#### Chimica
-
-- reazioni elementari
-- regolazione genica
-- sistemi cellulari
-
----
-
-## Applicazioni
-
-#### Epidemie
-
-- modelli SIR
-- reti di contatto
-- estinzione stocastica
-
----
-
-## Applicazioni
-
-#### Sistemi sociali
-
-- diffusione idee
-- imitazione
-- dinamiche di opinione
-
----
-
 ## Take-home message
 
 - sistemi reali spesso evolvono per eventi discreti
@@ -435,3 +420,4 @@ Langevin = strumento computazionale
 - Gillespie simula esattamente il processo
 - tau-leaping accelera la simulazione
 - nel limite continuo → equazioni stocastiche
+

@@ -117,31 +117,41 @@ Quantità adimensionale
 
 ## Struttura dell'autocorrelazione
 
-![width=90%](immagini/FiguraAutocorrelazioni.png)
+:::: {.columns}
+::: {.column width="70%"}
 
-### Osservazioni
+![](immagini/FiguraAutocorrelazioni.png)
+
+:::
+::: {.column width="30%"}
+
+\bigskip
+
+### Asintoti
+
+\bigskip
 
 - $R(\tau) \to \bar f^{\,2}$  
 - $C(\tau) \to 0$  
 - $\hat C(\tau) \to 0$  
 
----
+### Partenza
 
-## Significato
+\bigskip
 
-### Interpretazione
+- $R(0) = \bar{f^2}$  
+- $C(0) = \bar{f^2}-{\bar f}^{\,2}$  
+- $\hat C(0) = 1$  
 
-Se $\hat C(\tau)$ è grande:
-
-$\to$ il sistema "ricorda"  
-
-Se è piccolo:
-
-$\to$ il sistema ha dimenticato  
+:::
+::::
 
 ---
 
 ## Tempo di decorrelazione
+
+:::: {.columns}
+::: {.column width="50%"}
 
 ### Caso tipico
 
@@ -153,9 +163,8 @@ $$
 
 Tempo caratteristico di memoria
 
----
-
-## Significato pratico
+:::
+::: {.column width="50%"}
 
 ### Se $\tau \ll \tau_c$
 
@@ -164,6 +173,9 @@ campioni correlati
 ### Se $\tau \gg \tau_c$
 
 campioni quasi indipendenti  
+
+:::
+::::
 
 ---
 
@@ -199,9 +211,9 @@ $$
 
 ## Problema numerico
 
-Per ritardi grandi:
+Per ritardi grandi ($k\sim N$):
 
-- poche coppie disponibili  
+- poche coppie disponibili  (solo $\sim N-k$)
 - stima rumorosa  
 
 ### Quindi
@@ -219,6 +231,11 @@ Campioni correlati $\neq$ indipendenti
 $$
 N_{\mathrm{eff}} < N
 $$
+\bigskip
+
+In prima approssimazione, $N_{eff} \approx N/ \tau_c$
+
+\bigskip
 
 ### Conseguenza
 
@@ -228,7 +245,10 @@ Errore statistico più grande
 
 ## Monte Carlo
 
-Nei metodi MCMC:
+:::: {.columns}
+::: {.column width="50%"}
+
+### Nei metodi MCMC:
 
 - campioni correlati  
 - dipendenza dallo stato precedente  
@@ -237,9 +257,8 @@ Nei metodi MCMC:
 
 Serve l'autocorrelazione per valutare l'efficienza
 
----
-
-## Efficienza
+:::
+::: {.column width="50%"}
 
 ### Catena buona
 
@@ -249,9 +268,15 @@ decorrelazione veloce
 
 decorrelazione lenta  
 
+:::
+::::
+
 ---
 
 ## Costo computazionale
+
+:::: {.columns}
+::: {.column width="50%"}
 
 ### Metodo diretto
 
@@ -263,19 +288,26 @@ $$
 
 Troppo lento per grandi $N$
 
----
+:::
+::: {.column width="50%"}
 
-## Idea chiave
+### Idea chiave
 
 Autocorrelazione $\approx$ correlazione/convoluzione
 
 ### Conseguenza
 
-Nel dominio di Fourier → prodotto
+Nel dominio di Fourier $\to$ prodotto $\to$ $O(N)$ operazioni
+
+:::
+::::
 
 ---
 
 ## Metodo FFT
+
+:::: {.columns}
+::: {.column width="50%"}
 
 ### Procedura
 
@@ -284,13 +316,17 @@ Nel dominio di Fourier → prodotto
 3. moltiplico per il coniugato  
 4. trasformata inversa  
 
----
+:::
+::: {.column width="50%"}
 
-## Formula compatta
+### Formula compatta
 
 $$
 C = \mathcal{F}^{-1}\!\left(|\mathcal{F}(f-\bar f)|^2\right)
 $$
+
+:::
+::::
 
 ---
 
@@ -315,10 +351,8 @@ Calcolo molto più veloce
 - stimare campioni indipendenti  
 - valutare simulazioni  
 
----
+\bigskip
 
-## Take-home message
+### Take-home message
 
 La correlazione vera è nelle **fluttuazioni**, non nella media
-
----

@@ -140,7 +140,7 @@ $$
 
 ### Idea
 
-Si sceglie $\beta$ per ottenere il valore medio desiderato
+Si sceglie $\beta$ per ottenere il valore medio desiderato $\to$ *bisogna in genere risolvere un'equazione fortemente non lineare !!!*
 
 ---
 
