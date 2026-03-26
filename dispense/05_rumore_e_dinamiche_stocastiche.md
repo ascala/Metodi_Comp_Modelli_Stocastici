@@ -4,552 +4,981 @@ author: ""
 date: ""
 ---
 
-Il rumore non è soltanto un disturbo: in molti sistemi è parte integrante della dinamica.  
-Nei modelli stocastici, l’incertezza è rappresentata esplicitamente, e il comportamento medio emerge da molte realizzazioni del processo. La teoria di Langevin fornisce un linguaggio unificato per descrivere questi fenomeni, dal moto delle particelle al comportamento collettivo di popolazioni e agenti.
+In molti sistemi reali la dinamica osservata non è il risultato di una legge perfettamente deterministica. Anche quando esiste una tendenza media ben definita, il comportamento effettivo risente di fluttuazioni dovute a molte cause microscopiche, rapide, non osservabili nel dettaglio o semplicemente troppo numerose per essere modellate una per una. Le equazioni differenziali stocastiche (SDE, *stochastic differential equations*) nascono proprio per descrivere questa situazione: una componente regolare di evoluzione coesiste con una componente casuale.
 
-### Obiettivi didattici specifici
+Questa lezione introduce il formalismo di base delle SDE partendo dall’idea fisica di rumore bianco come forzante estremamente irregolare. Tale immagine è intuitivamente molto utile, ma non è sufficiente dal punto di vista matematico. Per ottenere una formulazione rigorosa bisogna passare dal rumore pensato come "funzione irregolare" al formalismo differenziale basato sul processo di Wiener. Da qui emergono naturalmente sia il calcolo di Ito sia il primo schema numerico fondamentale per la simulazione di traiettorie stocastiche: il metodo di Euler--Maruyama.
 
-1. Capire che cosa si intende per **rumore** in un sistema dinamico e da dove nasce.  
-2. Distinguere fra **rumore additivo** e **rumore moltiplicativo**.  
-3. Introdurre la forma concettuale dell’**equazione di Langevin**.  
-4. Interpretare le traiettorie stocastiche come famiglie di possibili evoluzioni.  
-5. Collegare le dinamiche stocastiche a fenomeni reali (fisici, biologici, sociali).
+## Obiettivi della lezione
 
-### Struttura della lezione
+Al termine della lezione lo studente dovrebbe essere in grado di:
 
-La lezione è articolata in cinque parti principali:
+1. spiegare perché in molti sistemi dinamici sia naturale introdurre un termine di rumore;
+2. distinguere fra rumore additivo e rumore moltiplicativo;
+3. interpretare l’equazione di Langevin come prototipo di SDE;
+4. comprendere perché il rumore bianco non possa essere trattato come una funzione ordinaria;
+5. scrivere una SDE nella forma differenziale di Ito;
+6. derivare in una dimensione la formula di Ito;
+7. costruire lo schema di Euler--Maruyama;
+8. distinguere tra accuratezza forte e accuratezza debole;
+9. riconoscere esempi applicativi in diversi ambiti.
 
-1. **Rumore e fluttuazioni nei modelli reali** – da errore sperimentale a fattore dinamico.  
-2. **Concetto di equazione stocastica** – l’idea di evoluzione casuale nel tempo.  
-3. **Equazione di Langevin** – modello base del moto browniano.  
-4. **Simulazioni numeriche di traiettorie** – metodo di Euler–Maruyama (intuitivo).  
-5. **Esempi interdisciplinari** – diffusione, apprendimento, mercati, reti sociali.
+## Struttura
 
----
+1. Perché introdurre il rumore nei modelli dinamici
+2. Equazione di Langevin e prima forma intuitiva di SDE
+3. Dal rumore bianco al processo di Wiener
+4. Il calcolo di Ito
+5. Integrazione numerica: Euler--Maruyama
+6. Stabilità, accuratezza forte e debole
+7. Esempi interdisciplinari
+8. Sintesi finale
 
-## 1. Rumore e fluttuazioni nei modelli reali
+# 1. Perché introdurre il rumore nei modelli dinamici
 
-Quando si costruisce un modello dinamico ci si trova spesso a distinguere tra le componenti prevedibili dell evoluzione e quelle che riflettono variabilita intrinseca o fattori non osservati. In un modello deterministico ogni stato futuro e fissato una volta specificate le condizioni iniziali, ma molti sistemi reali mostrano deviazioni sistematiche da questa idealizzazione. Tali deviazioni non sono semplici imperfezioni sperimentali. In numerosi contesti rappresentano invece una componente strutturale della dinamica.
+In un modello deterministico, una volta assegnata la condizione iniziale, l’evoluzione futura è completamente fissata. Questa impostazione è spesso un primo passo utile, ma in molte situazioni reali non basta. Le variabili osservate fluttuano anche in presenza di condizioni iniziali molto simili, e tale variabilità non è un semplice errore sperimentale: è parte integrante del fenomeno.
 
-Nei sistemi fisici le collisioni molecolari avvengono con tempi ed intensitá che fluttuano attorno a valori medi. Nelle reazioni chimiche elementari il numero di urti efficaci varia casualmente da un intervallo temporale al successivo. In epidemiologia il momento esatto in cui un individuo infetto trasmette il contagio a un suscettibile dipende da interazioni irregolari e non sincronizzate. Nei mercati finanziari la sovrapposizione di scelte eterogenee produce oscillazioni nei prezzi anche in assenza di segnali macroeconomici evidenti. Nei sistemi sociali le risposte individuali a stimoli comuni manifestano una dispersione che non puó essere ridotta a un semplice errore di misura.
+Gli esempi sono numerosi.
 
-Il termine rumore indica l'effetto aggregato di tali cause non modellate che tuttavia presentano una regolarita statistica sufficiente per essere descritte mediante modelli probabilistici. Introdurre il rumore in un modello significa riconoscere che la dinamica osservata emerge dalla combinazione di una tendenza media e di fluttuazioni attorno ad essa. Questa distinzione permette di catturare fenomeni la cui variabilita non e un semplice dettaglio ma una proprieta fondamentale.
+In fisica, una particella immersa in un fluido subisce urti molecolari continui e irregolari. In chimica, il numero di collisioni efficaci in un intervallo di tempo piccolo non è perfettamente prevedibile. In biologia, l’espressione genica dipende da eventi discreti e rumorosi a livello cellulare. In finanza, i prezzi riflettono una sovrapposizione di decisioni eterogenee. Nelle scienze sociali, individui esposti allo stesso stimolo non reagiscono in modo perfettamente uniforme.
 
-Una prima classificazione distingue tra rumore additivo e rumore moltiplicativo. Nel rumore additivo si introduce una perturbazione che non dipende dallo stato della variabile, e che agisce come un contributo esterno che si somma alla dinamica deterministica. Nel rumore moltiplicativo l´intensita delle fluttuazioni dipende invece dal valore della variabile stessa, come accade ad esempio nei processi di reazione popolazione in cui la variabilita delle trasformazioni aumenta al crescere del numero di individui disponibili. Questa distinzione é cruciale perche conduce a comportamenti qualitativamente diversi e richiede metodi di analisi e di simulazione appropriati.
+L’idea di base è allora la seguente: la dinamica osservata è il risultato della combinazione di
 
----
+- una **parte sistematica**, che descrive la tendenza media;
+- una **parte fluttuante**, che descrive l’effetto aggregato di molte cause irregolari.
 
-## 2. Concetto di equazione stocastica
+Questa seconda componente viene chiamata **rumore**.
 
-Il punto di partenza è il moto browniano, osservato da Robert Brown nel 1827 come movimento irregolare di minuscole particelle sospese in un fluido. Questo fenomeno, apparentemente caotico, si presta però a una lettura più generale: quando un sistema interagisce con un ambiente complesso composto da molti elementi, l’effetto complessivo di tali interazioni può essere trattato come una sorgente di variabilità non prevedibile nel dettaglio.
+> **Idea chiave**  
+> Il rumore non è necessariamente un difetto del modello. Spesso è il modo corretto di rappresentare l’effetto collettivo di molti gradi di libertà non risolti.
 
-Einstein e Smoluchowski, nei primi anni del Novecento, mostrarono che il moto browniano può essere interpretato come il risultato di fluttuazioni microscopiche che, su scale temporali più lunghe, generano una dinamica di diffusione. La loro analisi mise in relazione l’irregolarità delle interazioni locali con una regolarità statistica a livello macroscopico. Paul Langevin riformulò queste idee introducendo un’equazione che combina una forza deterministica con un termine stocastico, fornendo un modello compatto per descrivere sistemi soggetti a variabilità rapida e non controllabile.
+## 1.1 Rumore additivo e rumore moltiplicativo
 
-Per illustrare la struttura del modello, consideriamo una variabile che evolve nel tempo sotto l’azione di due contributi. Il primo è una tendenza sistematica che riflette meccanismi noti e riproducibili. Il secondo è un contributo casuale che rappresenta l’effetto aggregato di molte influenze piccole e indipendenti. Nel caso originario studiato da Langevin, la variabile è la velocità $v(t)$ di una particella di massa $m$, e l’equazione assume la forma
+Una prima distinzione importante riguarda il modo in cui il rumore entra nell’equazione.
 
-$$
-m\,\frac{dv}{dt} = -\gamma v + \sqrt{2D\gamma^2}\,\eta(t)
-$$
-
-Langevin descriveva quindi la forza agente sulla particella come composta da due parti. La forza deterministica classica $-\gamma v$ rappresenta la viscosità del mezzo e descrive il contributo dissipativo che frena il moto della particella. La forza casuale $\sqrt{2D\gamma^2}\,\eta(t)$ rappresenta invece l’azione irregolare degli urti con le molecole dell’ambiente. Il parametro $D$ controlla l’intensità di queste fluttuazioni e definisce la scala della diffusione osservata.
-
-Il processo $\eta(t)$ è modellato come rumore bianco gaussiano, un contributo variabile nel tempo con media nulla e correlazione concentrata nell’istante:
-
-$$
-\langle \eta(t) \rangle = 0, \qquad
-\langle \eta(t)\eta(t') \rangle = \delta(t - t') .
-$$
-
-Queste proprietà esprimono l’idea che le fluttuazioni agiscano in modo rapido, imprevedibile e non correlato nel tempo. Pur essendo un’idealizzazione, questa scelta permette di rappresentare in maniera efficace molti fenomeni in cui il dettaglio delle interazioni elementari non è disponibile o non è rilevante rispetto al comportamento complessivo.
-
-Questa prospettiva conduce allo studio delle equazioni differenziali stocastiche, che generalizzano le equazioni deterministiche introducendo un termine di rumore. In forma astratta, una variabile $x(t)$ che rappresenta una quantità osservabile (come la posizione di una particella, il numero di individui infetti, la concentrazione di una sostanza chimica o anche il prezzo di un’azione) può essere modellata come
+Nel **rumore additivo**, l’intensità della fluttuazione non dipende dallo stato del sistema. Per esempio,
 
 $$
-\frac{dx}{dt} = a(x,t) + b(x,t)\,\eta(t)
+dx = a(x,t)\,dt + \sigma\,dW_t.
 $$
 
-dove $a(x,t)$ descrive la dinamica media del sistema e $b(x,t)\eta(t)$ rappresenta il contributo stocastico che introduce fluttuazioni. Questa forma sintetizza l’idea fondamentale delle  **equazioni differenziali stocastiche** (SDE, *Stochastic Differential Equations*) : l’evoluzione temporale di una variabile è il risultato combinato di un meccanismo sistematico (deterministico) e di un disturbo casuale (stocastico). Esse permettono di descrivere quantitativamente sistemi dinamici soggetti a **rumore aleatorio continuo nel tempo**; le traiettorie risultanti non sono quindi singole curve deterministiche ma famiglie di possibili evoluzioni, ciascuna delle quali riflette una realizzazione diversa del processo di rumore. L’idea di fondo è estendere le equazioni differenziali ordinarie (ODE) per includere, oltre al termine deterministico, un contributo dovuto al rumore, modellato tramite il **moto browniano** o processi affini.
-
----
-
-## 3. Perché serve un nuovo formalismo: dal rumore bianco al calcolo di Ito
-
-L’equazione stocastica scritta nella forma “alla Leibniz”
+Nel **rumore moltiplicativo**, invece, l’intensità del rumore dipende dalla variabile stessa. Per esempio,
 
 $$
-dx = a(x,t)\,dt + b(x,t)\,\eta(t)\,dt
+dx = a(x,t)\,dt + \sigma x\,dW_t.
 $$
 
-è intuitiva ma non ancora rigorosa. Il motivo è che il processo $\eta(t)$, quando modellato come rumore bianco gaussiano, non può essere trattato come una funzione ordinaria del tempo: le sue realizzazioni sono estremamente irregolari, non possiedono derivata e presentano oscillazioni arbitrariamente rapide. Di conseguenza l’oggetto $\eta(t)$ non può essere manipolato come una quantità analoga a quelle che compaiono nelle equazioni differenziali classiche.
+Nel secondo caso, se $|x|$ aumenta, aumentano anche le fluttuazioni tipiche. Questo rende il problema qualitativamente più ricco e, come vedremo, rende importante specificare con precisione il significato dell’equazione.
 
-In questa forma, quindi, l’espressione $\,\eta(t)\,dt\,$ non è il prodotto di due infinitesimi ordinari, ma un modo informale per rappresentare un contributo stocastico infinitesimo con media nulla e varianza proporzionale all’intervallo di tempo considerato. Per passare a un trattamento matematicamente consistente si introduce un diverso approccio: invece di lavorare direttamente con $\eta(t)$, si considerano i suoi incrementi integrati, che sono oggetti ben definiti e con proprietà statistiche controllate.
+# 2. Equazione di Langevin e prima forma intuitiva di SDE
 
-Questo cambiamento porta alla forma differenziale usata nel calcolo stocastico, in cui il termine di rumore appare come un incremento casuale con varianza proporzionale a $dt$. L’equazione diventa così
+Il punto di partenza storico è il moto browniano. Una particella microscopica sospesa in un fluido non segue una traiettoria liscia e regolare, ma un moto irregolare dovuto agli urti con le molecole dell’ambiente. Langevin propose di descrivere questa situazione separando una componente dissipativa da una componente casuale.
 
-$$
-dx = a(x,t)\,dt + b(x,t)\,dW(t) ,
-$$
-
-dove $dW(t)$ rappresenta un incremento infinitesimo di un processo con media nulla e varianza $dt$. Il vantaggio di questa riscrittura è che gli incrementi $dW(t)$ hanno una definizione precisa e permettono di sviluppare un calcolo coerente, a partire dalle relazioni fondamentali
+Nel caso più semplice, per la velocità $v(t)$ di una particella di massa $m$, si scrive
 
 $$
-\langle dW(t) \rangle = 0 , \qquad \langle dW(t)^2 \rangle = dt .
-$$
-
-Queste proprietà mostrano che $dW(t)$ è dell’ordine di $\sqrt{dt}$ e che il suo quadrato non è trascurabile, a differenza del calcolo ordinario in cui si assume $dt^2 = 0$.
-
-Su queste basi nasce il calcolo di Ito, che definisce in modo rigoroso le regole per trattare i differenziali stocastici. Per una funzione sufficientemente regolare $f(x,t)$ si ottiene la formula di Ito
-
-$$
-df = \frac{\partial f}{\partial t}\,dt + \frac{\partial f}{\partial x}\,dx + \frac12\,\frac{\partial^2 f}{\partial x^2}\,b(x,t)^2\,dt ,
-$$
-
-che evidenzia il termine correttivo aggiuntivo, assente nel calcolo classico e dovuto al contributo di ordine $dW(t)^2 = dt$.
-
-Accanto a questa interpretazione esiste anche quella di Stratonovich, indicata con
-
-$$
-dx = a_S(x,t)\,dt + b(x,t)\circ dW(t),
-$$
-
-più vicina alle regole del calcolo ordinario e spesso utilizzata quando il rumore deriva dal limite di segnali fisici con correlazione molto breve ma non nulla. Nel seguito adotteremo l’interpretazione di Ito, che è lo standard nella teoria matematica delle SDE e costituisce la base dei metodi di simulazione numerica come l’algoritmo di Euler–Maruyama.
-
----
-
-## 4. Simulazioni numeriche di traiettorie: lo schema di Euler–Maruyama
-
-Una volta introdotta l’equazione stocastica
-
-$$
-dx = a(x,t)\,dt + b(x,t)\,dW(t),
-$$
-
-il passo successivo è capire come approssimarla numericamente. L’idea di base è la stessa del metodo di Eulero per le ODE: suddividere l’intervallo temporale in passi di ampiezza $\Delta t$ e approssimare gli incrementi infinitesimi con valori discreti.
-
-Nel caso stocastico, l’incremento del processo di Wiener su un passo di ampiezza $\Delta t$ è distribuito come una variabile gaussiana con media nulla e varianza $\Delta t$, cioè
-
-$$
-\Delta W_n \sim \mathcal{N}(0,\Delta t).
-$$
-
-Lo schema di Euler–Maruyama approssima la dinamica stocastica sostituendo $dW(t)$ con $\Delta W_n$ e valutando i coefficienti nel punto noto $x_n$. Si ottiene così la ricorrenza discreta
-
-$$
-x_{n+1}
-= x_n
-+ a(x_n,t_n)\,\Delta t
-+ b(x_n,t_n)\,\Delta W_n .
-$$
-
-Se si scrive $\Delta W_n = \sqrt{\Delta t}\,\xi_n$ con $\xi_n \sim \mathcal{N}(0,1)$, la formula assume la forma più comune
-
-$$
-x_{n+1}
-= x_n
-+ a(x_n,t_n)\,\Delta t
-+ b(x_n,t_n)\,\sqrt{\Delta t}\,\xi_n .
-$$
-
-Questo schema è l’analogo diretto del metodo di Eulero esplicito per le equazioni deterministiche, con l’aggiunta del termine stocastico che produce fluttuazioni passo per passo. Ogni realizzazione della sequenza $\xi_n$ genera una traiettoria diversa, ma l’insieme di tali traiettorie riproduce la dinamica media descritta dall’equazione di partenza.
-
-### Esempio in Python
-
-Il codice seguente simula una SDE unidimensionale con drift $f(x)$ e intensità del rumore costante $\sigma$:
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-def langevin(f, sigma, x0, dt, N):
-    x = np.zeros(N)
-    x[0] = x0
-    for n in range(N-1):
-        dW = np.sqrt(dt) * np.random.randn()
-        x[n+1] = x[n] + f(x[n]) * dt + sigma * dW
-    return x
-
-# esempio: processo con drift negativo
-f = lambda x: -0.5 * x
-x = langevin(f, sigma=0.3, x0=1.0, dt=0.01, N=1000)
-
-plt.plot(x)
-plt.xlabel("passo temporale")
-plt.ylabel("x")
-plt.show()
-```
-
-Il risultato è una singola traiettoria generata dal rumore. Ripetendo la simulazione più volte si ottengono percorsi diversi, ma il comportamento medio riflette la dinamica della SDE da cui il modello è stato costruito.
-
-### 4.1 Considerazioni sulla stabilità numerica
-
-Lo schema di Euler–Maruyama è semplice da implementare, ma la sua stabilità non è garantita per qualunque scelta del passo $\Delta t$. A differenza del caso deterministico, infatti, la presenza del rumore modifica profondamente la risposta numerica del sistema.
-
-Per fissare le idee, consideriamo la SDE lineare
-
-$$
-dx = -\lambda x\,dt + \sigma\,dW(t),
-$$
-
-che rappresenta il processo di Ornstein–Uhlenbeck. La soluzione esatta è stabile per qualunque $\lambda > 0$, ma la discretizzazione Euler–Maruyama è stabile solo se
-
-$$
-1 - \lambda\,\Delta t \quad \text{rimane in un intervallo compatibile con la dinamica stocastica}.
-$$
-
-In pratica, se $\Delta t$ è troppo grande, lo schema può produrre divergenze numeriche anche quando il modello continuo è perfettamente stabile.
-
-La scelta del passo $\Delta t$ è quindi cruciale e dipende da diversi fattori:
-
-1. **Stabilità del drift**. Processi con forze restauratrici molto intense richiedono passi più piccoli per evitare instabilità del termine $a(x,t)\,\Delta t$.
-
-2. **Intensità del rumore**. Il termine $b(x,t)\,\sqrt{\Delta t}\,\xi_n$ introduce fluttuazioni proporzionali a $\sqrt{\Delta t}$; un passo troppo grande amplifica artificialmente le oscillazioni.
-
-3. **Regione dello spazio degli stati**. In molte SDE (per esempio popolazioni o concentrazioni chimiche), valori negativi delle variabili non sono fisicamente significativi; Euler–Maruyama può violare la positività e richiedere varianti “positive”.
-
-4. **Errore forte ed errore debole**. Lo schema è di ordine
-   
-   - $1/2$ in senso forte (accuratezza sulle traiettorie individuali),
-   - $1$ in senso debole (accuratezza sulle medie e distribuzioni).
-     Questo implica che, per ricostruire una singola traiettoria con buona risoluzione, occorrono passi più piccoli rispetto a quelli necessari per stime statistiche aggregate.
-
-5. **Sensibilità ai coefficienti non regolari**. Se $a(x,t)$ o $b(x,t)$ sono molto ripidi o non lisci, il metodo può richiedere passi notevolmente più piccoli rispetto ai casi più regolari.
-
-In sintesi, Euler–Maruyama è efficace e versatile, ma va utilizzato con attenzione. La stabilità dipende sia dal drift sia dall’intensità del rumore, e la scelta del passo temporale influenza direttamente la correttezza sia delle traiettorie sia delle distribuzioni simulate. Nelle sezioni successive verranno discussi metodi più robusti e criteri operativi per la scelta dei parametri numerici.
-
----
-
-## 5. Esempi interdisciplinari
-
-Le equazioni stocastiche costituiscono un linguaggio comune per descrivere sistemi nei quali una tendenza media è accompagnata da fluttuazioni non prevedibili nel dettaglio. Ogni disciplina introduce termini con significato specifico, ma la struttura concettuale rimane invariata: un drift che rappresenta la dinamica sistematica e un termine di rumore che sintetizza l’effetto di molte influenze piccole, rapide e irregolari.
-
-### 5.1 Fisica: oscillatore armonico con rumore (e un primo esempio vettoriale)
-
-Un modello semplice e molto utilizzato in fisica statistica è l’oscillatore armonico immerso in un ambiente termico. La variabile di stato è composta da posizione $x(t)$ e velocità $v(t)$, che evolvono secondo
-
-$$
-dx = v\,dt, \qquad
-dv = -\gamma\,v\,dt - k\,x\,dt + \sigma\,dW(t).
-$$
-
-Il termine $-k\,x$ rappresenta la forza elastica che tende a riportare l’oscillatore verso la posizione di equilibrio, mentre il termine $-\gamma\,v$ descrive l’azione dissipativa dell’ambiente, che smorza il movimento nel tempo. Il rumore $\sigma\,dW(t)$ introduce le fluttuazioni termiche dovute all’interazione con le molecole del mezzo circostante.
-
-In questo modello il rumore agisce solo sulla velocità. Questa scelta riflette il fatto che, nelle scale fisiche in cui l’oscillatore è studiato (ad esempio un colloide in sospensione o un oscillatore meccanico microscopico), sono gli urti dell’ambiente a modificare direttamente la velocità, mentre la posizione viene influenzata in modo indiretto tramite la dinamica deterministica. In altri sistemi, o a scale diverse, il rumore potrebbe invece agire anche o solo sulla posizione.
-
-Questa SDE può essere riscritta in forma compatta come equazione vettoriale. Definiamo
-
-$$
-X(t) = 
-\begin{pmatrix}
-x(t) \\
-v(t)
-\end{pmatrix}.
-$$
-
-Allora l’oscillatore armonico stocastico si scrive come
-
-$$
-dX = A\,X\,dt + B\,dW(t),
+m\,\frac{dv}{dt} = -\gamma v + \sigma\,\eta(t),
 $$
 
 dove
 
+- $-\gamma v$ rappresenta l’attrito viscoso;
+- $\sigma$ misura l’intensità della forza casuale;
+- $\eta(t)$ rappresenta il rumore bianco.
+
+Dal punto di vista fisico, $\eta(t)$ viene pensato come una forzante molto irregolare, con media nulla e correlazione istantanea:
+
 $$
-A =
-\begin{pmatrix}
-0 & 1 \\
--k & -\gamma
-\end{pmatrix},
+\langle \eta(t) \rangle = 0,
 \qquad
-B =
-\begin{pmatrix}
-0 \\
-\sigma
-\end{pmatrix}.
+\langle \eta(t)\eta(t') \rangle = \delta(t-t').
 $$
 
-Questa notazione evidenzia due aspetti importanti:
-
-1. **Struttura deterministica lineare.**  
-   La matrice $A$ governa il comportamento medio del sistema, combinando oscillazione elastica e smorzamento.
-
-2. **Rumore che agisce su una sola componente.**  
-   La matrice $B$ mostra che la sorgente stocastica interviene direttamente solo sulla velocità $v(t)$, mentre la posizione $x(t)$ risente del rumore solo in modo indiretto, attraverso l’accoppiamento deterministico con la velocità.
-
-La forma matriciale è utile perché generalizza immediatamente a sistemi con molte variabili, tipici della fisica dei sistemi complessi (dinamica molecolare lineare, reti lineari di oscillatori, modelli di vibrazioni, metodi di riduzione dimensionale). Inoltre facilita la connessione con la teoria dei processi gaussiani e dei sistemi lineari stocastici, permettendo analisi spettrali e soluzioni esplicite in termini di matrici di propagatore.
-
-### 5.2 Chimica: dinamica attivata in un potenziale a doppio pozzo
-
-Molte reazioni chimiche e processi molecolari sono descritti come transizioni fra stati metastabili separati da una barriera energetica. Un modello prototipico considera un potenziale a doppio pozzo
+Generalizzando, si arriva alla forma intuitiva
 
 $$
-U(x) = \frac{1}{4}x^4 - \frac{1}{2}x^2,
+\frac{dx}{dt} = a(x,t) + b(x,t)\eta(t).
 $$
 
-con due minimi stabili in $x = \pm 1$. La dinamica sovra-smorzata di un reagente o di una coordinata molecolare è modellata dalla Langevin sovra-smorzata
+Questa è la forma con cui storicamente si introduce una SDE: un termine di drift $a(x,t)$ descrive la tendenza media, mentre $b(x,t)\eta(t)$ rappresenta la parte fluttuante.
+
+> **Osservazione**  
+> Questa scrittura è molto utile per l’intuizione fisica. Tuttavia, non è ancora la formulazione matematica rigorosa.
+
+# 3. Dal rumore bianco al processo di Wiener
+
+## 3.1 Il rumore bianco come funzione estremamente irregolare
+
+Dal punto di vista della fisica è naturale immaginare $\eta(t)$ come una funzione del tempo estremamente irregolare: cambia rapidamente, oscilla in modo imprevedibile, non presenta una struttura liscia. Questa immagine è importante, perché spiega bene che cosa si voglia modellare.
+
+Ma proprio qui nasce il problema matematico. Se si scrive
 
 $$
-dx = -\nabla U(x)\,dt + \sigma\,dW(t),
+\frac{dx}{dt} = a(x,t) + b(x,t)\eta(t),
 $$
 
-ossia
+si sta implicitamente trattando $\eta(t)$ come una funzione ordinaria. In realtà il rumore bianco gaussiano non è una funzione classica. È un oggetto troppo singolare per essere manipolato con il calcolo differenziale usuale.
+
+In particolare, non ha senso attribuirgli le stesse proprietà di regolarità che si attribuiscono a una funzione liscia o anche solo continua. Per questo motivo la scrittura con $\eta(t)$ deve essere interpretata come una rappresentazione intuitiva, non come il punto di partenza rigoroso.
+
+## 3.2 L’idea corretta: lavorare con gli incrementi
+
+Per rendere la teoria ben definita si smette di ragionare sulla "funzione" $\eta(t)$ istante per istante e si passa invece ai suoi incrementi integrati. Si introduce allora un processo $W_t$, detto **processo di Wiener** o **moto browniano**, tale che formalmente
 
 $$
-dx = -(x^3 - x)\,dt + \sigma\,dW(t).
+\eta(t) = \frac{dW_t}{dt}.
 $$
 
-Il termine $-U'(x)$ tende a mantenere il sistema in uno dei pozzi (stati metastabili), mentre $\sigma\,dW(t)$ rappresenta le fluttuazioni termiche che permettono, occasionalmente, di superare la barriera. Questo meccanismo è alla base del modello di Kramers per la **cinematica delle reazioni attivate**, e descrive fenomeni quali:
+Questa relazione non va intesa in senso classico. Serve solo a motivare il passaggio al formalismo corretto.
 
-- la transizione tra conformazioni molecolari,
-- lo scatto fra stati chimici in reazioni bistabili,
-- la dinamica di attivazione termica in complessi instabili,
-- la stabilità termica di stati attivati in chimica fisica.
+Il processo di Wiener è definito dalle seguenti proprietà:
 
-In questo contesto il rumore fornisce l’energia necessaria per attraversare la barriera, mentre la parte deterministica del modello descrive il ritorno verso uno dei minimi.
+1. $W_0 = 0$;
+2. gli incrementi su intervalli disgiunti sono indipendenti;
+3. per $t > s$, l’incremento $W_t - W_s$ è distribuito normalmente con media nulla e varianza $t-s$.
 
-### 5.2 Biologia: espressione genica e dinamiche cellulari
-
-Nei processi cellulari la produzione di proteine avviene in modo discontinuo e soggetto a variabilità intrinseca. Un modello semplice per la concentrazione $x(t)$ di una proteina può assumere la forma
+In simboli,
 
 $$
-dx = \bigl(\alpha - \beta x\bigr)\,dt + \sigma\,dW(t),
+W_t - W_s \sim \mathcal{N}(0,t-s).
 $$
 
-dove $\alpha$ è il tasso medio di produzione, $\beta x$ il tasso medio di degradazione e il termine stocastico rappresenta le fluttuazioni dovute al numero discreto di eventi di trascrizione e traduzione. Tali modelli descrivono bene l’ampia variabilità misurata in cellule geneticamente identiche.
-
-### 5.3 Economia e finanza: moto geometrico browniano
-
-Nei mercati finanziari si modellano spesso i prezzi come grandezze che crescono in media ma sono soggette a shock improvvisi. Il modello classico per il prezzo $S_t$ di un attivo rischioso è il moto geometrico browniano
+Su un piccolo intervallo temporale $dt$, l’incremento infinitesimo $dW_t$ soddisfa quindi formalmente
 
 $$
-dS_t = \mu\,S_t\,dt + \sigma\,S_t\,dW(t),
+\langle dW_t \rangle = 0,
+\qquad
+\langle dW_t^2 \rangle = dt.
 $$
 
-in cui $\mu$ rappresenta il tasso di crescita medio (drift) e $\sigma S_t dW(t)$ la componente di volatilità che amplifica il rumore in proporzione al livello del prezzo. Questo modello costituisce la base di molte equazioni di valutazione in finanza quantitativa.
+## 3.3 Forma generale di una SDE e terminologia di base
 
-### 5.4 Ecologia: popolazioni e dinamiche ambientali
-
-Le popolazioni biologiche sono soggette a variabilità ambientale e demografica. Un modello stocastico per la popolazione $x(t)$ può essere
+Una volta introdotto il processo di Wiener $W_t$, la forma rigorosa di una equazione differenziale stocastica in una dimensione si scrive come
 
 $$
-dx = r\,x\,(1 - x/K)\,dt + \sigma\,x\,dW(t),
+dx = a(x,t)\,dt + b(x,t)\,dW_t.
 $$
 
-dove $r$ è il tasso di crescita, $K$ la capacità portante dell’ambiente e $\sigma x dW(t)$ rappresenta fluttuazioni proporzionali alla dimensione della popolazione, ad esempio dovute a condizioni ambientali imprevedibili. Il rumore moltiplicativo cattura l’idea che le oscillazioni siano più intense nelle popolazioni numerose.
+Questa equazione contiene due contributi concettualmente distinti.
 
-### 5.5 Ingegneria: sistemi con rumore di misura e attuatori imperfetti
-
-Nei sistemi di controllo ingegneristici le SDE descrivono l’evoluzione di segnali affetti da rumore sensoristico o da imperfezioni nella risposta degli attuatori. Un modello tipico per la dinamica di uno stato $x(t)$ è
+Il termine
 
 $$
-dx = f(x,t)\,dt + G(x,t)\,dW(t),
+a(x,t)\,dt
 $$
 
-dove $f(x,t)$ rappresenta la dinamica deterministica del sistema (ad esempio un modello meccanico o elettrico) e $G(x,t)dW(t)$ sintetizza il rumore di misura, le vibrazioni o l’incertezza sulle forze applicate. Questo formalismo è alla base dei filtri di stima come il filtro di Kalman esteso o il filtro di Kalman stocastico.
+descrive la parte regolare dell’evoluzione e prende il nome di **drift**. Esso rappresenta la tendenza media del sistema in assenza di fluttuazioni.
 
-### 5.6 Scienze sociali e reti: diffusione dell’informazione e scelte individuali
-
-Nei sistemi sociali le decisioni individuali variano nel tempo a causa di stimoli esterni, incertezza, imitazione o esposizione casuale all’informazione. Un modello continuo della propensione $x(t)$ di un individuo a compiere una certa scelta può essere
+Il termine
 
 $$
-dx = \bigl(-\gamma x + F(t)\bigr)\,dt + \sigma\,dW(t),
+b(x,t)\,dW_t
 $$
 
-dove $F(t)$ rappresenta l’influenza sociale o informativa (notizie, contatti, opinioni del vicinato) e il termine stocastico descrive la variabilità imprevedibile del comportamento. Nei modelli di diffusione su reti, gli agenti possono essere trattati come particelle che si muovono in modo casuale su un grafo, propagando informazione in modo analogo ai processi diffusivi.
+descrive invece la parte stocastica della dinamica. La funzione $b(x,t)$ misura quanto intensamente il rumore agisce sul sistema e viene spesso chiamata **coefficiente di diffusione** oppure **coefficiente del rumore**.
 
----
+In altre parole:
 
-Questi esempi mostrano come la stessa struttura matematica possa descrivere fenomeni molto diversi, fornendo un linguaggio unificato per lo studio di sistemi complessi in cui la componente stocastica non è un semplice disturbo, ma una parte fondamentale della dinamica.
+- $a(x,t)$ determina la direzione media dell’evoluzione;
+- $b(x,t)$ determina l’ampiezza delle fluttuazioni casuali;
+- $b(x,t)\,dW_t$ è il **termine stocastico** della SDE.
 
----
+Se $b(x,t)$ è costante, il rumore è detto **additivo**. Se invece dipende dallo stato $x$, il rumore è detto **moltiplicativo**.
 
-## Riferimenti
-
-* Langevin, P. (1908). *Sur la théorie du mouvement brownien*. C. R. Acad. Sci. 146: 530–533.
-* Gardiner, C. (2004). *Handbook of Stochastic Methods*. Springer.
-* Risken, H. (1989). *The Fokker–Planck Equation*. Springer.
-* Higham, D. J. (2001). *An Algorithmic Introduction to Numerical Simulation of Stochastic Differential Equations*. SIAM Review, 43(3): 525–546.
-* Gillespie, D. T. (2000). *The chemical Langevin equation*. J. Chem. Phys. 113(1): 297–306.
-
----
-
-### Appendice: il formalismo di Leibniz e la formula di Ito
-
-Prima di introdurre il calcolo stocastico, è utile ricordare come funziona il formalismo di Leibniz nelle equazioni differenziali ordinarie. Consideriamo una semplice ODE
+Questa terminologia sarà utile anche più avanti: quando parleremo di integrali di Ito e di Stratonovich, la differenza riguarderà precisamente il modo in cui viene interpretato e discretizzato l’integrale stocastico associato al termine
 
 $$
-\frac{dx}{dt} = a(x,t).
+b(X_t,t)\,dW_t.
 $$
 
-Scritta “alla Leibniz”, questa relazione diventa
+## 3.4 Perché $dW_t$ è dell’ordine di $\sqrt{dt}$
+
+Poiché la varianza di $dW_t$ è $dt$, la dimensione tipica delle sue fluttuazioni è dell’ordine di $\sqrt{dt}$. Questo non significa che $dW_t = \sqrt{dt}$, ma che la sua scala caratteristica è quella.
+
+Ne segue che
+
+$$
+(dW_t)^2
+$$
+
+è dell’ordine di
+
+$$
+dt.
+$$
+
+Ed è proprio questa osservazione a rendere diverso il calcolo stocastico rispetto al calcolo ordinario. Nei passaggi algebrici, un termine quadratico in $dW_t$ non può essere semplicemente trascurato come si farebbe con $(dt)^2$.
+
+> **Da ricordare**  
+> Nel calcolo differenziale:
+> - si mantengono i termini del primo ordine (ovvero in $dt$)
+> - $dt^2$ si trascura.
+> Nel calcolo stocastico:
+> - si mantegono i termini fino al primo ordine (ovvero in $dW_t$ e $dt$)
+> -  $dt^2$ si trascura;
+> - $dt\,dW_t$ si trascura;
+> - $(dW_t)^2$ invece contribuisce a ordine $dt$.
+
+# 4. Il calcolo di Ito
+
+## 4.1 Dal caso deterministico al caso stocastico
+
+Nel caso deterministico, se 
 
 $$
 dx = a(x,t)\,dt,
 $$
 
-che può essere manipolata come un differenziale ordinario. Ad esempio, per una funzione abbastanza regolare $f(x,t)$, l’espansione di Taylor fornisce
+allora per una funzione regolare $f(x,t)$ vale la regola usuale
+
+$$
+df = \frac{\partial f}{\partial t}\,dt + \frac{\partial f}{\partial x}\,dx 
++ \text{termini di ordine superiore}.
+$$
+
+Nel caso stocastico, invece, bisogna tenere conto del fatto che il termine quadratico in $dx$ non sarà trascurabile, proprio perché $dx$ conterrà $dW_t$.
+
+Supponiamo allora che
+
+$$
+dx = a(x,t)\,dt + b(x,t)\,dW_t.
+$$
+
+Sviluppando $f(x+dx,t+dt)$ fino all’ordine rilevante, si ottiene
 
 $$
 df = \frac{\partial f}{\partial t}\,dt
-     + \frac{\partial f}{\partial x}\,dx,
++ \frac{\partial f}{\partial x}\,dx
++ \frac{1}{2}\frac{\partial^2 f}{\partial x^2}(dx)^2
++ \text{termini di ordine superiore}.
 $$
 
-e sostituendo $dx = a(x,t)\,dt$ si ottiene
+## 4.2 Le regole differenziali di Ito
+
+Per calcolare $(dx)^2$ usiamo la SDE:
 
 $$
-df = \left(
-       \frac{\partial f}{\partial t}
-       + a(x,t)\,\frac{\partial f}{\partial x}
-     \right) dt .
+(dx)^2 = \left(a\,dt + b\,dW_t\right)^2.
 $$
 
-In una ODE classica, i termini quadratici negli infinitesimi vengono sempre trascurati, poiché si assume che
+Sviluppando,
 
 $$
-dt^2 = 0.
+(dx)^2 = a^2dt^2 + 2ab\,dt\,dW_t + b^2(dW_t)^2.
 $$
 
-Questo è il punto in cui la situazione cambia nel caso stocastico: quando compaiono incrementi irregolari come quelli associati al rumore, un termine come $(dx)^2$ non è più trascurabile.
-
----
-
-Consideriamo ora un’equazione differenziale stocastica in forma di Ito
+A questo punto si usano le regole formali di Ito:
 
 $$
-dx = a(x,t)\,dt + b(x,t)\,dW(t),
+dt^2 = 0,
+\qquad
+dt\,dW_t = 0,
+\qquad
+(dW_t)^2 = dt.
 $$
 
-dove $W(t)$ è un processo con incrementi a media nulla e varianza $dt$, cioè
-
-$$
-\langle dW(t) \rangle = 0, \qquad \langle dW(t)^2 \rangle = dt.
-$$
-
-Nel formalismo di Leibniz si usa l’idea che $dx$ sia un differenziale infinitesimo, ma nel caso stocastico è necessario specificare anche come si comportano i prodotti di questi infinitesimi. Le regole fondamentali sono:
-
-1. $dt^2 = 0$ (come nel calcolo ordinario),
-2. $dt\,dW(t) = 0$,
-3. $dW(t)^2 = dt$ (novità essenziale).
-
-L’ultima regola incorpora il fatto che la varianza dell’incremento $dW(t)$ è proporzionale a $dt$.
-
-Prendiamo ora una funzione sufficientemente regolare $f(x,t)$ e sviluppiamola al primo ordine in $dt$ usando un’espansione di Taylor:
-
-$$
-df = f(x+dx,t+dt) - f(x,t).
-$$
-
-L’espansione di Taylor, fino ai termini d’ordine non superiore a $dt$, dà
-
-$$
-df = \frac{\partial f}{\partial t}\,dt
-     + \frac{\partial f}{\partial x}\,dx
-     + \frac12\,\frac{\partial^2 f}{\partial x^2}\,(dx)^2
-     + \text{termini di ordine superiore}.
-$$
-
-Nel calcolo ordinario si scarterebbero i termini contenenti $(dx)^2$, ma qui $dx$ contiene un contributo di ordine $\sqrt{dt}$, quindi $(dx)^2$ è dell’ordine di $dt$ e non può essere trascurato.
-
-Da $dx = a(x,t)\,dt + b(x,t)\,dW(t)$ otteniamo
-
-$$
-(dx)^2 =
-a(x,t)^2\,dt^2
-+ 2\,a(x,t)\,b(x,t)\,dt\,dW(t)
-+ b(x,t)^2\,dW(t)^2 .
-$$
-
-Applicando le regole sugli infinitesimi,
-
-- $dt^2 = 0$,
-- $dt\,dW(t) = 0$,
-- $dW(t)^2 = dt$,
-
-si ricava
+Segue quindi
 
 $$
 (dx)^2 = b(x,t)^2\,dt.
 $$
 
-Inserendo questa espressione nell’espansione di $df$ si ottiene finalmente la formula di Ito:
+Sostituendo nell’espansione precedente otteniamo
 
 $$
 df =
 \frac{\partial f}{\partial t}\,dt
-+ \frac{\partial f}{\partial x}\,dx
-+ \frac12\,\frac{\partial^2 f}{\partial x^2}\,b(x,t)^2\,dt .
++
+\frac{\partial f}{\partial x}\,dx
++
+\frac{1}{2}b(x,t)^2\frac{\partial^2 f}{\partial x^2}\,dt.
 $$
 
-Sostituendo anche $dx = a(x,t)\,dt + b(x,t)\,dW(t)$ si arriva alla forma completa
+Infine, sostituendo anche $dx$,
 
 $$
 df =
 \left(
 \frac{\partial f}{\partial t}
-+ a(x,t)\,\frac{\partial f}{\partial x}
-+ \frac12\,b(x,t)^2\,\frac{\partial^2 f}{\partial x^2}
-\right) dt
-+ b(x,t)\,\frac{\partial f}{\partial x}\,dW(t).
++
+a(x,t)\frac{\partial f}{\partial x}
++
+\frac{1}{2}b(x,t)^2\frac{\partial^2 f}{\partial x^2}
+\right)dt
++
+b(x,t)\frac{\partial f}{\partial x}\,dW_t.
 $$
 
-che mostra esplicitamente sia il contributo deterministico (proporzionale a $dt$) sia il contributo stocastico (proporzionale a $dW(t)$).
+Questa è la **formula di Ito** in una dimensione.
 
-### Appendice: differenza tra errore forte ed errore debole
+## 4.3 Un esempio elementare: $f(x)=x^2$
 
-Nelle equazioni deterministiche l’errore numerico è definito in modo univoco, ma nelle SDE esistono due nozioni diverse di accuratezza:
-
-- **Errore forte (strong error)**: misura quanto bene il metodo approssima *una singola traiettoria*. Formalmente richiede che la distanza media tra la soluzione esatta e quella numerica, *<u>nello stesso scenario di rumore</u>*, sia piccola. Lo schema di Euler–Maruyama ha ordine $1/2$ in questo senso: l’errore tipico scala come $\Delta t^{1/2}$. Questo significa che per dimezzare l’errore richiede di dividere il passo per un fattore 4 (e quindi moltiplicare per quattro la lunghezza della simulazione).
-
-- **Errore debole (weak error)**: misura quanto bene il metodo approssima *le quantità statistiche*, ad esempio medie, varianze, o distribuzioni della soluzione. Non richiede che la singola traiettoria sia accurata, ma solo che la simulazione collettiva riproduca le aspettative corrette. In questo senso Euler–Maruyama è di ordine $1$: l’errore sulle medie scala come $\Delta t$.
-
-Questa distinzione è cruciale nell’uso pratico. Se l’obiettivo è studiare l’evoluzione media o stimare grandezze aggregate tramite molte simulazioni indipendenti, si può usare un passo $\Delta t$ relativamente più grande, perché l’errore debole diminuisce rapidamente. Se invece interessa seguire nel dettaglio una singola traiettoria (ad esempio in modelli di apprendimento online o in dinamiche di controllo), occorre scegliere un passo molto più piccolo per compensare l’ordine $1/2$ dell’errore forte. 
-
-Per illustrare la distinzione, consideriamo la SDE lineare
+Se $f(x)=x^2$, allora
 
 $$
-dx = -\lambda x\,dt + \sigma\,dW(t),
+\frac{\partial f}{\partial x}=2x,
+\qquad
+\frac{\partial^2 f}{\partial x^2}=2.
 $$
 
-nota come processo di Ornstein–Uhlenbeck. La soluzione esatta è nota, il che rende semplice confrontare la simulazione numerica con il comportamento reale.
-
-**Errore forte (traiettoria individuale).**  
-Per confrontare due simulazioni con passi diversi, ad esempio $\Delta t = 10^{-3}$ e $\Delta t = 10^{-2}$, è fondamentale utilizzare la **stessa realizzazione del rumore**. Ciò significa che gli incrementi più grandi devono essere costruiti come somma dei più piccoli. Se indichiamo con $\Delta W_n$ gli incrementi generati con passo $\Delta t$, allora per il passo dieci volte più grande si impone
+La formula di Ito diventa
 
 $$
-\Delta W^{(10\Delta t)}_k
-= \sum_{j=1}^{10} \Delta W^{(\Delta t)}_{10k+j}.
+d(x^2) = 2x\,dx + b(x,t)^2\,dt.
 $$
 
-In questo modo entrambe le simulazioni vedono esattamente lo stesso rumore, solo campionato con granularità diversa.
+Il termine aggiuntivo $b(x,t)^2dt$ è precisamente il contributo che non apparirebbe nel calcolo ordinario.
 
-Anche in queste condizioni:
+Questo esempio è molto istruttivo, perché mostra in modo immediato che il calcolo stocastico non è una semplice imitazione del calcolo differenziale classico.
 
-- le due traiettorie **non coincidono**,
-- la simulazione con $\Delta t$ più grande presenta oscillazioni artificiali,
-- riducendo $\Delta t$ la convergenza è lenta, poiché l’errore forte scala come $\Delta t^{1/2}$.
+## 4.4 Nota su Ito e Stratonovich
 
-Questo riflette il fatto che, per approssimare accuratamente una singola traiettoria, è necessario scegliere un passo temporale molto piccolo.
-
-In altre parole, la traiettoria numerica approssima bene quella esatta solo se il passo è molto piccolo. Questo è tipico delle simulazioni in cui interessa seguire la dinamica dettagliata di un singolo percorso.
-
-**Errore debole (statistiche di molte traiettorie).**  
-Ora generiamo molte simulazioni indipendenti e calcoliamo, a ogni istante, la media empirica delle soluzioni. Per una SDE come quella sopra, la media esatta soddisfa l’ODE
+Esiste anche un’altra interpretazione delle SDE, detta di Stratonovich, nella quale si scrive
 
 $$
-\frac{d}{dt}\,\mathbb{E}[x(t)] = -\lambda\,\mathbb{E}[x(t)],
+dx = a_S(x,t)\,dt + b(x,t)\circ dW_t.
 $$
 
-quindi ha andamento puramente deterministico. Se confrontiamo la media numerica ottenuta con passi diversi, osserviamo che:
+La differenza tra Ito e Stratonovich non è solo notazionale: riguarda il modo in cui viene definito l’integrale stocastico associato al termine diffusivo
 
-- anche con passi relativamente grandi, ad esempio $\Delta t = 10^{-2}$ o $\Delta t = 5\cdot 10^{-2}$,  
-  **la media simulata coincide quasi perfettamente con quella teorica**;
+$$
+b(X_t,t)\,dW_t.
+$$
 
-- aumentando il numero di traiettorie la convergenza migliora rapidamente;
+In una discretizzazione temporale con passi $[t_n,t_{n+1}]$:
 
-- l’errore sulla media scala come $\Delta t$, quindi si riduce molto più velocemente rispetto all’errore forte.
+- nell’interpretazione di **Ito** il coefficiente $b$ viene valutato all’inizio dell’intervallo;
+- nell’interpretazione di **Stratonovich** si usa invece una valutazione simmetrica, che intuitivamente può essere pensata come una valutazione a mezzo intervallo.
 
-In sintesi:
+Per questo motivo il formalismo di Stratonovich risulta più vicino, nella forma, al calcolo differenziale ordinario, mentre il formalismo di Ito è particolarmente naturale per l’analisi probabilistica e per la costruzione di schemi numerici semplici come Euler--Maruyama.
 
-- **errore forte**: convergenza lenta, richiede piccoli passi, importante se si vogliono traiettorie individuali accurate;
-- **errore debole**: convergenza veloce, permette passi più grandi, importante quando si studiano medie, varianze e distribuzioni.
+Per questa lezione adotteremo sistematicamente il formalismo di **Ito**.
 
-Questo esempio chiarisce perché, nelle simulazioni Monte Carlo per SDE, la scelta del passo temporale dipende strettamente dal tipo di osservabile che si vuole stimare.
+# 5. Integrazione numerica: Euler--Maruyama
+
+Una volta scritta la SDE nella forma
+
+$$
+dx = a(x,t)\,dt + b(x,t)\,dW_t,
+$$
+
+il passo successivo è costruire un algoritmo di simulazione.
+
+## 5.1 Dalla forma integrale allo schema discreto
+
+Consideriamo un intervallo temporale $[t_n,t_{n+1}]$ di ampiezza $\Delta t$. Integrando formalmente la SDE si ha
+
+$$
+x_{n+1} - x_n = \int_{t_n}^{t_{n+1}} a(x_t,t)\,dt
++ \int_{t_n}^{t_{n+1}} b(x_t,t)\,dW_t.
+$$
+
+L’idea più semplice è -- coerentemente con Ito -- approssimare entrambi i coefficienti usando il valore all’inizio del passo:
+
+$$
+a(x_t,t) \approx a(x_n,t_n),
+\qquad
+b(x_t,t) \approx b(x_n,t_n).
+$$
+
+Si ottiene così
+
+$$
+x_{n+1} \approx x_n + a(x_n,t_n)\Delta t + b(x_n,t_n)\Delta W_n,
+$$
+
+dove
+
+$$
+\Delta W_n = W_{t_{n+1}} - W_{t_n}.
+$$
+
+Poiché gli incrementi browniani sono gaussiani indipendenti,
+
+$$
+\Delta W_n \sim \mathcal{N}(0,\Delta t).
+$$
+
+Possiamo quindi scrivere
+
+$$
+\Delta W_n = \sqrt{\Delta t}\,\xi_n,
+\qquad
+\xi_n \sim \mathcal{N}(0,1).
+$$
+
+Ne deriva lo schema di integrazione detto di di **Euler--Maruyama**:
+
+$$
+x_{n+1} = x_n
++ a(x_n,t_n)\Delta t
++ b(x_n,t_n)\sqrt{\Delta t}\,\xi_n.
+$$
+
+## 5.2 Interpretazione dello schema
+
+Lo schema contiene due contributi:
+
+1. un contributo deterministico,
+   $$
+   a(x_n,t_n)\Delta t,
+   $$
+   che è l’analogo del metodo di Eulero per le ODE;
+
+2. un contributo casuale,
+   $$
+   b(x_n,t_n)\sqrt{\Delta t}\,\xi_n,
+   $$
+   che rappresenta la fluttuazione sul singolo passo temporale.
+
+Ogni sequenza diversa di variabili gaussiane $\xi_n$ produce una traiettoria diversa. Per questo una SDE non genera una sola curva, ma un insieme di realizzazioni compatibili con la stessa legge dinamica.
+
+## 5.3 Esempio minimale in Python
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+def drift(x, t):
+    return -0.5 * x
+
+def diffusion(x, t):
+    return 0.3
+
+def euler_maruyama(x0, dt, N):
+    t = np.linspace(0.0, N * dt, N + 1)
+    x = np.zeros(N + 1)
+    x[0] = x0
+
+    for n in range(N):
+        xi = np.random.randn()
+        x[n + 1] = (
+            x[n]
+            + drift(x[n], t[n]) * dt
+            + diffusion(x[n], t[n]) * np.sqrt(dt) * xi
+        )
+
+    return t, x
+
+t, x = euler_maruyama(x0=1.0, dt=0.01, N=1000)
+
+plt.plot(t, x)
+plt.xlabel("tempo")
+plt.ylabel("x(t)")
+plt.show()
+````
+
+Questo codice produce una singola traiettoria. Ripetendo la simulazione si otterranno traiettorie diverse, tutte coerenti con la stessa SDE.
+
+# 6. Stabilità, accuratezza forte e debole
+
+## 6.1 Stabilità: il caso di Ornstein--Uhlenbeck
+
+Consideriamo la SDE lineare
+
+$$
+dx = -\lambda x,dt + \sigma,dW_t,
+\qquad \lambda > 0.
+$$
+
+Si tratta del processo di Ornstein--Uhlenbeck, che descrive una dinamica con richiamo verso l’origine e rumore additivo.
+
+Applicando Euler--Maruyama si ottiene
+
+$$
+x_{n+1} = (1-\lambda\Delta t)x_n + \sigma\sqrt{\Delta t},\xi_n.
+$$
+
+Affinché la parte deterministica discreta non risulti instabile, è necessario che
+
+$$
+|1-\lambda\Delta t| < 1,
+$$
+
+ossia
+
+$$
+0 < \Delta t < \frac{2}{\lambda}.
+$$
+
+Questa condizione è un utile criterio pratico: se $\Delta t$ è troppo grande, la discretizzazione può introdurre oscillazioni o amplificazioni spurie che non appartengono alla dinamica continua.
+
+## 6.2 Accuratezza forte
+
+L’accuratezza forte misura quanto bene il metodo numerico riproduce una singola traiettoria della SDE.
+
+In teoria, si confronta la soluzione numerica $X_T^{(\Delta t)}$ con la soluzione esatta $X_T$, costruite usando la stessa realizzazione del moto browniano. In pratica, quando la soluzione esatta non è disponibile in forma chiusa, si sostituisce $X_T$ con una soluzione di riferimento ottenuta con una discretizzazione molto più fine.
+
+Per Euler--Maruyama, l’errore forte è di ordine $1/2$: ciò significa che, per $\Delta t$ piccolo,
+
+$$
+\mathbb{E}\big[|X_T - X_T^{(\Delta t)}|\big] \sim (\Delta t)^{1/2},
+$$
+
+oppure, in pratica numerica, che l’errore rispetto a una soluzione di riferimento molto accurata decresce tipicamente come $\Delta t^{1/2}$.
+
+## 6.3 Accuratezza debole
+
+L’**accuratezza debole** riguarda invece le quantità statistiche, come medie, momenti o aspettative di osservabili. In questo caso non interessa riprodurre bene ogni singola traiettoria, ma ottenere correttamente il comportamento medio dell’insieme.
+
+Per Euler--Maruyama, l’ordine debole è
+
+$$
+1.
+$$
+
+Quindi, se il nostro obiettivo è stimare medie su molte traiettorie, il metodo converge più rapidamente di quanto non faccia nel senso forte.
+
+> **Attenzione**
+> "Approssimare bene una traiettoria" e "approssimare bene una media" sono due obiettivi diversi. Nelle SDE bisogna sempre chiedersi quale dei due sia rilevante per il problema studiato.
+
+## 6.4 Esempio guida
+
+Per la SDE di Ornstein--Uhlenbeck
+
+$$
+dx = -\lambda x\,dt + \sigma\,dW_t,
+$$
+
+la soluzione esatta è
+
+$$
+x(t) = x_0 e^{-\lambda t}
++ \sigma \int_0^t e^{-\lambda (t-s)}\,dW_s.
+$$
+
+Prendendo il valore atteso, il termine stocastico ha media nulla e si ottiene
+
+$$
+\mathbb{E}[x(t)] = x_0 e^{-\lambda t}.
+$$
+
+Questa formula è utile in pratica:
+
+* per verificare la convergenza **forte** si confrontano traiettorie corrispondenti;
+* per verificare la convergenza **debole** si confronta la media empirica di molte simulazioni con la quantità esatta $\mathbb{E}[x(t)]$.
+
+# 7. Esempi interdisciplinari
+
+Le SDE compaiono in molti contesti diversi. In tutti i casi ritroviamo la stessa struttura di base: un drift che descrive la tendenza media e una parte rumorosa che rappresenta fluttuazioni o incertezze.
+
+## 7.1 Fisica: oscillatore armonico con rumore
+
+Un oscillatore lineare immerso in un ambiente termico può essere modellato come
+
+$$
+dx = v\,dt,
+\qquad
+dv = -\gamma v\,dt - kx\,dt + \sigma\,dW_t.
+$$
+
+Il termine elastico $-kx$ tende a riportare il sistema verso l’equilibrio, il termine $-\gamma v$ rappresenta lo smorzamento, mentre $\sigma\,dW_t$ descrive le fluttuazioni termiche.
+
+## 7.2 Chimica: dinamica attivata in un doppio pozzo
+
+Per una coordinata di reazione soggetta a rumore termico si può scrivere
+
+$$
+dx = -U'(x)\,dt + \sigma\,dW_t,
+$$
+
+con
+
+$$
+U(x) = \frac{1}{4}x^4 - \frac{1}{2}x^2.
+$$
+
+In questo caso il drift tende a confinare il sistema in uno dei due pozzi di potenziale, mentre il rumore può indurre transizioni rare da un pozzo all’altro.
+
+## 7.3 Biologia: espressione genica
+
+Un modello minimale per la concentrazione di una proteina è
+
+$$
+dx = (\alpha - \beta x)\,dt + \sigma\,dW_t.
+$$
+
+Il termine $\alpha$ rappresenta la produzione media, il termine $\beta x$ la degradazione, mentre il rumore sintetizza la variabilità dovuta al carattere discreto e intermittente degli eventi biochimici.
+
+## 7.4 Finanza: moto geometrico browniano
+
+Un modello classico per il prezzo $S_t$ di un attivo è
+
+$$
+dS_t = \mu S_t\,dt + \sigma S_t\,dW_t.
+$$
+
+Qui il rumore è moltiplicativo: l’ampiezza delle fluttuazioni cresce con il livello del prezzo.
+
+## 7.5 Ecologia: crescita logistica con rumore ambientale
+
+Per una popolazione $x(t)$ si può usare
+
+$$
+dx = r x\left(1-\frac{x}{K}\right)dt + \sigma x\,dW_t.
+$$
+
+La parte deterministica è la crescita logistica (tasso di riproduzione $r$ e capacità del sistema $K$), mentre il termine moltiplicativo rappresenta variazioni ambientali che agiscono proporzionalmente alla popolazione presente.
+
+## 7.6 Ingegneria: sistemi con disturbi e incertezza di misura
+
+In molti problemi di controllo compare una dinamica del tipo
+
+$$
+dx = f(x,t)\,dt + G(x,t)\,dW_t,
+$$
+
+dove il secondo termine rappresenta disturbi esterni, rumore di attuazione o incertezza nei sensori.
+
+## 7.7 Scienze sociali: propensioni individuali con fluttuazioni
+
+Una variabile continua $x(t)$ che rappresenti opinione, preferenza o propensione a una scelta può essere modellata come
+
+$$
+dx = (-\gamma x + F(t))\,dt + \sigma\,dW_t,
+$$
+
+dove $F(t)$ descrive l’influenza esterna o sociale, mentre il termine rumoroso raccoglie la variabilità individuale non spiegata.
+
+---
+
+# 8. Sintesi finale
+
+Le SDE nascono dall’esigenza di descrivere sistemi nei quali l’evoluzione non è governata soltanto da leggi medie, ma anche da fluttuazioni rapide e irregolari.
+
+La fisica suggerisce naturalmente di introdurre una forzante casuale $\eta(t)$, pensata come funzione estremamente irregolare del tempo. Questa immagine è utile e va mantenuta a livello intuitivo. Tuttavia, per essere rigorosi, bisogna abbandonare l’idea di trattare $\eta(t)$ come una funzione ordinaria e passare invece al processo di Wiener $W_t$.
+
+Questo conduce alla forma differenziale
+
+$$
+dx = a(x,t)\,dt + b(x,t)\,dW_t,
+$$
+
+che è il punto di partenza del calcolo di Ito. La regola formale
+
+$$
+(dW_t)^2 = dt
+$$
+
+produce il termine correttivo caratteristico della formula di Ito e distingue nettamente il calcolo stocastico dal calcolo differenziale classico.
+
+Dal punto di vista numerico, questa struttura porta in modo naturale allo schema di Euler--Maruyama,
+
+$$
+x_{n+1} = x_n
++ a(x_n,t_n)\Delta t
++ b(x_n,t_n)\sqrt{\Delta t},\xi_n,
+$$
+
+che è il primo strumento essenziale per simulare traiettorie di una SDE.
+
+In sintesi, il percorso concettuale della lezione è il seguente:
+
+1. il rumore viene introdotto per modellare fluttuazioni reali;
+2. l’immagine fisica del rumore bianco suggerisce una forzante molto irregolare;
+3. la formulazione rigorosa richiede il passaggio al processo di Wiener;
+4. il calcolo di Ito fornisce le regole corrette di manipolazione;
+5. Euler--Maruyama traduce il formalismo in un algoritmo.
+
+Questa è la base naturale per gli sviluppi successivi del corso: equazione di Fokker--Planck, metodi numerici più accurati, SDE multidimensionali e processi con salti.
+
+## Riferimenti essenziali
+
+* Langevin, P. (1908). *Sur la théorie du mouvement brownien*. C. R. Acad. Sci. 146: 530--533.
+* Gardiner, C. (2004). *Handbook of Stochastic Methods*. Springer.
+* Risken, H. (1989). *The Fokker--Planck Equation*. Springer.
+* Higham, D. J. (2001). *An Algorithmic Introduction to Numerical Simulation of Stochastic Differential Equations*. SIAM Review, 43(3): 525--546.
+* Gillespie, D. T. (2000). *The chemical Langevin equation*. J. Chem. Phys. 113(1): 297--306.
+
+# Appendice -- Integrali stocastici e somme di Riemann
+
+Per capire la differenza tra integrale di Ito e integrale di Stratonovich è utile partire dall’idea di approssimare un integrale tramite somme discrete, come si fa nel caso ordinario.
+
+Consideriamo una partizione dell’intervallo $[0,T]$:
+
+$$
+0 = t_0 < t_1 < \cdots < t_N = T,
+\qquad
+\Delta t_n = t_{n+1} - t_n,
+\qquad
+\Delta W_n = W_{t_{n+1}} - W_{t_n}.
+$$
+
+Nel caso deterministico, un integrale di Riemann si costruisce come limite di somme del tipo
+
+$$
+\sum_{n=0}^{N-1} f(\tau_n)\,\Delta t_n,
+$$
+
+dove $\tau_n \in [t_n,t_{n+1}]$ è un punto scelto nel sottointervallo. Per funzioni regolari, il limite non dipende dalla scelta precisa di $\tau_n$.
+
+Nel caso stocastico, invece, vogliamo definire un integrale del tipo
+
+$$
+\int_0^T b(X_t,t)\,dW_t.
+$$
+
+Qui la situazione cambia in modo sostanziale, perché il moto browniano è molto irregolare. Si considerano allora somme del tipo
+
+$$
+\sum_{n=0}^{N-1} b(X_{\tau_n},\tau_n)\,\Delta W_n.
+$$
+
+A differenza del caso ordinario, il limite dipende dalla scelta del punto $\tau_n$ nel sottointervallo.
+
+## Integrale di Ito
+
+Nell’interpretazione di Ito si sceglie il punto sinistro:
+
+$$
+\tau_n = t_n.
+$$
+
+Quindi l’integrale è definito come limite di somme del tipo
+
+$$
+\sum_{n=0}^{N-1} b(X_{t_n},t_n)\,\Delta W_n.
+$$
+
+In questa costruzione il coefficiente $b$ viene valutato all’inizio dell’intervallo. Questa scelta rende l’integrale particolarmente adatto all’analisi probabilistica, perché il fattore $b(X_{t_n},t_n)$ dipende solo dall’informazione disponibile fino al tempo $t_n$.
+
+## Integrale di Stratonovich
+
+Nell’interpretazione di Stratonovich si usa invece una discretizzazione simmetrica. In modo intuitivo, si può pensare a una valutazione al punto medio:
+
+$$
+\tau_n \approx \frac{t_n+t_{n+1}}{2}.
+$$
+
+Schematicamente, l’integrale corrisponde al limite di somme del tipo
+
+$$
+\sum_{n=0}^{N-1} b\!\left(X_{\frac{t_n+t_{n+1}}{2}}, \frac{t_n+t_{n+1}}{2}\right)\,\Delta W_n,
+$$
+
+oppure, in forma ancora più simmetrica, a medie tra estremo sinistro ed estremo destro
+
+$$
+\sum_{n=0}^{N-1} \frac{b(X_{t_n},t_n)+b(X_{t_{n+1}},t_{n+1})}{2}\,\Delta W_n.
+$$
+
+Questa scelta fa sì che il calcolo di Stratonovich assomigli di più al calcolo differenziale ordinario.
+
+## Perché i due integrali non coincidono?
+
+Nel calcolo ordinario, cambiando il punto di campionamento dentro ciascun sottointervallo si ottiene lo stesso limite, purché le funzioni siano abbastanza regolari. Nel caso stocastico questo non è più vero, perché gli incrementi browniani sono troppo irregolari: il processo ha variazione quadratica non nulla, e proprio questo genera la differenza tra Ito e Stratonovich.
+
+In termini intuitivi:
+
+- con **Ito** si guarda il coefficiente all’inizio del passo;
+- con **Stratonovich** si usa una valutazione simmetrica, circa a mezzo intervallo.
+
+Per questo i due formalismi portano a regole di calcolo diverse.
+
+## Formula di conversione
+
+Se una stessa dinamica è scritta in forma di Stratonovich come
+
+$$
+dx = a_S(x,t)\,dt + b(x,t)\circ dW_t,
+$$
+
+allora la forma equivalente di Ito è
+
+$$
+dx = a_I(x,t)\,dt + b(x,t)\,dW_t,
+$$
+
+con
+
+$$
+a_I(x,t) = a_S(x,t) + \frac{1}{2} b(x,t)\,\partial_x b(x,t).
+$$
+
+Quindi la differenza tra le due interpretazioni si traduce in un termine correttivo nel drift.
+
+> **Da ricordare**
+>
+> - Ito: coefficiente valutato all’inizio dell’intervallo;
+> - Stratonovich: coefficiente valutato in modo simmetrico, intuitivamente a mezzo intervallo;
+> - per il moto browniano, queste due scelte non portano allo stesso limite;
+> - la differenza si manifesta come un termine correttivo nel drift.
+
+# Appendice -- Lo schema di Milstein nel caso scalare
+
+Nella lezione principale abbiamo introdotto lo schema di Euler--Maruyama come metodo numerico piú semplice per integrare una SDE della forma
+
+$$
+dX_t = a(X_t,t)\,dt + b(X_t,t)\,dW_t.
+$$
+
+Esistono però schemi leggermente piú accurati. Il piú importante, nel caso di una SDE scalare, è lo **schema di Milstein**, che aggiunge a Euler--Maruyama un termine correttivo legato alla dipendenza del coefficiente di rumore dalla variabile di stato.
+
+In questa appendice ne presentiamo una derivazione elementare, sufficiente per capire la formula usata nel laboratorio.
+
+## A.1 Punto di partenza
+
+Scriviamo la SDE in forma integrale su un intervallo $[t_n,t_{n+1}]$ di ampiezza $\Delta t$:
+
+$$
+X_{n+1} - X_n =
+\int_{t_n}^{t_{n+1}} a(X_s,s)\,ds
++ \int_{t_n}^{t_{n+1}} b(X_s,s)\,dW_s.
+$$
+
+Lo schema di Euler--Maruyama si ottiene sostituendo semplicemente
+
+$$
+a(X_s,s) \approx a(X_n,t_n),
+\qquad
+b(X_s,s) \approx b(X_n,t_n),
+$$
+
+da cui segue
+
+$$
+X_{n+1} = X_n
++ a(X_n,t_n)\Delta t
++ b(X_n,t_n)\Delta W_n,
+$$
+
+dove
+
+$$
+\Delta W_n = W_{t_{n+1}} - W_{t_n}.
+$$
+
+Questo schema è semplice, ma trascura il fatto che, se $b$ dipende da $X$, il coefficiente del rumore cambia già all’interno del passo temporale.
+
+## A.2 Idea della correzione
+
+Per migliorare l’approssimazione, nel termine stocastico sviluppiamo $b(X_s,s)$ intorno al punto iniziale del passo. Trascurando i contributi di ordine piú alto e concentrandoci sul caso scalare, si usa l’approssimazione
+
+$$
+b(X_s,s)
+\approx
+b(X_n,t_n)
++
+\partial_x b(X_n,t_n)\,(X_s - X_n).
+$$
+
+A sua volta, al primo ordine stocastico,
+
+$$
+X_s - X_n \approx b(X_n,t_n)\,(W_s - W_{t_n}).
+$$
+
+Sostituendo nell’integrale stocastico si ottiene
+
+$$
+\int_{t_n}^{t_{n+1}} b(X_s,s)\,dW_s
+\approx
+b(X_n,t_n)\Delta W_n
++
+b(X_n,t_n)\partial_x b(X_n,t_n)
+\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s.
+$$
+
+Resta dunque da calcolare l’integrale
+
+$$
+\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s.
+$$
+
+## A.3 L’integrale chiave
+
+Poniamo
+
+$$
+Y_s = W_s - W_{t_n}.
+$$
+
+Allora $dY_s = dW_s$ e, usando la formula di Ito per $Y_s^2$, si ha
+
+$$
+d(Y_s^2) = 2Y_s\,dW_s + ds.
+$$
+
+Integrando da $t_n$ a $t_{n+1}$,
+
+$$
+Y_{t_{n+1}}^2 - Y_{t_n}^2 = 2\int_{t_n}^{t_{n+1}} Y_s\,dW_s + \Delta t.
+$$
+
+Poiché $Y_{t_n}=0$ e $Y_{t_{n+1}}=\Delta W_n$, segue
+
+$$
+(\Delta W_n)^2 = 2\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s + \Delta t.
+$$
+
+Quindi
+
+$$
+\int_{t_n}^{t_{n+1}} (W_s - W_{t_n})\,dW_s =
+\frac{1}{2}\left((\Delta W_n)^2 - \Delta t\right).
+$$
+
+Questa è la correzione tipica che compare nello schema di Milstein.
+
+## A.4 Formula finale di Milstein
+
+Sostituendo il risultato precedente nell’approssimazione dell’integrale stocastico, si ottiene lo schema di Milstein:
+
+$$
+\begin{aligned}
+X_{n+1} ={}& X_n
++ a(X_n,t_n)\,\Delta t
++ b(X_n,t_n)\,\Delta W_n +\\
+&+ \frac{1}{2}\, b(X_n,t_n)\,\partial_x b(X_n,t_n)
+\left((\Delta W_n)^2 - \Delta t\right).
+\end{aligned}
+$$
+
+Rispetto a Euler--Maruyama compare dunque un termine aggiuntivo:
+
+$$
+\frac{1}{2} b(X_n,t_n)\partial_x b(X_n,t_n) \left((\Delta W_n)^2 - \Delta t\right),
+$$
+
+che tiene conto, al primo ordine utile, della variazione del coefficiente di rumore lungo il passo.
+
+### A.5 Commento sull’accuratezza
+
+Nel caso scalare, lo schema di Milstein migliora l’accuratezza forte rispetto a Euler--Maruyama:
+
+- Euler--Maruyama ha ordine forte $1/2$;
+- Milstein ha ordine forte $1$.
+
+Per questo Milstein è spesso usato come primo miglioramento naturale di Euler--Maruyama quando si vuole approssimare meglio le singole traiettorie.
+
+### A.6 Il caso del laboratorio
+
+Nel laboratorio consideriamo la SDE
+
+$$
+dX_t = \mu X_t\,dt + \sigma X_t\,dW_t.
+$$
+
+Qui
+
+$$
+a(x,t)=\mu x,
+\qquad
+b(x,t)=\sigma x,
+\qquad
+\partial_x b(x,t)=\sigma.
+$$
+
+Quindi lo schema di Milstein diventa
+
+$$
+X_{n+1} = X_n
++ \mu X_n\Delta t
++ \sigma X_n\Delta W_n
++ \frac{1}{2}\sigma^2 X_n\left((\Delta W_n)^2 - \Delta t\right).
+$$
+
+Questa è la formula che potrà essere usata come confronto con Euler--Maruyama.
+
+### A.7 Osservazione finale
+
+Lo schema di Milstein non risolve automaticamente tutti i problemi qualitativi di una discretizzazione. Per esempio, nel modello del laboratorio la soluzione esatta resta positiva, ma anche Milstein può produrre valori negativi per passi temporali non abbastanza piccoli. Il suo vantaggio principale è l’aumento di accuratezza forte, non la preservazione automatica della struttura del modello.
