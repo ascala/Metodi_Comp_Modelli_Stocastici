@@ -6,7 +6,7 @@ date: ""
 
 In un corso di metodi computazionali per modelli stocastici, la simulazione è spesso la direzione diretta: si fissano i parametri e si generano traiettorie. Ma nella pratica scientifica si percorre quasi sempre la direzione inversa: si osservano dati reali e si vogliono stimare i parametri del modello che li ha generati, oppure si vuole valutare quanto bene un modello proposto è compatibile con i dati osservati.
 
-Questa lezione introduce il framework dell'inferenza per modelli stocastici. Il punto di partenza è la likelihood — la probabilità dei dati come funzione dei parametri — e il metodo della massima verosimiglianza come strumento di stima. Poi si discute come valutare la bontà di adattamento di un modello. Infine si affrontano i casi in cui la likelihood non è calcolabile analiticamente, che sono molto comuni nei modelli stocastici complessi, e si introducono metodi computazionali per aggirarli.
+Questa lezione introduce il framework dell'inferenza per modelli stocastici. Il punto di partenza è la likelihood -- la probabilità dei dati come funzione dei parametri -- e il metodo della massima verosimiglianza come strumento di stima. Poi si discute come valutare la bontà di adattamento di un modello. Infine si affrontano i casi in cui la likelihood non è calcolabile analiticamente, che sono molto comuni nei modelli stocastici complessi, e si introducono metodi computazionali per aggirarli.
 
 La struttura è la seguente: la teoria è sviluppata in modo generale, ma ogni concetto è illustrato con esempi tratti direttamente dai modelli del corso.
 
@@ -58,9 +58,7 @@ Due aspetti rendono l'inferenza per modelli stocastici diversa dall'inferenza cl
 
 **Stocasticità intrinseca.** Il modello non fa previsioni deterministiche ma probabilistiche. Non si cerca la previsione perfetta ma i parametri che rendono i dati osservati il più plausibili possibile.
 
-**Likelihood spesso complicata.** Per molti modelli del corso — processi di salto, SDE con rumore moltiplicativo, modelli agent-based — la probabilità di osservare i dati come funzione dei parametri non ha una forma analitica semplice. Questo richiede metodi computazionali specifici.
-
----
+**Likelihood spesso complicata.** Per molti modelli del corso -- processi di salto, SDE con rumore moltiplicativo, modelli agent-based -- la probabilità di osservare i dati come funzione dei parametri non ha una forma analitica semplice. Questo richiede metodi computazionali specifici.
 
 # 2. Likelihood e log-likelihood
 
@@ -74,7 +72,7 @@ $$
 L(\theta) = \prod_{i=1}^n p(y_i \mid \theta).
 $$
 
-Si legge come: la probabilità di osservare esattamente questo campione, al variare di $\theta$. Non è la probabilità di $\theta$ dati i dati — quella è l'oggetto della statistica bayesiana — ma la probabilità dei dati come funzione del parametro.
+Si legge come: la probabilità di osservare esattamente questo campione, al variare di $\theta$. Non è la probabilità di $\theta$ dati i dati -- quella è l'oggetto della statistica bayesiana -- ma la probabilità dei dati come funzione del parametro.
 
 La **log-likelihood** è
 
@@ -140,8 +138,6 @@ $$
 
 dove $c_{t,k}$ è il numero di individui alla generazione $t$ che hanno prodotto esattamente $k$ discendenti. Se si osserva solo la dimensione totale per generazione (non i singoli alberi), la likelihood si complica e in generale non è trattabile analiticamente.
 
----
-
 # 3. Massima verosimiglianza: teoria e pratica computazionale
 
 ## 3.1 Lo stimatore di massima verosimiglianza
@@ -178,8 +174,6 @@ Eguagliando media e varianza empiriche ai valori teorici si ottiene un sistema d
 
 Il metodo dei momenti è meno efficiente statisticamente del MLE (nel senso che usa meno informazione), ma è computazionalmente molto più semplice e spesso sufficiente come stima iniziale.
 
----
-
 # 4. Informazione di Fisher e precisione della stima
 
 ## 4.1 Varianza dello stimatore MLE
@@ -203,7 +197,7 @@ $$
 \mathcal{I}(\theta) = -\mathbb{E}\!\left[\frac{\partial^2 \log p(y \mid \theta)}{\partial \theta^2}\right] = \mathbb{E}\!\left[\left(\frac{\partial \log p(y \mid \theta)}{\partial \theta}\right)^2\right].
 $$
 
-Misura la curvatura media della log-likelihood attorno al vero parametro: una curvatura alta significa che la likelihood è molto appuntita attorno al massimo, quindi la stima è precisa; una curvatura bassa significa che la likelihood è piatta e la stima è imprecisa.
+Misura la curvatura media della log-likelihood attorno al vero parametro: una curvatura alta significa che la likelihood è molto concentrata attorno al massimo, quindi la stima è precisa; una curvatura bassa significa che la likelihood è piatta e la stima è imprecisa.
 
 **Esempio: processo di Poisson.** Per $n$ osservazioni indipendenti da $\mathrm{Exp}(\lambda)$, la log-likelihood è $\ell(\lambda) = n\log\lambda - \lambda\sum s_i$. La sua derivata seconda è $\ell''(\lambda) = -n/\lambda^2$. Quindi $\mathcal{I}(\lambda) = 1/\lambda^2$ e la varianza asintotica di $\hat\lambda$ è $\lambda^2/n$. Con più dati la stima migliora come $1/\sqrt{n}$.
 
@@ -228,8 +222,6 @@ $$
 dove $\widehat{\mathrm{se}} = \sqrt{\widehat{\mathrm{Var}}(\hat\theta)}$.
 
 Questo funziona bene quando la distribuzione asintotica gaussiana è una buona approssimazione, cioè quando $n$ è sufficientemente grande. Per campioni piccoli o parametri con vincoli, si preferisce il **profile likelihood** o metodi bootstrap.
-
----
 
 # 5. Confronto modello-dati: diagnostiche e goodness-of-fit
 
@@ -265,11 +257,11 @@ $$
 
 formano un processo di Poisson omogeneo con tasso 1. Quindi i tempi inter-evento trasformati $\tau_k - \tau_{k-1}$ devono essere distribuiti come $\mathrm{Exp}(1)$.
 
-La diagnostica consiste nel calcolare i residui trasformati e verificare questa proprietà con un QQ-plot o un test KS contro $\mathrm{Exp}(1)$. Se il grafico mostra deviazioni sistematiche (punti curvi invece che sulla bisettrice), il modello è mal specificato — ad esempio il kernel ha la forma sbagliata, o mancano covariate.
+La diagnostica consiste nel calcolare i residui trasformati e verificare questa proprietà con un QQ-plot o un test KS contro $\mathrm{Exp}(1)$. Se il grafico mostra deviazioni sistematiche (punti curvi invece che sulla bisettrice), il modello è mal specificato -- ad esempio il kernel ha la forma sbagliata, o mancano covariate.
 
 ## 5.4 Confronto tra distribuzioni simulate e osservate
 
-Per i modelli in cui si può simulare facilmente ma la CDF teorica non è disponibile in forma chiusa — come i modelli agent-based (Vicsek, March, Deffuant) — si confrontano le distribuzioni empiriche di dati reali e dati simulati.
+Per i modelli in cui si può simulare facilmente ma la CDF teorica non è disponibile in forma chiusa -- come i modelli agent-based (Vicsek, March, Deffuant) -- si confrontano le distribuzioni empiriche di dati reali e dati simulati.
 
 Il procedimento è:
 
@@ -278,7 +270,7 @@ Il procedimento è:
 3. raccogliere una statistica di interesse (ad esempio la distribuzione del parametro d'ordine finale, o la distribuzione dei tempi di primo passaggio);
 4. confrontare con la distribuzione della stessa statistica nei dati reali tramite QQ-plot o KS test.
 
-Se le due distribuzioni concordano, il modello è almeno non rifiutato dai dati. Questo non prova che il modello sia corretto — altri modelli potrebbero produrre la stessa distribuzione — ma è la forma più onesta di confronto disponibile quando la likelihood è intrattabile.
+Se le due distribuzioni concordano, il modello è almeno non rifiutato dai dati. Questo non prova che il modello sia corretto -- altri modelli potrebbero produrre la stessa distribuzione -- ma è la forma più onesta di confronto disponibile quando la likelihood è intrattabile.
 
 ## 5.5 AIC e BIC per la selezione del modello
 
@@ -293,8 +285,6 @@ $$
 $$
 
 dove $p$ è il numero di parametri. Si preferisce il modello con AIC (o BIC) minore. BIC penalizza i modelli complessi più di AIC ed è asintoticamente consistente nella selezione del modello vero.
-
----
 
 # 6. Quando la likelihood è intrattabile: momenti simulati
 
@@ -324,7 +314,7 @@ dove $W$ è una matrice di pesi (spesso l'identità in prima approssimazione).
 
 **Come si calcola $m_{\mathrm{sim}}(\theta)$ in pratica.** Per ogni valore di $\theta$ nel processo di ottimizzazione, si generano $M$ traiettorie simulate, si calcolano le statistiche su ognuna, e si fa la media. Con $M$ grande, $m_{\mathrm{sim}}(\theta)$ è una stima precisa dell'atteso.
 
-**Scelta delle statistiche.** Le statistiche scelte devono essere **informative** rispetto ai parametri di interesse — cioè sensibili alle variazioni di $\theta$ — e **riproducibili** dalla simulazione. Statistiche naturali per i modelli del corso includono:
+**Scelta delle statistiche.** Le statistiche scelte devono essere **informative** rispetto ai parametri di interesse -- cioè sensibili alle variazioni di $\theta$ -- e **riproducibili** dalla simulazione. Statistiche naturali per i modelli del corso includono:
 
 - per le SDE: media, varianza e autocorrelazione a diversi lag della traiettoria discreta;
 - per i processi di branching: numero medio di discendenti, varianza della dimensione per generazione;
@@ -339,8 +329,6 @@ Il problema di minimizzazione del SMM ha due difficoltà pratiche.
 **Rumore nella simulazione.** $m_{\mathrm{sim}}(\theta)$ è una media su $M$ simulazioni, quindi è rumorosa. Il paesaggio di ottimizzazione è rumoroso. Metodi gradient-free come Nelder-Mead o simulated annealing funzionano meglio dei metodi basati sul gradiente.
 
 **Costo computazionale.** Ogni valutazione della funzione obiettivo richiede $M$ simulazioni. Per modelli lenti e $M$ grande, l'ottimizzazione può essere costosa. Si inizia con $M$ piccolo per esplorare, poi si affina con $M$ grande vicino al minimo.
-
----
 
 # 7. Approximate Bayesian Computation
 
@@ -368,19 +356,17 @@ Lo schema di base (ABC rejection) è:
 4. accetta $\theta$ se $d(s(y_{\mathrm{sim}}), s(y_{\mathrm{obs}})) \le \varepsilon_{\mathrm{ABC}}$;
 5. ripeti finche' non si hanno abbastanza campioni accettati.
 
-I campioni accettati formano un'approssimazione della posteriore $p(\theta \mid y_{\mathrm{obs}})$ — tanto più fedele quanto più piccolo è $\varepsilon_{\mathrm{ABC}}$ e quanto più informativa è la statistica sommaria $s$.
+I campioni accettati formano un'approssimazione della posteriore $p(\theta \mid y_{\mathrm{obs}})$ -- tanto più fedele quanto più piccolo è $\varepsilon_{\mathrm{ABC}}$ e quanto più informativa è la statistica sommaria $s$.
 
-**Il parametro $\varepsilon_{\mathrm{ABC}}$.** Con $\varepsilon_{\mathrm{ABC}} = 0$ si accetterebbe solo quando $y_{\mathrm{sim}} = y_{\mathrm{obs}}$ esattamente — impossibile per dati continui. Con $\varepsilon_{\mathrm{ABC}}$ grande si accettano molti campioni ma la posteriore è troppo piatta. Il valore di $\varepsilon_{\mathrm{ABC}}$ si sceglie come compromesso tra precisione e tasso di accettazione.
+**Il parametro $\varepsilon_{\mathrm{ABC}}$.** Con $\varepsilon_{\mathrm{ABC}} = 0$ si accetterebbe solo quando $y_{\mathrm{sim}} = y_{\mathrm{obs}}$ esattamente -- impossibile per dati continui. Con $\varepsilon_{\mathrm{ABC}}$ grande si accettano molti campioni ma la posteriore è troppo piatta. Il valore di $\varepsilon_{\mathrm{ABC}}$ si sceglie come compromesso tra precisione e tasso di accettazione.
 
 **Scelta della statistica sommaria.** Come per SMM, la statistica sommaria deve essere informativa rispetto ai parametri. Se $s$ è una statistica sufficiente, ABC con $\varepsilon_{\mathrm{ABC}} \to 0$ converge alla vera posteriore. In pratica le statistiche sufficienti non esistono per la maggior parte dei modelli complessi e si usano statistiche euristiche.
 
 ## 7.3 Limiti dell'ABC
 
-L'ABC rejection sampler ha un tasso di accettazione che può essere molto basso in spazi di parametri ad alta dimensione. Varianti più efficienti — ABC-MCMC, ABC-SMC (Sequential Monte Carlo) — migliorano questo aspetto ma sono più complesse da implementare.
+L'ABC rejection sampler ha un tasso di accettazione che può essere molto basso in spazi di parametri ad alta dimensione. Varianti più efficienti -- ABC-MCMC, ABC-SMC (Sequential Monte Carlo) -- migliorano questo aspetto ma sono più complesse da implementare.
 
 In alternativa, per modelli simulabili ma con likelihood intrattabile, il **metodo della verosimiglianza sintetica** (synthetic likelihood) sostituisce la likelihood vera con una gaussiana multivariata centrata su $m_{\mathrm{sim}}(\theta)$, che è spesso una buona approssimazione.
-
----
 
 # 8. Sintesi: quale metodo per quale modello
 
@@ -398,8 +384,6 @@ La tabella seguente riassume quale approccio usare in funzione della disponibili
 | Qualsiasi modello, approccio bayesiano | intrattabile | ABC rejection o ABC-MCMC |
 
 Il principio guida è sempre lo stesso: usare il metodo piu' semplice che sia adeguato al problema. La complessita' computazionale si giustifica solo quando metodi piu' semplici sono insufficienti.
-
----
 
 ## Riferimenti
 
