@@ -1,6 +1,6 @@
 ---
-title: "06: Stabilità numerica e simulazioni affidabili"
-author: ""
+title: "A02: Stabilità numerica e simulazioni affidabili"
+author: "Antonio Scala"
 date: ""
 ---
 
@@ -57,7 +57,7 @@ Un modo semplice per verificare la stabilità consiste nel simulare lo stesso pr
 Ad esempio, consideriamo l’equazione di decadimento esponenziale
 $$\frac{dx}{dt} = -x,$$
 che ammette la soluzione esatta $x(t) = e^{-t}$.  
-La integriamo numericamente con lo schema di Eulero (in questo caso $x_{t+\Delta t} = x_t - x_t\,\Delta t.$) per mostrare come la stabilità dipenda dalla scelta del passo temporale $\Delta t$:
+La integriamo numericamente con lo schema di Eulero (in questo caso $x_{t+\Delta t} = x_t - x_t\,\Delta t$.) per mostrare come la stabilità dipenda dalla scelta del passo temporale $\Delta t$:
 
 ```python
 import numpy as np
@@ -425,14 +425,24 @@ Per chiarire questo punto, consideriamo due esempi esplicativi.
 **Esempio 1: processo di Feller (o Cox–Ingersoll–Ross)**
 $$dX_t = \kappa(\theta - X_t)\,dt + \sigma\sqrt{X_t}\,dW_t.$$
 La soluzione teorica garantisce $X_t \ge 0$ per ogni $t$. Tuttavia, se si applica lo schema di Eulero–Maruyama,
-$$X_{t+\Delta t} = X_t + \kappa(\theta - X_t)\Delta t + \sigma\sqrt{X_t}\,\sqrt{\Delta t}\,Z,$$
+
+$$
+X_{t+\Delta t} = X_t + \kappa(\theta - X_t) \Delta t 
++ \sigma\sqrt{X_t}\,\sqrt{\Delta t}\,Z\;,
+$$
+
 il termine $\sqrt{X_t}$ diventa estremamente piccolo quando $X_t$ si avvicina a $0$, mentre la fluttuazione $\sqrt{\Delta t}\,Z$ rimane dell’ordine di $\sqrt{\Delta t}$. Anche un singolo campione $Z < 0$ di grande modulo può trascinare numericamente $X_{t+\Delta t}$ in valori negativi, che sono matematicamente proibiti dal modello ma permessi dallo schema numerico. Questo è un esempio tipico di instabilità locale dovuta alla diffusione moltiplicativa vicino al bordo.
 
 **Esempio 2: equazione di Langevin per una variabile vincolata**
 Consideriamo una dinamica stocastica che rappresenta una quantità sempre positiva, ad esempio la densità di un reagente:
 $$dX_t = -\lambda X_t\,dt + \sigma\,dW_t.$$
 La soluzione continua permette valori arbitrariamente piccoli, ma non negativi se il modello rappresenta una grandezza fisica. Con lo schema di Eulero,
-$$X_{t+\Delta t} = X_t - \lambda X_t\Delta t + \sigma\sqrt{\Delta t}\,Z,$$
+
+$$
+X_{t+\Delta t} = X_t - \lambda X_t \Delta t 
++ \sigma\sqrt{\Delta t}\,Z,
+$$
+
 la fluttuazione additiva $\sigma\sqrt{\Delta t}\,Z$ non dipende dal valore di $X_t$. Quando $X_t$ è piccolo (ad esempio in fase di estinzione o decadimento), anche una fluttuazione casuale moderata può portare $X_{t+\Delta t}$ sotto zero. Questo effetto è puramente numerico: il modello teorico non prevede variabili negative, ma la discretizzazione sì, se non è stabilizzata.
 
 In entrambi gli esempi, il problema nasce dal fatto che vicino al bordo (ad esempio $X = 0$) la dinamica del modello continuo e quella dello schema numerico hanno scale diverse: la parte deterministica tende a riportare il processo verso il dominio ammesso, mentre il termine stocastico discretizzato può spingerlo fuori. Una simulazione stabile deve quindi preservare la struttura del dominio, introducendo schemi che garantiscano la positività oppure trasformazioni di variabili che rendano la dinamica numericamente robusta.
@@ -464,7 +474,11 @@ fortemente dalla struttura del modello.
 ### 1. Metodo di Eulero–Maruyama
 
 Il metodo di Eulero–Maruyama (EM) approssima la dinamica con
-$$X_{t+\Delta t} = X_t + a(X_t)\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z,$$
+
+$$
+X_{t+\Delta t} = X_t + a(X_t)\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z\;,
+$$
+
 dove $Z\sim N(0,1)$. È il metodo più semplice, ma anche il più fragile dal punto di vista
 della stabilità.
 
@@ -485,9 +499,11 @@ della stabilità.
 
 Il metodo di Milstein aggiunge un termine correttivo per la derivata di $b(x)$, ottenendo
 un ordine di convergenza più elevato:
-$$X_{t+\Delta t} = X_t + a(X_t)\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z
 
-+ \frac12 b(X_t)b'(X_t)(Z^2 - 1)\Delta t.$$
+$$
+X_{t+\Delta t} = X_t + a(X_t)\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z
++ \frac12 b(X_t)b'(X_t)(Z^2 - 1)\Delta t\;.
+$$
 
 **Vantaggi**
 
@@ -546,7 +562,10 @@ In tali casi, Eulero–Maruyama diventa inefficiente o del tutto instabile.
 Esistono tecniche efficaci per stabilizzare la simulazione:
 
 * **Schemi semi-impliciti**:
-  $$X_{t+\Delta t} = X_t + a(X_{t+\Delta t})\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z.$$
+
+  $$ X_{t+\Delta t} = X_t + a(X_{t+\Delta t})\,\Delta t + b(X_t)\sqrt{\Delta t}\,Z\;.$$
+
+  
   In questi metodi il drift viene trattato implicitamente mentre il termine stocastico  resta esplicito, con un sensibile miglioramento della stabilità nei sistemi stiff.
   Tuttavia, determinare $X_{t+\Delta t}$ richiede la soluzione di un’equazione (lineare o non lineare a seconda di $a(x)$), introducendo lo stesso tipo di complessità computazionale tipico degli schemi impliciti per equazioni differenziali deterministiche: la maggiore stabilità viene ottenuta al prezzo di un costo numerico più elevato.
 
@@ -576,17 +595,13 @@ Una scelta accorta dello schema numerico è cruciale per ottenere simulazioni di
 
 ## Appendice 7.D — Stabilità e tuning nelle simulazioni MCMC
 
-Le simulazioni Monte Carlo basate su catene di Markov (MCMC) richiedono un’analisi della
-stabilità concettualmente distinta da quella delle SDE e dei processi di salto. Qui non
-esistono passi temporali nel senso classico, né problemi di bordi o di discretizzazione.
-La “stabilità” riguarda invece la capacità della catena di:
+Le simulazioni Monte Carlo basate su catene di Markov (MCMC) richiedono un’analisi della stabilità concettualmente distinta da quella delle SDE e dei processi di salto. Qui non esistono passi temporali nel senso classico, né problemi di bordi o di discretizzazione. La “stabilità” riguarda invece la capacità della catena di:
 
 1. esplorare correttamente lo spazio degli stati (mixing);
 2. convergere alla distribuzione invariante;
 3. produrre campioni statisticamente affidabili con varianza effettiva controllata.
 
-Questa appendice fornisce un insieme di criteri e tecniche pratiche per diagnosticare e
-correggere problemi di instabilità nelle catene MCMC.
+Questa appendice fornisce un insieme di criteri e tecniche pratiche per diagnosticare e correggere problemi di instabilità nelle catene MCMC.
 
 ---
 
@@ -684,16 +699,12 @@ Tecniche tipiche per migliorare la stabilità:
 
 In presenza di instabilità persistente, è possibile adottare strategie più avanzate:
 
-* **Parallel tempering**: più catene a temperature diverse scambiano stati, migliorando
-  l’esplorazione in spazi multimodali.
+* **Parallel tempering**: più catene a temperature diverse scambiano stati, migliorando l’esplorazione in spazi multimodali.
 * **Overrelaxation**: riduce autocorrelazione alternando mosse correlate.
-* **Hamiltonian Monte Carlo (HMC)**: sfrutta dinamica quasi deterministica per superare
-  barriere energetiche, migliorando stabilità e mixing.
-* **Gibbs sampling bloccato**: raggruppare variabili fortemente correlate evita catene
-  degeneri.
+* **Hamiltonian Monte Carlo (HMC)**: sfrutta dinamica quasi deterministica per superare barriere energetiche, migliorando stabilità e mixing.
+* **Gibbs sampling bloccato**: raggruppare variabili fortemente correlate evita catene degeneri.
 
-Queste tecniche aumentano la stabilità algoritmica, specialmente in alta dimensione o in
-spazi multimodali.
+Queste tecniche aumentano la stabilità algoritmica, specialmente in alta dimensione o in spazi multimodali.
 
 ---
 
@@ -703,11 +714,10 @@ Strumenti visuali indispensabili:
 
 * **trace plot**: una catena stabile deve oscillare liberamente nella regione target;
 * **autocorrelation plot**: il decadimento deve essere rapido;
-* **histogrammi marginali**: confronti fra catene diverse rivelano differenze sospette;
+* **istogrammi marginali**: confronti fra catene diverse rivelano differenze sospette;
 * **scatter plot** delle variabili correlate: mostra problemi di esplorazione anisotropa.
 
-Visualizzazioni incoerenti rivelano immediatamente problemi di instabilità o di mancata
-convergenza.
+Visualizzazioni incoerenti rivelano immediatamente problemi di instabilità o di mancata convergenza.
 
 ---
 
@@ -722,8 +732,6 @@ Una simulazione MCMC è considerata stabile quando:
 * rispetta proprietà analitiche note della distribuzione target;
 * presenta indicatori grafici chiari e coerenti.
 
-Questa appendice fornisce quindi un quadro operativo per garantire che le simulazioni
-MCMC siano non solo formalmente corrette, ma anche statisticamente solide e
-scientificamente affidabili.
+Questa appendice fornisce quindi un quadro operativo per garantire che le simulazioni MCMC siano non solo formalmente corrette, ma anche statisticamente solide e scientificamente affidabili.
 
 ---

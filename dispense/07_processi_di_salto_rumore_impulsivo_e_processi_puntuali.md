@@ -246,7 +246,7 @@ con $J_t$ compound Poisson, lo schema split-step su passo $\Delta t$ è:
      X_{\text{new}} = X' + \sum_{i=1}^{K} Y_i.
      $$
 
-Se la dinamica richiede vincoli (positività, soglie fisiche), qui si inserisce una regola esplicita di gestione del dominio, coerente con quanto discusso nella lezione sulla stabilità numerica. :contentReference[oaicite:3]{index=3}
+Se la dinamica richiede vincoli (positività, soglie fisiche), qui si inserisce una regola esplicita di gestione del dominio, coerente con quanto discusso nella lezione sulla stabilità numerica. 
 
 ---
 
@@ -334,8 +334,6 @@ Cosa osservare:
 2. **Metastabilità diversa**: non solo fuga per accumulo di rumore diffuso, ma anche "fuga per evento raro".  
 3. **Early warning meno robusti**: varianza e autocorrelazione non sono indicatori affidabili quando il collasso è shock-driven.  
 4. **Unificazione concettuale**: Browniano e compound Poisson sono due componenti di processi di Lévy; la jump-diffusion li combina in modo naturale.
-
----
 
 ---
 

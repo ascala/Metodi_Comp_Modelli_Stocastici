@@ -1,6 +1,6 @@
 ---
 title: "05: Rumore e dinamiche stocastiche"
-author: ""
+author: "Antonio Scala"
 date: ""
 ---
 
