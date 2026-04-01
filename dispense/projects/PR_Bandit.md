@@ -112,7 +112,7 @@ dove $\mathrm{KL}(\mu_a, \mu^*)$ e' la divergenza di Kullback-Leibler tra le dis
 
 In termini semplici: il regret cresce almeno come $\Omega(\ln T)$. Non si puo' fare meglio di una crescita logaritmica nel tempo. Un algoritmo che raggiunge questa crescita e' detto **asintoticamente ottimale**.
 
-Questo risultato fissa il limite teorico: qualsiasi algoritmo ragionevole esplorера' sempre almeno un numero logaritmico di volte i bracci subottimali.
+Questo risultato fissa il limite teorico: qualsiasi algoritmo ragionevole esplorerà sempre almeno un numero logaritmico di volte i bracci subottimali.
 
 # 4. Distribuzioni di ricompensa
 

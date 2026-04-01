@@ -239,8 +239,8 @@ La scelta della popolazione iniziale e' uno dei parametri piu' importanti del GA
 
 Questo trade-off e' formalmente analogo al parametro di temperatura iniziale in SA:
 
-- temperatura alta in SA ≈ popolazione casuale in GA: molta esplorazione, poco sfruttamento;
-- temperatura bassa in SA ≈ popolazione concentrata vicino al MST: molto sfruttamento, poca esplorazione.
+- temperatura alta in SA $\approx$ popolazione casuale in GA: molta esplorazione, poco sfruttamento;
+- temperatura bassa in SA $\approx$ popolazione concentrata vicino al MST: molto sfruttamento, poca esplorazione.
 
 ## 6.2 Popolazione mista: la strategia consigliata
 
