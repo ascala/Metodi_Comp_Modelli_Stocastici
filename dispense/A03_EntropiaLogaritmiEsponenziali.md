@@ -188,9 +188,121 @@ $$
 
 Dal punto di vista dell’ottimizzazione, massimizzare $L(\theta)$ o $\ell(\theta)$ è equivalente, perché il logaritmo è monotono crescente.
 
-### 4.2 Connessione con l’entropia
+### 4.2 Connessione profonda tra log-likelihood, entropia e divergenza di Kullback--Leibler
 
-C’è un legame profondo tra log-likelihood ed entropia: entrambe coinvolgono medie di logaritmi di probabilità. In particolare, molti problemi di inferenza possono essere reinterpretati come problemi di compatibilità tra distribuzioni empiriche, modelli teorici e criteri informativi.
+Il legame tra log-likelihood ed entropia non è solo formale. C'è una struttura comune più profonda, che emerge non appena si introduce la nozione di **divergenza di Kullback--Leibler** (KL). Una volta fatta questa connessione, massimizzare la likelihood, minimizzare la cross-entropia e minimizzare la divergenza KL diventano tre formulazioni dello stesso principio inferenziale.
+
+---
+
+#### Divergenza di Kullback--Leibler
+
+Siano $p$ e $q$ due distribuzioni di probabilità sullo stesso spazio discreto. La divergenza di Kullback--Leibler da $q$ a $p$ è definita come
+$$
+D_{\mathrm{KL}}(p \| q) = \sum_i p_i \log \frac{p_i}{q_i}.
+$$
+
+Questa quantità misura quanto $q$ si discosta da $p$, visto attraverso gli occhi di $p$.
+
+Alcune proprietà fondamentali:
+
+**Non negatività (disuguaglianza di Gibbs):**
+$$
+D_{\mathrm{KL}}(p \| q) \ge 0,
+$$
+con uguaglianza se e solo se $p = q$ in ogni punto.
+
+*Dimostrazione elementare.* Per la disuguaglianza $\log x \le x - 1$ (valida per $x > 0$, con uguaglianza solo in $x = 1$):
+$$
+-D_{\mathrm{KL}}(p \| q) = \sum_i p_i \log \frac{q_i}{p_i} \le \sum_i p_i \left(\frac{q_i}{p_i} - 1\right) = \sum_i q_i - \sum_i p_i = 0.
+$$
+
+**Asimmetria:** in generale $D_{\mathrm{KL}}(p \| q) \neq D_{\mathrm{KL}}(q \| p)$. La divergenza KL non è una distanza in senso metrico.
+
+**Interpretazione informazionale:** $D_{\mathrm{KL}}(p \| q)$ misura il costo medio in informazione per usare il codice ottimale per $q$ quando la distribuzione vera è $p$.
+
+---
+
+#### Decomposizione: cross-entropia = entropia + divergenza KL
+
+Espandendo il logaritmo nella definizione della divergenza:
+$$
+D_{\mathrm{KL}}(p \| q) = \sum_i p_i \log p_i - \sum_i p_i \log q_i = -H(p) + H(p, q),
+$$
+dove si è introdotta la **cross-entropia** di $q$ rispetto a $p$:
+$$
+H(p, q) = -\sum_i p_i \log q_i.
+$$
+
+Questa decomposizione mostra tre quantità in relazione:
+
+- $H(p)$: entropia di $p$, misura l'incertezza intrinseca della distribuzione vera;
+- $H(p, q)$: cross-entropia, misura il costo medio di usare $q$ per descrivere dati generati da $p$;
+- $D_{\mathrm{KL}}(p \| q)$: il surplus di incertezza dovuto all'uso di $q$ invece di $p$.
+
+Poiché $H(p)$ non dipende da $q$, minimizzare la cross-entropia rispetto a $q$ è equivalente a minimizzare la divergenza KL.
+
+---
+
+#### Massima likelihood = minimizzazione della divergenza KL
+
+Sia $p_{\mathrm{data}}$ la distribuzione empirica del campione osservato $x_1, \dots, x_n$:
+$$
+p_{\mathrm{data}}(x) = \frac{1}{n}\sum_{i=1}^n \mathbf{1}_{x = x_i}.
+$$
+
+La log-likelihood del modello $q_\theta$ sul campione è
+$$
+\ell(\theta) = \sum_{i=1}^n \log q_\theta(x_i) = n \sum_x p_{\mathrm{data}}(x) \log q_\theta(x) = -n \, H(p_{\mathrm{data}}, q_\theta).
+$$
+
+Massimizzare $\ell(\theta)$ rispetto a $\theta$ equivale quindi a minimizzare la cross-entropia $H(p_{\mathrm{data}}, q_\theta)$, e quindi --- poiché $H(p_{\mathrm{data}})$ non dipende da $\theta$ --- a minimizzare la divergenza KL:
+$$
+\hat\theta_{\mathrm{MLE}} = \arg\min_\theta D_{\mathrm{KL}}(p_{\mathrm{data}} \| q_\theta).
+$$
+
+**Messaggio:** la stima di massima verosimiglianza non è un criterio arbitrario. È la scelta del modello $q_\theta$ che, tra tutte le possibili distribuzioni della famiglia parametrica, è più vicina alla distribuzione empirica nel senso della divergenza KL.
+
+---
+
+#### Connessione con la massima entropia
+
+C'è anche un collegamento con il principio di massima entropia discusso nella Sezione 5. Consideriamo il problema duale: invece di fissare il modello e trovare i parametri, fissiamo i vincoli e cerchiamo la distribuzione.
+
+Il principio di massima entropia seleziona
+$$
+p^* = \arg\max_{p : \text{vincoli}} H(p).
+$$
+
+Si può dimostrare che questa è equivalente a
+$$
+p^* = \arg\min_{p : \text{vincoli}} D_{\mathrm{KL}}(p \| u),
+$$
+dove $u$ è la distribuzione uniforme. In altre parole, la distribuzione di massima entropia è la più vicina all'uniforme (la distribuzione "di default" priva di struttura) compatibile con i vincoli assegnati. Questo chiarisce il significato del principio: si sceglie la distribuzione meno informativa oltre i vincoli, e "meno informativa" significa "più vicina all'uniforme" nel senso KL.
+
+---
+
+#### Riepilogo delle equivalenze
+
+| Formulazione | Quantità ottimizzata |
+|---|---|
+| Massima likelihood | $\max_\theta \sum_i \log q_\theta(x_i)$ |
+| Minima cross-entropia | $\min_\theta H(p_{\mathrm{data}}, q_\theta)$ |
+| Minima divergenza KL | $\min_\theta D_{\mathrm{KL}}(p_{\mathrm{data}} \| q_\theta)$ |
+| Massima entropia (duale) | $\min_p D_{\mathrm{KL}}(p \| u)$ sotto vincoli |
+
+Le prime tre colonne sono lo stesso problema sotto nomi diversi. La quarta è il problema duale, dove si ottimizza sulla distribuzione invece che sui parametri.
+
+---
+
+#### Nota diagnostica
+
+Un errore frequente è confondere la direzione della divergenza KL. Le due direzioni $D_{\mathrm{KL}}(p \| q)$ e $D_{\mathrm{KL}}(q \| p)$ hanno comportamenti molto diversi:
+
+- $D_{\mathrm{KL}}(p \| q)$ penalizza fortemente le zone dove $p > 0$ ma $q \approx 0$: il modello deve assegnare probabilità ovunque la distribuzione vera è positiva;
+- $D_{\mathrm{KL}}(q \| p)$ penalizza zone dove $q > 0$ ma $p \approx 0$: il modello tende a concentrarsi su una sola moda della distribuzione vera.
+
+La scelta della direzione non è neutra. La MLE utilizza la direzione $D_{\mathrm{KL}}(p_{\mathrm{data}} \| q_\theta)$, che forza il modello a coprire il supporto dei dati.
+
 
 ---
 

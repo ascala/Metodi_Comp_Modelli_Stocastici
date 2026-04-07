@@ -1,5 +1,5 @@
 ---
-title: "07: Processi di salto, rumore impulsivo e processi puntuali"
+title: "08: Processi di salto, rumore impulsivo e processi puntuali"
 author: "Antonio Scala"
 date: ""
 ---

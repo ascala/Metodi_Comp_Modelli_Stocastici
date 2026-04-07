@@ -1,5 +1,5 @@
 ---
-title: "11: Boltzmann Machine e Sampling"
+title: "12: Boltzmann Machine e Sampling"
 author: ""
 date: ""
 ---

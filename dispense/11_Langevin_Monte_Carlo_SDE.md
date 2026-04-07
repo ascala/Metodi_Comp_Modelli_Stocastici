@@ -1,5 +1,5 @@
 ---
-title: "10: Langevin Monte Carlo e modelli generativi basati su SDE"
+title: "11: Langevin Monte Carlo e modelli generativi basati su SDE"
 author: "Antonio Scala"
 date: ""
 ---

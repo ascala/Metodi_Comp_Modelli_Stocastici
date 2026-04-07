@@ -1,5 +1,5 @@
 ---
-title: "06: Modelli di crescita e branching"
+title: "07: Modelli di crescita e branching"
 author: "Antonio Scala"
 date: ""
 ---

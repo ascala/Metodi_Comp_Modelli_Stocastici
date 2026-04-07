@@ -599,49 +599,202 @@ In questo problema le condizioni $p_i\ge 0$ sono vincoli di disuguaglianza. Se l
 
 ## 9. Collegamento con dinamiche vincolate e SDE
 
-Fin qui abbiamo parlato di problemi statici di ottimizzazione. Tuttavia la stessa intuizione geometrica riappare anche in problemi dinamici.
+Fin qui abbiamo parlato di problemi statici di ottimizzazione. La stessa struttura geometrica — gradiente della funzione obiettivo bilanciato dalla reazione normale al bordo — ricompare però anche in problemi dinamici, sia deterministici sia stocastici. Questa sezione sviluppa questo collegamento in modo sistematico, introducendo i tre meccanismi principali con cui si impone un vincolo su una traiettoria: la riflessione, la proiezione e la formulazione di Skorokhod.
 
-### 9.1 Flusso di gradiente libero
+---
+
+### 9.1 Flusso di gradiente libero e vincolato
 
 Consideriamo una dinamica deterministica del tipo
 $$
 \dot x = -\nabla V(x).
 $$
-In assenza di vincoli, la traiettoria segue localmente la direzione di discesa più rapida del potenziale $V$.
-
-### 9.2 Flusso di gradiente con vincoli
-
-Se imponiamo che la traiettoria resti in un dominio ammissibile $D$, la dinamica non può più seguire ciecamente $-\nabla V(x)$ quando si trova sul bordo. La componente che spingerebbe fuori dal dominio deve essere soppressa, proiettata o compensata da una reazione normale al bordo.
-
-Questa è la controparte dinamica dell’idea KKT:
-
-- all’interno del dominio il vincolo è inattivo;
-- sul bordo il vincolo diventa attivo;
-- compare una reazione normale che impedisce l’uscita dalla regione ammissibile.
-
-### 9.3 Collegamento con le SDE
-
-Una dinamica stocastica del tipo
+In assenza di vincoli, la traiettoria segue la direzione di discesa più rapida del potenziale $V$. Se però imponiamo che la traiettoria resti in un dominio ammissibile
 $$
-dX_t = b(X_t)\,dt + \sigma(X_t)\,dW_t
+D = \{x \in \mathbb{R}^d : g_i(x) \le 0,\; i = 1,\dots,p\},
 $$
-può essere soggetta a vincoli di positività o confinamento in un dominio. In questi casi, a livello numerico o concettuale, si introducono meccanismi di:
+la dinamica deve essere modificata ogni volta che la traiettoria tende ad abbandonare $D$.
 
-- riflessione al bordo;
-- proiezione sul dominio ammissibile;
-- correzione positiva degli step numerici;
-- termini di reazione vincolare.
+L'analogia con le condizioni KKT è immediata:
 
-L’analogia con Lagrange/KKT non deve essere presa come identità formale, ma come guida geometrica: anche qui il vincolo agisce solo quando sta per essere violato, e la sua azione è diretta tipicamente lungo la normale al bordo.
+- all'interno di $D$, tutti i vincoli sono inattivi e la dinamica è quella libera: $\dot x = -\nabla V(x)$;
+- sul bordo $\partial D$, i vincoli attivi reagiscono aggiungendo una componente normale che impedisce l'uscita;
+- il moltiplicatore di Lagrange corrisponde all'intensità di questa reazione.
 
-### 9.4 Esempi nel contesto del corso
+La condizione di stazionarietà KKT è quindi la versione *statica* di un principio che, in forma dinamica, descrive la traiettoria vincolata sul bordo.
 
-Questa idea è utile quando si studiano:
+---
 
-- SDE con vincoli di positività;
-- processi confinati in un intervallo o in un dominio;
-- dinamiche sul simplesso delle probabilità;
-- schemi numerici che devono preservare massa, non negatività o normalizzazione.
+### 9.2 Problema di Skorokhod: formulazione precisa
+
+La formulazione rigorosa delle traiettorie vincolate per un processo stocastico è dovuta a Skorokhod. Consideriamo il caso più semplice: un dominio $D = [0, +\infty)$ in una dimensione.
+
+Si vuole costruire un processo $X_t \ge 0$ che segua una data dinamica stocastica, ma resti sempre non negativo. Formalmente, si chiede di trovare una coppia $(X_t, L_t)$ tale che:
+
+1. $X_t = X_0 + \int_0^t b(X_s)\,ds + \int_0^t \sigma(X_s)\,dW_s + L_t$;
+2. $X_t \ge 0$ per ogni $t \ge 0$;
+3. $L_t$ è non decrescente, con $L_0 = 0$;
+4. $L_t$ cresce solo quando $X_t = 0$:
+$$
+\int_0^\infty \mathbf{1}_{\{X_t > 0\}}\,dL_t = 0.
+$$
+
+Il processo $L_t$ è il **tempo locale al bordo**: misura quanto a lungo la traiettoria ha premuto contro il vincolo $x = 0$. La quarta condizione è precisamente la condizione di complementarità KKT in forma dinamica: il vincolo reagisce solo quando è attivo.
+
+#### Unicità e interpretazione
+
+Sotto condizioni di regolarità su $b$ e $\sigma$, la soluzione $(X_t, L_t)$ esiste ed è unica. Il processo $X_t$ si chiama **processo riflesso** al bordo.
+
+Geometricamente: ogni volta che la traiettoria raggiungerebbe un valore negativo, viene "rimbalzata" verso l'interno del dominio con un impulso normale al bordo. La normalità è esattamente la stessa proprietà geometrica che caratterizza i moltiplicatori di Lagrange.
+
+---
+
+### 9.3 Riflessione al bordo
+
+#### Caso scalare
+
+Il caso $D = [0,+\infty)$ ammette una formula esplicita. Se $Y_t$ è il processo "libero"
+$$
+Y_t = X_0 + \int_0^t b(Y_s)\,ds + \int_0^t \sigma(Y_s)\,dW_s,
+$$
+allora il processo riflesso è
+$$
+X_t = Y_t - \min_{0 \le s \le t} Y_s \wedge 0,
+$$
+dove la sottrazione del minimo corrente garantisce che $X_t \ge 0$ in ogni istante.
+
+Per un intervallo $D = [a, b]$, la riflessione diventa bilaterale: il processo rimbalza sia sul bordo inferiore $a$ sia su quello superiore $b$.
+
+#### Caso multidimensionale
+
+In $\mathbb{R}^d$, per un dominio convesso $D$ con bordo liscio, la riflessione è sempre nella direzione della normale uscente $n(x)$ al punto di contatto $x \in \partial D$. La traiettoria vincolata soddisfa
+$$
+dX_t = b(X_t)\,dt + \sigma(X_t)\,dW_t + n(X_t)\,dL_t,
+$$
+dove $dL_t \ge 0$ e $dL_t > 0$ solo quando $X_t \in \partial D$.
+
+Questo è esattamente il meccanismo KKT: la reazione è normale al bordo, con intensità non negativa che si attiva solo quando il vincolo è attivo.
+
+---
+
+### 9.4 Proiezione sul dominio ammissibile
+
+Un secondo meccanismo, più adatto alla discretizzazione numerica, è la **proiezione**.
+
+#### Idea di base
+
+Dato un dominio $D$, la proiezione di un punto $y \notin D$ su $D$ è
+$$
+\Pi_D(y) = \arg\min_{x \in D} \|x - y\|.
+$$
+
+Se $D$ è convesso, la proiezione esiste ed è unica.
+
+#### Schema di Eulero proiettato
+
+Partendo da $X_0 \in D$, si costruisce la traiettoria discreta come segue. A ogni passo:
+
+1. si esegue un passo di Eulero--Maruyama "libero":
+$$
+\tilde X_{n+1} = X_n + b(X_n)\Delta t + \sigma(X_n)\Delta W_n;
+$$
+2. se $\tilde X_{n+1} \notin D$, si proietta:
+$$
+X_{n+1} = \Pi_D(\tilde X_{n+1}).
+$$
+
+Questo schema garantisce $X_n \in D$ per ogni $n$ ed è semplice da implementare. Per i casi più usati in pratica, la proiezione ha forma esplicita.
+
+#### Proiezione su casi pratici
+
+**Semiretta non negativa** $D = [0, +\infty)$:
+$$
+\Pi_D(y) = \max(y, 0).
+$$
+
+**Intervallo** $D = [a, b]$:
+$$
+\Pi_D(y) = \min(\max(y, a), b).
+$$
+
+**Simplesso delle probabilità** $D = \{p \in \mathbb{R}^n : p_i \ge 0,\; \sum_i p_i = 1\}$:
+
+La proiezione non è banale in forma analitica, ma si calcola efficientemente con un algoritmo basato sull'ordinamento delle componenti. Questo dominio compare naturalmente nelle dinamiche su distribuzioni di probabilità.
+
+**Palla euclidea** $D = \{x : \|x\| \le r\}$:
+$$
+\Pi_D(y) = r\,\frac{y}{\|y\|} \quad \text{se } \|y\| > r, \qquad \Pi_D(y) = y \quad \text{altrimenti}.
+$$
+
+#### Relazione con Lagrange/KKT
+
+Geometricamente, la proiezione è il gradiente del quadrato della distanza da $D$. La correzione applicata al punto esterno è sempre diretta verso la normale al bordo nel punto di proiezione. Si ritrovano quindi, ancora una volta, le stesse direzioni geometriche delle condizioni KKT.
+
+---
+
+### 9.5 Confronto tra riflessione, proiezione e termine di drift
+
+I tre meccanismi si comportano diversamente sul bordo e hanno implicazioni diverse per la distribuzione stazionaria.
+
+**Riflessione (Skorokhod):** è la formulazione continua e matematicamente rigorosa. La traiettoria scivola lungo il bordo senza penetrarlo. Il processo stazionario, quando esiste, rispecchia correttamente la distribuzione target confinata su $D$.
+
+**Proiezione (schema discreto):** è più semplice da implementare numericamente. Introduce un piccolo errore di discretizzazione legato al passo $\Delta t$, ma converge alla traiettoria riflessa al diminuire del passo.
+
+**Termine di drift correttivo:** in alcuni schemi, specialmente per processi di diffusione su semirette, si aggiunge un termine di deriva che "spinge" la traiettoria verso l'interno del dominio prima che raggiunga il bordo. Per esempio, nei processi di Bessel o nelle SDE di tipo Cox--Ingersoll--Ross, la non negatività è preservata da un drift della forma $\alpha/x$ che diverge al bordo, rendendo impossibile il raggiungimento di $x = 0$.
+
+---
+
+### 9.6 Esempio numerico: moto browniano riflesso su $[0,1]$
+
+Consideriamo il moto browniano standard $dX_t = dW_t$ con riflessione in $x = 0$ e $x = 1$.
+
+La distribuzione stazionaria attesa è la distribuzione uniforme su $[0,1]$: in assenza di derive, non c'è alcun punto privilegiato dell'intervallo.
+
+**Schema di Euler proiettato** con passo $\Delta t$:
+
+```python
+import numpy as np
+
+def brownian_reflected(T, dt, x0=0.5, seed=None):
+    rng = np.random.default_rng(seed)
+    N = int(T / dt)
+    X = np.zeros(N)
+    X[0] = x0
+    for n in range(N - 1):
+        X[n+1] = X[n] + rng.normal(scale=np.sqrt(dt))
+        X[n+1] = np.clip(X[n+1], 0.0, 1.0)   # proiezione su [0,1]
+    return X
+```
+
+La chiamata `np.clip` implementa $\Pi_{[0,1]}$ in una riga. Per verificare la correttezza dello schema, è sufficiente controllare che l'istogramma della traiettoria lunga converga alla distribuzione uniforme su $[0,1]$.
+
+---
+
+### 9.7 Connessione con lo schema numerico per SDE e diagnostica
+
+Nelle simulazioni di SDE vincolate, la scelta del meccanismo di imposizione del vincolo influenza:
+
+- la **distribuzione stazionaria** simulata: la proiezione con passo grande introduce distorsioni vicino al bordo;
+- la **varianza** delle stime: traiettorie che "rimbalzano" frequentemente sul bordo hanno autocorrelazione più alta;
+- la **positività** di grandezze fisiche: concentrazioni, probabilità, popolazioni richiedono $X_t \ge 0$.
+
+**Segnali di allarme pratici:**
+
+- valori negativi o fuori dominio anche dopo la proiezione: indica un errore di implementazione;
+- distribuzione stazionaria sistematicamente distorta rispetto a quella teorica: indica passo $\Delta t$ troppo grande o schema inadatto;
+- accumulo di massa artificiale al bordo: può indicare che il drift non è bilanciato correttamente con la riflessione.
+
+La checklist diagnostica dell'Appendice A02 si applica direttamente: verificare la convergenza empirica al diminuire di $\Delta t$, confrontare momenti simulati con quelli teorici, e controllare che il processo resti nel dominio ammissibile.
+
+---
+
+### 9.8 Take-home message della sezione
+
+- Le condizioni KKT non sono solo uno strumento statico: la reazione normale al bordo ricompare nelle dinamiche stocastiche come meccanismo di riflessione o proiezione.
+- Il problema di Skorokhod è la formulazione rigorosa della traiettoria stocastica vincolata: il termine $L_t$ è il moltiplicatore di Lagrange dinamico, che agisce solo quando il vincolo è attivo.
+- La proiezione è l'implementazione numerica più diretta: ad ogni passo, se la traiettoria esce dal dominio, viene riportata al punto più vicino sul bordo con una correzione normale.
+- Per domini convessi con forma semplice (semiretta, intervallo, palla, simplesso), la proiezione ha formula esplicita.
+- La distribuzione stazionaria del processo vincolato dipende dalla correttezza dello schema numerico: passi troppo grandi o proiezioni mal calibrate distorcono le statistiche.
 
 ---
 
