@@ -1,5 +1,5 @@
 ---
-title: "A07: Operatori di drift e diffusione"
+title: "A09: Operatori di drift e diffusione"
 author: "Antonio Scala"
 date: ""
 ---
@@ -20,6 +20,42 @@ p(t)=e^{tL}p_0.
 $$
 
 Questa formula è molto generale, ma il suo significato concreto dipende dalla natura dell’operatore $L$.
+
+Nel caso particolare della diffusione pura associata alla SDE
+
+$$
+dX_t=\sigma\,dW_t,
+$$
+
+la Fokker--Planck è
+
+$$
+\partial_t p = \frac{\sigma^2}{2}\partial_x^2 p.
+$$
+
+Quindi, nell’equazione del calore scritta come
+
+$$
+\partial_t p = D\partial_x^2 p,
+$$
+
+il coefficiente diffusivo è
+
+$$
+D=\frac{\sigma^2}{2}.
+$$
+
+Più in generale, per una SDE di Itô
+
+$$
+dX_t=a(X_t,t)\,dt+b(X_t,t)\,dW_t,
+$$
+
+si ha
+
+$$
+D(x,t)=\frac{1}{2}b(x,t)^2.
+$$
 
 Nel caso della Fokker--Planck a coefficienti costanti, i due operatori elementari più importanti sono:
 
@@ -229,7 +265,25 @@ A'(t)\Phi(\xi) - A(t)\frac{\ell'(t)}{\ell(t)}\,\xi\,\Phi'(\xi)
 = D\,A(t)\frac{1}{\ell(t)^2}\Phi''(\xi).
 $$
 
-Perché questa relazione possa separarsi in una parte temporale e una parte dipendente da $\xi$, è necessario che i coefficienti temporali abbiano la stessa scala. Questo porta alla condizione
+Per una soluzione diffusiva con massa totale finita e conservata, l’ansatz implica anche
+
+$$
+\int_{\mathbb{R}} p(x,t)\,dx = A(t)\ell(t)\int_{\mathbb{R}}\Phi(\xi)\,d\xi.
+$$
+
+Se la massa totale deve restare costante nel tempo, allora deve valere
+
+$$
+A(t)\ell(t)=\text{costante},
+$$
+
+cioè
+
+$$
+\frac{A'(t)}{A(t)}=-\frac{\ell'(t)}{\ell(t)}.
+$$
+
+Perché l’equazione precedente possa separarsi in una parte temporale e una parte dipendente da $\xi$, è necessario che i coefficienti temporali abbiano la stessa scala. Questo porta alla condizione
 
 $$
 \frac{\ell'(t)}{\ell(t)} \sim \frac{D}{\ell(t)^2},
@@ -253,6 +307,12 @@ $$
 \ell(t)\sim \sqrt{Dt}.
 $$
 
+Usando poi la conservazione della massa, segue anche
+
+$$
+A(t)\sim \frac{1}{\sqrt{Dt}}.
+$$
+
 ## 5.2 Significato
 
 La diffusione produce dunque una lunghezza caratteristica che cresce come
@@ -268,7 +328,8 @@ Questo è il segno distintivo della dinamica diffusiva:
 
 # 6. La soluzione fondamentale: la gaussiana
 
-L’ansatz autosimile suggerisce che la soluzione fondamentale dell’equazione del calore abbia una forma che si allarga come $\sqrt{Dt}$.  
+L’ansatz autosimile e la legge di scala $\ell(t)\sim\sqrt{Dt}$ suggeriscono che la soluzione fondamentale dell’equazione del calore debba avere una forma autosimile, con ampiezza dell’ordine di $1/\sqrt{Dt}$ e larghezza dell’ordine di $\sqrt{Dt}$.
+
 In effetti, per il dato iniziale puntuale
 
 $$

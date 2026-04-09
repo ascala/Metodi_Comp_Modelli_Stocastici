@@ -1,5 +1,5 @@
 ---
-title: "LAB05 SDE: convergenza forte, convergenza debole e preservazione della positività"
+title: "LAB05a: Convergenza forte, convergenza debole e preservazione della positività per Geometric Brownian motion"
 author: "Antonio Scala"
 date: ""
 ---

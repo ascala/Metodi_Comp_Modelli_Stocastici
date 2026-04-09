@@ -1,5 +1,5 @@
 ---
-title: "A06: Tre derivazioni dell’equazione di Fokker--Planck"
+title: "A08: Tre derivazioni dell’equazione di Fokker--Planck"
 author: "Antonio Scala"
 date: ""
 ---
@@ -134,11 +134,15 @@ $$
 -\int f\,\partial_x(ap)\,dx\;.
 $$
 
-Per il termine con derivata seconda,
+Per il termine con derivata seconda servono invece due integrazioni per parti:
 
 $$
-\int b^2 p\,\partial_x^2 f\,dx = \int f\,\partial_x^2(b^2 p)\,dx.
+\int b^2 p\,\partial_x^2 f\,dx
+= -\int \partial_x(b^2 p)\,\partial_x f\,dx
+= \int f\,\partial_x^2(b^2 p)\,dx,
 $$
+
+sempre assumendo che i termini di bordo si annullino.
 
 Quindi
 
@@ -320,7 +324,7 @@ Qui il primo termine rappresenta il flusso in ingresso verso $x$, mentre il seco
 ## 4.2 Ipotesi di piccoli salti
 
 Per ottenere un limite continuo di tipo diffusivo, supponiamo che i salti tipici siano piccoli.  
-Possiamo allora espandere in serie di Taylor il termine di ingresso rispetto a $r$:
+Qui $r$ è trattato come parametro di salto, mentre lo sviluppo di Taylor è effettuato rispetto alla variabile spaziale $x$, cioè rispetto al primo argomento di $w$.
 
 $$
 w(x-r;r)p(x-r,t) = \sum_{n=0}^{\infty}
