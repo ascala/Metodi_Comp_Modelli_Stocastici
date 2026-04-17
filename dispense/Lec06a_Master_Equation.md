@@ -94,6 +94,8 @@ Questi due livelli non si contraddicono. Sono due modi diversi di descrivere la 
 > **Idea chiave**
 > Una singola traiettoria mostra ciò che accade in una realizzazione. La pdf mostra ciò che accade statisticamente su un insieme di realizzazioni.
 
+
+
 # 2. Transizioni elementari e tassi di salto
 
 Per costruire l'equazione per le probabilità di stato dobbiamo specificare come avvengono le transizioni.
@@ -612,3 +614,132 @@ $$
 $$
 
 Questo passaggio mostrerà che master equation, equazione di continuità e Fokker--Planck non sono oggetti scollegati, ma tre versioni della stessa idea generale: una dinamica sulle traiettorie induce una dinamica lineare sulla distribuzione di probabilità.
+
+
+
+## Nota finale: relazione con le catene di Markov a tempo discreto
+
+Prima di proseguire, è utile chiarire il rapporto tra la descrizione già vista per le catene di Markov a **tempo discreto** e la master equation a **tempo continuo**.
+
+### Caso a tempo discreto
+
+Nel caso di una catena di Markov a passi discreti, lo stato del sistema viene aggiornato a istanti
+$$
+n=0,1,2,\dots
+$$
+e la distribuzione di probabilità evolve secondo
+$$
+p^{(n+1)} = P\,p^{(n)},
+$$
+dove $P$ è una matrice di transizione stocastica. Iterando,
+$$
+p^{(n)} = P^n p^{(0)}.
+$$
+
+Questa è la forma naturale quando il tempo avanza in **passi finiti** e la dinamica è descritta da una probabilità di transizione per ogni passo.
+
+### Caso a tempo continuo
+
+Nel caso dei processi di salto in tempo continuo, invece, non si assume che il sistema venga aggiornato a intervalli regolari. I salti possono avvenire in qualunque istante, con tassi assegnati. La distribuzione evolve allora secondo la master equation
+$$
+\frac{d}{dt}p(t) = L\,p(t),
+$$
+dove $L$ è il **generatore infinitesimo** della dinamica.
+
+La soluzione formale è
+$$
+p(t)=e^{tL}p(0).
+$$
+
+### Come si passa da $P^n$ a $e^{tL}$
+
+Le due descrizioni non sono in contraddizione: la dinamica continua può essere vista come limite di una dinamica discreta con passo temporale molto piccolo.
+
+Supponiamo di osservare il sistema su un intervallo piccolo $\Delta t$. Se $\Delta t$ è sufficientemente piccolo, la probabilità di due o più salti nello stesso intervallo è trascurabile, e la matrice di transizione su quel piccolo intervallo ha la forma
+$$
+P(\Delta t) \approx I + \Delta t\,L.
+$$
+
+Questa formula si interpreta così:
+
+- il termine $I$ rappresenta il fatto che, con alta probabilità, in un intervallo molto piccolo il sistema **resta dov'è**;
+- il termine $\Delta t\,L$ rappresenta le piccole probabilità di salto, lineari in $\Delta t$.
+
+Dopo $n$ intervalli di durata $\Delta t$, il tempo totale è
+$$
+t=n\,\Delta t,
+$$
+e quindi
+$$
+p(t) \approx P(\Delta t)^n p(0)
+= \bigl(I+\Delta t\,L\bigr)^n p(0).
+$$
+
+Se ora facciamo tendere $\Delta t$ a zero mantenendo fisso il tempo totale $t$, allora necessariamente
+$$
+n \to \infty,
+\qquad
+\Delta t = \frac{t}{n}.
+$$
+
+Otteniamo così
+$$
+\bigl(I+\Delta t\,L\bigr)^n
+=
+\left(I+\frac{t}{n}L\right)^n.
+$$
+
+A questo punto entra in gioco il limite elementare
+$$
+\left(1+\frac{x}{n}\right)^n \to e^x
+\qquad (n\to\infty).
+$$
+
+L'analogo matriciale di questa formula è
+$$
+\left(I+\frac{t}{n}L\right)^n \to e^{tL}.
+$$
+
+Di conseguenza,
+$$
+p(t)=e^{tL}p(0)
+$$
+può essere interpretata come il limite continuo della dinamica discreta
+$$
+p^{(n)}=P^n p^{(0)}.
+$$
+
+### Significato concettuale
+
+Il passaggio da
+$$
+P^n
+$$
+a
+$$
+e^{tL}
+$$
+non è soltanto un trucco formale. Esso chiarisce una differenza importante tra i due quadri:
+
+- nella catena a tempo discreto, la matrice $P$ descrive l'evoluzione in **un passo finito**;
+- nel caso continuo, il generatore $L$ descrive la variazione **infinitesima** della distribuzione.
+
+In questo senso, $P$ e $L$ giocano ruoli analoghi, ma su scale temporali diverse:
+
+- $P$ è l'operatore di evoluzione su un passo;
+- $L$ è il generatore infinitesimo dell'evoluzione continua.
+
+### Messaggio da ricordare
+
+Le due forme
+$$
+p^{(n)} = P^n p^{(0)}
+\qquad\text{e}\qquad
+p(t)=e^{tL}p(0)
+$$
+descrivono lo stesso tipo di idea a due livelli diversi:
+
+- **tempo discreto** $\to$ iterazione di una matrice di transizione;
+- **tempo continuo** $\to$ esponenziale del generatore.
+
+La master equation può quindi essere vista come la versione in tempo continuo della dinamica markoviana già introdotta nel caso discreto.

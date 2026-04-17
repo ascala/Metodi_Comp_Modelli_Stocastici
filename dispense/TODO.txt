@@ -1,0 +1,5 @@
+Per l'anno prox: visto che lezione Mastere equation e Fokker-Planck sono separate, separare anche i laboratori...
+In particolare:
+1) laboratorio master equation: introdurre RW su reticolo e risolvere con matrici
+2) laboratorio Fokker-Plank: soprattutto far vedere come si pass "correttamente" dal continuo al discreto in modo che quando simulano non facciano cazzate tipiche (ovvero debbono far scalare "bene" i coefficienti)
+

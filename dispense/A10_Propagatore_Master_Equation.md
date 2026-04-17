@@ -1,14 +1,12 @@
 ---
-title: "A10: Esponenziali di matrici e propagatore per la Master Equation"
+title: "A10: Esponenziale del generatore, spettro e caso tempo-dipendente"
 author: "Antonio Scala"
 date: ""
-
 ---
 
 # Obiettivi dell'appendice
 
-Questa appendice approfondisce la soluzione formale della master equation in due
-direzioni.
+Questa appendice approfondisce la soluzione formale della master equation in due direzioni.
 
 La prima riguarda il caso autonomo: mostriamo come la struttura spettrale del generatore $L$ permetta di scrivere $e^{tL}$ in modo esplicito e di interpretare fisicamente ogni modo di rilassamento.
 
@@ -53,9 +51,9 @@ $$
 La soluzione della master equation diventa quindi
 
 $$
-p(t) = e^{tL} p(0) = \sum_k c_k\, e^{\lambda_k t}\, v^{(k)}\;,
+p(t) = e^{tL} p(0) = \sum_k c_k\, e^{\lambda_k t}\, v^{(k)},
 \qquad
-c_k = u^{(k)\top} p(0)\;.
+c_k = u^{(k)\top} p(0).
 $$
 
 I coefficienti $c_k$ sono le proiezioni della condizione iniziale sui *modi* (i.e. gli autovettori) del sistema. Ogni modo evolve autonomamente, con la propria scala temporale $\tau_k = -1/\lambda_k$.
@@ -64,11 +62,10 @@ I coefficienti $c_k$ sono le proiezioni della condizione iniziale sui *modi* (i.
 
 La struttura di bilancio della master equation impone vincoli precisi sullo spettro di $L$.
 
-**Autovalore nullo.** Esiste sempre [almeno]{.underline} un autovalore $\lambda_0 = 0$. L'autovettore destro corrispondente e' la distribuzione stazionaria $p^*$; l'autovettore sinistro e' il vettore costante $(1,1,\dots,1)^\top$, che codifica la conservazione della probabilita'.
+**Autovalore nullo.** Esiste sempre almeno un autovalore $\lambda_0 = 0$. L'autovettore destro corrispondente e' la distribuzione stazionaria $p^*$; l'autovettore sinistro e' il vettore costante $(1,1,\dots,1)^\top$, che codifica la conservazione della probabilita'.
 
 **Parte reale non positiva.** Tutti gli autovalori soddisfano $\mathrm{Re}(\lambda_k)
-\le 0$. Questo segue dalla struttura di $L$: gli elementi fuori diagonale sono non
-negativi, quelli diagonali sono tali che ogni colonna somma a zero. Tale struttura implica che il raggio spettrale della parte dissipativa sia non positivo.
+\le 0$. Questo segue dalla struttura di $L$: gli elementi fuori diagonale sono non negativi, quelli diagonali sono tali che ogni colonna somma a zero. Una matrice con questa struttura non può avere autovalori con parte reale positiva.
 
 **Rilassamento verso lo stazionario.** Se $\lambda_0 = 0$ e' l'unico autovalore nullo (processo ergodico), allora per $t \to \infty$ tutti i modi transienti decadono e
 
@@ -76,8 +73,7 @@ $$
 p(t) \;\xrightarrow{t \to \infty}\; c_0\, v^{(0)} = p^*.
 $$
 
-**Tempo di *mixing*.** La velocita' di convergenza alla stazionaria e' controllata dall'autovalore con $\mathrm{Re}(\lambda_k)$ piu' vicino a zero tra quelli diversi da
-$\lambda_0$. Lo indichiamo con $\lambda_1$ e definiamo la scala di rilassamento globale
+**Tempo di mescolamento.** La velocita' di convergenza alla stazionaria e' controllata dall'autovalore con $\mathrm{Re}(\lambda_k)$ piu' vicino a zero tra quelli diversi da $\lambda_0$. Lo indichiamo con $\lambda_1$ e definiamo la scala di rilassamento globale
 
 $$
 \tau_{\mathrm{mix}} = \frac{-1}{\mathrm{Re}(\lambda_1)}.
@@ -122,21 +118,29 @@ $$
 \dot p(t) = L(t)\, p(t).
 $$
 
-Nel caso autonomo la soluzione era $p(t) = e^{tL}p(0)$ per un motivo preciso: se $L$ e' costante, allora $L$ commuta con $\int_0^t L\,ds = tL$, e la derivata di $e^{tL}$ rispetto a $t$ da' correttamente $L e^{tL}$.
+Nel caso autonomo la soluzione era $p(t) = e^{tL}p(0)$. Per verificarlo basta derivare termine a termine la serie corrispondente all'esponenziale di una matrice, ottenendo $\frac{d}{dt}e^{tL} = L e^{tL}$ e quindi $\dot p = L p$. Questo funziona perche' $L$ e' costante e la derivata dell'esponenziale rispetto al parametro che appare linearmente nell'esponente segue la regola usuale.
 
-Nel caso tempo-dipendente, in generale
-
-$$
-[L(t),\, L(s)] \neq 0 \quad \text{per } t \neq s,
-$$
-
-e la formula
+Nel caso tempo-dipendente si potrebbe tentare la formula analoga
 
 $$
-p(t) = \exp\!\left(\int_0^t L(s)\,ds\right) p(0)
+p(t) = \exp\!\left(\int_0^t L(s)\,ds\right) p(0)\,.
 $$
 
-e' sbagliata: la derivata del membro destro non coincide con $L(t)p(t)$ a causa dei commutatori non nulli.
+Proviamo a verificarla derivando. Chiamiamo $M(t) = \int_0^t L(s)\,ds$, cosicche' la formula proposta e' $p(t) = e^{M(t)} p(0)$. La derivata di $e^{M(t)}$ rispetto a $t$ non e' semplicemente $\dot M(t)\, e^{M(t)} = L(t)\, e^{M(t)}$: questa
+identita' vale per scalari, ma per matrici la derivata dell'esponenziale ha una forma piu' complessa che coinvolge tutti i termini della serie di potenze. In particolare,
+
+$$
+\frac{d}{dt} e^{M(t)} = L(t)\,e^{M(t)}
+$$
+
+e' vera solo se $L(t)$ e $M(t)$ si possono scambiare nell'ordine del prodotto per ogni $t$. Questo e' garantito nel caso autonomo ($L$ costante, per cui $M(t)=tL$ e' proporzionale a $L$ stessa), ma in generale non lo e'. La condizione $L(t)\,M(t) = M(t)\,L(t)$ ovvero $M$ e $L$ *commutano* si verifica calcolando il *commutatore* 
+
+$$
+[A,B] \overset{\mathrm{def}}{=} A\,B-B\,A
+$$
+e verificando che sia zero.
+
+La formula $p(t) = e^{M(t)} p(0)$ e' quindi sbagliata nel caso tempo-dipendente.
 
 ## 2.2 L'esponenziale ordinato nel tempo
 
@@ -146,8 +150,7 @@ $$
 p(t) = \mathcal{T}\exp\!\left(\int_0^t L(s)\,ds\right) p(0).
 $$
 
-Il simbolo $\mathcal{T}$ indica che nelle espansioni in serie i fattori vanno moltiplicati
-con l'istante piu' recente sempre a sinistra. La definizione costruttiva e':
+Il simbolo $\mathcal{T}$ indica che nelle espansioni in serie i fattori vanno moltiplicati con l'istante piu' recente sempre a sinistra. La definizione costruttiva e':
 
 $$
 \mathcal{T}\exp\!\left(\int_0^t L(s)\,ds\right)
@@ -155,27 +158,43 @@ $$
 e^{L(t_N)\Delta t}\cdots e^{L(t_1)\Delta t}\,e^{L(t_0)\Delta t},
 $$
 
-dove $\Delta t = t/N$ e $t_k = k\,\Delta t$. Ogni fattore propaga la distribuzione sull'intervallino $[t_k, t_{k+1}]$ trattando $L$ come costante su quell'intervallo; i fattori si compongono nell'ordine cronologico corretto.
+dove $\Delta t = t/N$ e $t_k = k\,\Delta t$. Ogni fattore propaga la distribuzione
+sull'intervallino $[t_k, t_{k+1}]$ trattando $L$ come costante su quell'intervallo;
+i fattori si compongono nell'ordine cronologico corretto.
 
-Se i commutatori $[L(t), L(s)]$ sono nulli per ogni coppia $(t,s)$, l'ordine non
-importa e si recupera $e^{\int_0^t L(s)\,ds}$.
+Se i commutatori $[L(t), L(s)]$ sono nulli per ogni coppia $(t,s)$, l'ordine non importa e si recupera $e^{\int_0^t L(s)\,ds}$. Ad esempio, se $L(t)$ ha una forma del tipo $\lambda(t) f(A)$ con $A$ matrice costante e $\lambda(t)$ scalare, allora$[L(t), L(s)]=0$ e si può scrivere  
+
+$$
+p(t) = \exp\!\left(f(A)\int_0^t \lambda(s)\,ds\right) p(0).
+$$
 
 ## 2.3 Serie di Magnus
 
 Una rappresentazione alternativa e' la **serie di Magnus**, che scrive l'esponenziale ordinato come singolo esponenziale:
 
 $$
-\mathcal{T}\exp\!\left(\int_0^t L(s)\,ds\right) = e^{\Omega(t)},
+\mathcal{T}\exp\!\left(\int_0^t L(s)\,ds\right) = e^{\Omega(t)}.
 $$
 
-dove l'esponente $\Omega(t)$ e' dato da una serie di integrali annidati di commutatori:
+Per scrivere i termini di questa serie occorre introdurre il **commutatore** di due
+matrici $A$ e $B$, definito come
 
 $$
-\Omega(t) = \underbrace{\int_0^t L(s)\,ds}_{\Omega_1} - \frac{1}{2} \underbrace{\int_0^t\!\int_0^{s_1} [L(s_1),L(s_2)]\,ds_2\,ds_1}_{\Omega_2} + \cdots
+[A,\, B] = AB - BA.
+$$
+
+Il commutatore misura quanto $A$ e $B$ non si scambiano nell'ordine del prodotto: e' nullo se e solo se $AB = BA$. E' proprio la non-nullita' di $[L(t), L(s)]$ per $t
+\neq s$ che rende impossibile ridurre l'esponenziale ordinato a un semplice esponenziale dell'integrale.
+
+L'esponente $\Omega(t)$ e' dato da una serie di integrali annidati di commutatori:
+
+$$
+\Omega(t) = \underbrace{\int_0^t L(s)\,ds}_{\Omega_1}
+- \frac{1}{2}\underbrace{\int_0^t\!\int_0^{s_1}[L(s_1),L(s_2)]\,ds_2\,ds_1}_{\Omega_2} + \cdots
 $$
 
 Il primo termine $\Omega_1$ e' la semplice media temporale del generatore. I termini $\Omega_2, \Omega_3, \ldots$ correggono per la non-commutativita' di $L$ a tempi
-diversi. Se il generatore varia lentamente rispetto alla scala temporale di interesse, i commutatori sono piccoli e la serie converge rapidamente al primo termine.
+diversi. Se il generatore varia lentamente, i commutatori $[L(s_1), L(s_2)]$ sono piccoli e la serie converge rapidamente al primo termine.
 
 # 3. Approssimazioni numeriche
 
@@ -191,7 +210,8 @@ $$
 
 A ogni passo si propaga la distribuzione con il generatore "congelato" al valore corrente. L'errore locale e' $O((\Delta t)^2)$, legato al commutatore trascurato; l'errore globale su un intervallo fisso e' quindi $O(\Delta t)$.
 
-Il vantaggio e' che la matrice $e^{L(t)\Delta t}$ e' una matrice stocastica: mappa distribuzioni di probabilita' in distribuzioni di probabilita', cioe' preserva la non-negativita' e la normalizzazione per qualunque $\Delta t > 0$.
+Il vantaggio e' che la matrice $e^{L(t)\Delta t}$ e' una matrice stocastica: mappa
+distribuzioni di probabilita' in distribuzioni di probabilita', cioe' preserva la non-negativita' e la normalizzazione per qualunque $\Delta t > 0$.
 
 ## 3.2 Schema di Eulero esplicito
 
@@ -229,16 +249,15 @@ p(t+\Delta t) \approx \exp\!\left(\bar L\,\Delta t\right) p(t),
 \bar L = \frac{1}{\Delta t}\int_t^{t+\Delta t} L(s)\,ds.
 $$
 
-Questo schema e' ancora del primo ordine, ma tiene conto della variazione media di $L$
-sull'intervallo invece di congelarlo al valore iniziale. Ha senso quando $L(t)$ e' nota analiticamente o quando il suo integrale e' calcolabile a basso costo.
+Questo schema e' ancora del primo ordine, ma tiene conto della variazione media di $L$ sull'intervallo invece di congelarlo al valore iniziale. Ha senso quando $L(t)$ e' nota analiticamente o quando il suo integrale e' calcolabile a basso costo.
 
 ## 3.4 Riepilogo
 
-| Schema           | Aggiornamento           | Ordine | Conserva $p \ge 0$?            |
-| ---------------- | ----------------------- | ------ | ------------------------------ |
-| Eulero esplicito | $(I + L\Delta t)\,p$    | 1      | solo se $\Delta t \le 1/\max_i |
-| Splitting di Lie | $e^{L(t)\Delta t}\,p$   | 1      | sempre                         |
-| Magnus ordine 1  | $e^{\bar L\Delta t}\,p$ | 1      | sempre                         |
+| Schema | Aggiornamento | Ordine | Conserva $p \ge 0$? |
+|---|---|---|---|
+| Eulero esplicito | $(I + L\Delta t)\,p$ | 1 | solo se $\Delta t \le 1/\max_i \vert L_{ii} \vert$ |
+| Splitting di Lie | $e^{L(t)\Delta t}\,p$ | 1 | sempre |
+| Magnus ordine 1 | $e^{\bar L\Delta t}\,p$ | 1 | sempre |
 
 Tutti gli schemi sono del primo ordine in $\Delta t$. Per ordini superiori occorre
 includere i commutatori (termini di Magnus di ordine piu' alto) o usare metodi di Runge--Kutta adattati alle equazioni matriciali.

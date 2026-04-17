@@ -117,6 +117,18 @@ Generate incrementi indipendenti
 $$
 \Delta W_n \sim \mathcal N(0,\Delta t).
 $$
+```text
+Scegli i parametri X0, theta, kappa, sigma, T, N
+Poni dt = T / N
+
+Costruisci il vettore dei tempi:
+    per n = 0, ..., N:
+        t[n] = n * dt
+
+Genera gli incrementi browniani:
+    per n = 0, ..., N-1:
+        dW[n] = variabile gaussiana con media 0 e varianza dt
+```
 
 ## 1.2 Schema di Euler--Maruyama
 
@@ -128,6 +140,15 @@ $$
 
 Attenzione: questa formula ha senso soltanto finché $X_n\ge 0$.
 
+```text
+Assegna X[0] = X0
+
+Per n = 0, ..., N-1:
+    X[n+1] = X[n]
+             + kappa * (theta - X[n]) * dt
+             + sigma * sqrt(X[n]) * dW[n]
+```
+
 ## 1.3 Tracciare alcune traiettorie
 
 Simulate alcune traiettorie singole e rappresentatele graficamente insieme alla retta orizzontale
@@ -135,6 +156,35 @@ Simulate alcune traiettorie singole e rappresentatele graficamente insieme alla 
 $$
 x=\theta.
 $$
+
+```text
+Fissa uno schema numerico:
+    schema = ingenuo
+    oppure schema = radice_troncata
+    oppure schema = proiettato
+
+Genera gli incrementi browniani dW[0], ..., dW[N-1]
+Assegna X[0] = X0
+
+Per n = 0, ..., N-1:
+    se schema = ingenuo:
+        X[n+1] = X[n]
+                 + kappa * (theta - X[n]) * dt
+                 + sigma * sqrt(X[n]) * dW[n]
+
+    se schema = radice_troncata:
+        rad = sqrt( max(X[n], 0) )
+        X[n+1] = X[n]
+                 + kappa * (theta - X[n]) * dt
+                 + sigma * rad * dW[n]
+
+    se schema = proiettato:
+        rad = sqrt( max(X[n], 0) )
+        X_tilde = X[n]
+                  + kappa * (theta - X[n]) * dt
+                  + sigma * rad * dW[n]
+        X[n+1] = max(0, X_tilde)
+```
 
 ## Domande
 
@@ -179,6 +229,28 @@ $$
 \theta + (X_0-\theta)e^{-\kappa t_n}.
 $$
 
+```text
+Per n = 0, ..., N:
+    media[n] = 0
+
+Ripeti per m = 1, ..., M traiettorie:
+    genera una traiettoria X^(m)[0], ..., X^(m)[N]
+
+    Per n = 0, ..., N:
+        media[n] = media[n] + X^(m)[n]
+
+Alla fine:
+    Per n = 0, ..., N:
+        media[n] = media[n] / M
+```
+
+Per il confronto con la teoria, costruire il vettore
+
+```text
+Per n = 0, ..., N:
+    media_teorica[n] = theta + (X0 - theta) * exp( -kappa * t[n] )
+```
+
 ## Domande
 
 1. La media empirica segue bene la curva teorica?
@@ -220,6 +292,24 @@ p_{\mathrm{neg}}(\Delta t)=
 \frac{\text{\# di traiettorie che diventano negative almeno una volta}}{M}.
 $$
 
+```text
+Poni conta_negative = 0
+
+Ripeti per m = 1, ..., M traiettorie:
+    genera una traiettoria X[0], ..., X[N]
+    poni negativa = falso
+
+    Per n = 0, ..., N:
+        se X[n] < 0:
+            negativa = vero
+
+    Se negativa = vero:
+        conta_negative = conta_negative + 1
+
+Alla fine:
+    p_neg = conta_negative / M
+```
+
 Studiate come varia rispetto a:
 
 1. $\Delta t$;
@@ -251,6 +341,17 @@ $$
 
 Questo evita l'errore numerico immediato nel calcolo della radice, ma non garantisce ancora che $X_{n+1}\ge 0$.
 
+```text
+Assegna X[0] = X0
+
+Per n = 0, ..., N-1:
+    rad = sqrt( max(X[n], 0) )
+
+    X[n+1] = X[n]
+             + kappa * (theta - X[n]) * dt
+             + sigma * rad * dW[n]
+```
+
 ## 4.1 Esperimento
 
 Implementate questo schema e confrontatelo con Euler ingenuo.
@@ -280,6 +381,19 @@ $$
 
 In questo modo la non negatività è garantita a ogni passo.
 
+```text
+Assegna X[0] = X0
+
+Per n = 0, ..., N-1:
+    rad = sqrt( max(X[n], 0) )
+
+    X_tilde = X[n]
+              + kappa * (theta - X[n]) * dt
+              + sigma * rad * dW[n]
+
+    X[n+1] = max(0, X_tilde)
+```
+
 ## 5.1 Esperimento
 
 Implementate lo schema proiettato e confrontatelo con:
@@ -308,9 +422,35 @@ Per ciascuno osservate:
 - aderenza alla media teorica;
 - aspetto qualitativo delle traiettorie.
 
+```text
+Per ciascuno schema numerico:
+    inizializza media[n] = 0 per ogni n
+    inizializza conta_negative = 0
+
+    Ripeti per m = 1, ..., M traiettorie:
+        genera incrementi browniani dW[0], ..., dW[N-1]
+        genera una traiettoria X[0], ..., X[N] con lo schema scelto
+
+        poni negativa = falso
+
+        Per n = 0, ..., N:
+            media[n] = media[n] + X[n]
+            se X[n] < 0:
+                negativa = vero
+
+        Se negativa = vero:
+            conta_negative = conta_negative + 1
+
+    Alla fine:
+        Per n = 0, ..., N:
+            media[n] = media[n] / M
+
+        p_neg = conta_negative / M
+```
+
 ## Suggerimento
 
-Per rendere il confronto più chiaro, usate gli stessi incrementi browniani per i tre schemi.
+Per un confronto ancora più pulito, si possono usare gli stessi incrementi browniani per i diversi schemi, traiettoria per traiettoria.
 
 ## Domande
 
@@ -321,6 +461,17 @@ Per rendere il confronto più chiaro, usate gli stessi incrementi browniani per 
 # Parte 7 -- Ruolo dei parametri
 
 Studiate separatamente l'effetto dei tre parametri principali.
+
+```text
+Scegli quale parametro variare
+Fissa tutti gli altri parametri
+
+Per ciascun valore del parametro scelto:
+    genera M traiettorie
+    calcola la media empirica
+    calcola la frequenza di negatività
+    traccia alcune traiettorie campione
+```
 
 ## 7.1 Variare $\kappa$
 
@@ -375,6 +526,43 @@ $$
 $$
 
 Usando la formula già nota per $\mathbb E[X_t]$, si può quindi studiare anche numericamente l'evoluzione della varianza.
+
+```text
+Per n = 0, ..., N:
+    media1[n] = 0
+    media2[n] = 0
+
+Ripeti per m = 1, ..., M traiettorie:
+    genera una traiettoria X[0], ..., X[N]
+
+    Per n = 0, ..., N:
+        media1[n] = media1[n] + X[n]
+        media2[n] = media2[n] + X[n]^2
+
+Alla fine:
+    Per n = 0, ..., N:
+        media1[n] = media1[n] / M
+        media2[n] = media2[n] / M
+        varianza[n] = media2[n] - media1[n]^2
+```
+
+Nel caso voleste confrontare con la soluzione esplicita per il momento secondo:
+$$
+\begin{aligned}
+\mathbb E[X_t^2]
+&=
+X_0^2 e^{-2\kappa t}
+\\[4pt]
+&\quad
++
+\left(\theta^2+\frac{\theta\sigma^2}{2\kappa}\right)\bigl(1-e^{-2\kappa t}\bigr)
+\\[4pt]
+&\quad
++
+\left(2\theta+\frac{\sigma^2}{\kappa}\right)(X_0-\theta)
+\bigl(e^{-\kappa t}-e^{-2\kappa t}\bigr).
+\end{aligned}
+$$
 
 ## Possibile attività
 
