@@ -185,85 +185,121 @@ Questa è una delle idee centrali della lezione:
 
 > la crescita media e la sopravvivenza di una realizzazione sono concetti distinti.
 
-## 5. La funzione generatrice della distribuzione di offspring
+## 5. La funzione generatrice
 
-Per descrivere l’intera distribuzione di $K$ si introduce la funzione generatrice
+### 5.1 La funzione generatrice dell’offspring
+
+Per descrivere l’intera distribuzione di $K$ --- il numero di figli di un singolo individuo --- si introduce la funzione generatrice
 
 $$
 G(s) = \mathbb{E}[s^K] = \sum_{k=0}^{\infty} p_k s^k\;.
 $$
 
-Questa funzione contiene tutta l’informazione sulla legge di riproduzione. In particolare:
+Questa funzione codifica tutta l’informazione sulla legge di riproduzione di un individuo. Le sue proprietà fondamentali si leggono direttamente dalla definizione:
 
 $$
-G(1)=1\;,
+G(0) = p_0\;,
 $$
 
-$$
-G(0)=p_0\;,
-$$
-
-e, derivando,
+cioè $G$ valutata in zero restituisce la probabilità di non avere figli;
 
 $$
-G'(1)=\sum_{k=0}^{\infty} k p_k = m\;.
+G(1) = \sum_{k=0}^{\infty} p_k = 1\;,
 $$
 
-Quindi il numero medio di discendenti è la derivata della generatrice nel punto $1$.
-
-La funzione generatrice è utile perché permette di trattare in modo compatto somme di variabili indipendenti. Questo è esattamente ciò che accade nel processo di branching, poiché la popolazione della generazione successiva è somma dei figli prodotti dagli individui della generazione corrente.
-
-Se definiamo la funzione generatrice di $N_t$ come
+cioè $G(1)=1$ per la normalizzazione delle probabilità; e, derivando termine a termine,
 
 $$
-F_t(s)=\mathbb{E}[s^{N_t}]\;,
+G'(1) = \sum_{k=0}^{\infty} k\, p_k = m\;,
 $$
 
-allora si ottiene la relazione
+cioè il numero medio di discendenti è la derivata di $G$ nel punto $1$.
+
+$G(s)$ è dunque un oggetto microscopico e fisso: descrive la legge di riproduzione di un individuo tipico, indipendentemente da quanti individui ci siano nella popolazione.
+
+### 5.2 La funzione generatrice della popolazione e la sua evoluzione
+
+Per seguire l’evoluzione dell’intera popolazione introduciamo, per ogni generazione $t$, la funzione generatrice di $N_t$:
 
 $$
-F_{t+1}(s)=F_t(G(s))\;.
+F_t(s) = \mathbb{E}[s^{N_t}]\;.
 $$
 
-Deriviamo questa relazione esplicitamente. Per definizione,
+A differenza di $G$, questa quantità cambia nel tempo: $F_t$ è una proprietà dinamica della distribuzione della popolazione alla generazione $t$.
+
+Vogliamo trovare come $F_{t+1}$ si ricava da $F_t$. Partiamo dalla definizione:
 
 $$
 F_{t+1}(s) = \mathbb{E}[s^{N_{t+1}}]\;.
 $$
 
-Condizioniamo su $N_t = n$: se alla generazione $t$ ci sono $n$ individui, ognuno produce indipendentemente un numero di figli con funzione generatrice $G(s)$, e $N_{t+1}$ è la somma di $n$ variabili indipendenti con quella stessa distribuzione. La funzione generatrice di una somma di $n$ variabili indipendenti e identicamente distribuite è la $n$-esima potenza della funzione generatrice del singolo termine, quindi
+**Passo 1: condizioniamo su $N_t = n$.**
+Se alla generazione $t$ ci sono esattamente $n$ individui, allora
+
+$$
+N_{t+1} = K_1 + K_2 + \cdots + K_n\;,
+$$
+
+dove i $K_i$ sono indipendenti e con la stessa distribuzione di offspring. Quindi
+
+$$
+\mathbb{E}[s^{N_{t+1}} \mid N_t = n]
+= \mathbb{E}[s^{K_1 + \cdots + K_n}]\;.
+$$
+
+Usiamo l’identità $s^{K_1+\cdots+K_n} = s^{K_1} \cdots s^{K_n}$ e poi l’indipendenza dei $K_i$:
+
+$$
+\mathbb{E}[s^{K_1} \cdots s^{K_n}]
+= \prod_{i=1}^{n} \mathbb{E}[s^{K_i}]
+= [G(s)]^n\;.
+$$
+
+Il primo uguale usa l’indipendenza (il valor medio di un prodotto di variabili indipendenti è il prodotto dei valori medi); il secondo usa il fatto che tutti i $K_i$ hanno la stessa funzione generatrice $G(s)$. In conclusione:
 
 $$
 \mathbb{E}[s^{N_{t+1}} \mid N_t = n] = [G(s)]^n\;.
 $$
 
-Rimuovendo il condizionamento,
+**Passo 2: togliamo il condizionamento.**
+Ora sommiamo su tutti i possibili valori di $N_t$, pesando ciascuno con la sua probabilità:
 
 $$
 F_{t+1}(s)
-= \mathbb{E}\!\left[[G(s)]^{N_t}\right]
-= F_t(G(s))\;.
+= \sum_{n=0}^{\infty} \mathbb{E}[s^{N_{t+1}} \mid N_t = n]\, P(N_t = n)
+= \sum_{n=0}^{\infty} [G(s)]^n\, P(N_t = n)\;.
 $$
 
-Nel caso iniziale più semplice, con un solo progenitore,
+Ma questa ultima somma è proprio la funzione generatrice di $N_t$ valutata in $u = G(s)$:
 
 $$
-N_0=1\;,
+\sum_{n=0}^{\infty} [G(s)]^n\, P(N_t = n) = \mathbb{E}\!\left[[G(s)]^{N_t}\right] = F_t(G(s))\;.
 $$
 
-si ha
+Quindi:
 
 $$
-F_0(s)=s\;,
+F_{t+1}(s) = F_t(G(s))\;.
 $$
 
-e quindi
+Questa relazione dice che la distribuzione della popolazione alla generazione $t+1$ si ottiene applicando a $F_t$ la stessa legge di offspring. La struttura iterativa del processo si riflette in una composizione di funzioni.
+
+**Caso particolare: un solo progenitore.**
+Se partiamo da $N_0 = 1$, allora $F_0(s) = s$, e applicando la relazione iterativamente:
 
 $$
-F_t(s)=G^{\circ t}(s)\;,
+F_1(s) = G(s)\;, \quad
+F_2(s) = G(G(s))\;, \quad
+F_3(s) = G(G(G(s)))\;, \quad \dots
 $$
 
-dove $G^{\circ t}$ indica l’iterata $t$-esima di $G$.
+In generale,
+
+$$
+F_t(s) = G^{\circ t}(s)\;,
+$$
+
+dove $G^{\circ t}$ indica l’iterata $t$-esima di $G$. L’interpretazione è immediata: $G$ descrive la distribuzione dei figli di un individuo, $G \circ G$ quella dei nipoti, $G^{\circ t}$ quella dei discendenti alla generazione $t$ di un singolo progenitore.
 
 Questa struttura iterativa sarà fondamentale per lo studio dell’estinzione.
 
@@ -299,40 +335,42 @@ Questa è l’equazione fondamentale del branching elementare.
 
 ### 6.1 Interpretazione geometrica
 
-L’equazione $q=G(q)$ si può leggere come intersezione tra la curva $y=G(s)$ e la retta $y=s$ nel segmento $[0,1]$.
+L’equazione $q=G(q)$ si può leggere come l’intersezione tra la curva $y=G(s)$ e la retta $y=s$ nel segmento $[0,1]$.
 
-Poiché $G(1)=1$, il punto $s=1$ è sempre una soluzione. La domanda è se esista anche un’altra soluzione in $[0,1)$.
+Poiché $G(1)=1$, il punto $s=1$ è sempre una soluzione. La domanda è: esiste anche una soluzione in $[0,1)$?
 
-Per rispondere occorre osservare che $G(s)$ è convessa su $[0,1]$. Infatti
+### 6.2 Convessità di $G$ e unicità della soluzione
 
-$$
-G''(s) = \sum_{k=2}^{\infty} k(k-1)\,p_k\,s^{k-2} \ge 0\;,
-$$
+Per rispondere in modo rigoroso, osserviamo le proprietà geometriche della curva $y=G(s)$.
 
-poiché tutti i coefficienti $p_k$ sono non negativi. Inoltre $G(0)=p_0\ge 0$.
-La curva è quindi convessa, parte da $p_0$ nell’origine e arriva a $1$ nel punto $s=1$.
-Se la pendenza in $s=1$ vale $m = G'(1) \le 1$, la curva arriva a $1$ da sotto (o tangenzialmente), e non interseca la retta $y=s$ in nessun punto di $[0,1)$. Se invece $m>1$, la curva arriva a $1$ con pendenza maggiore di $1$, e la convessità garantisce che esiste esattamente un’altra intersezione con la retta in $[0,1)$.
-
-Il comportamento è dunque controllato dalla pendenza nel punto $1$:
+**$G$ è convessa su $[0,1]$.** Derivando due volte termine a termine:
 
 $$
-G'(1)=m\;.
+G''(s) = \sum_{k=2}^{\infty} k(k-1)\,p_k\,s^{k-2}\;.
 $$
 
-Questo porta al risultato qualitativo fondamentale:
+Tutti i coefficienti $p_k$ sono non negativi e $s^{k-2} \ge 0$ per $s\in[0,1]$, quindi $G''(s) \ge 0$ su tutto $[0,1]$. La curva è dunque convessa.
 
-* se $m\le 1$, allora l’estinzione è certa e
+**Valori agli estremi.** Abbiamo $G(0) = p_0 \ge 0$ e $G(1) = 1$, quindi la curva parte da $p_0$ nell’origine e arriva al punto $(1,1)$, che è sempre sull’intersezione con la retta $y=s$.
+
+**Caso $m \le 1$: nessuna soluzione in $[0,1)$.**
+La pendenza della curva in $s=1$ vale $G'(1) = m \le 1$. Poiché la curva è convessa e arriva a $(1,1)$ con pendenza al più uguale a quella della retta, essa si trova al di sopra della retta $y=s$ per ogni $s\in[0,1)$ (o al limite la tocca tangenzialmente). Non esiste quindi nessuna altra intersezione, e l’unica soluzione è $q=1$.
+
+**Caso $m > 1$: esiste esattamente una soluzione in $(0,1)$.**
+La pendenza in $s=1$ vale $G'(1) = m > 1$, quindi la curva arriva a $(1,1)$ più ripida della retta. Per continuità e convessità, la curva deve necessariamente trovarsi al di sotto della retta $y=s$ in un intorno di $s=1$. Poiché $G(0) = p_0 \ge 0$ e la retta vale $0$ in $s=0$, la curva parte da sopra (o al livello della) retta nell’origine. La convessità garantisce allora che vi sia esattamente un punto di incrocio in $(0,1)$: questa è la probabilità di estinzione $q < 1$.
+
+**Risultato.**
+
+* Se $m \le 1$, l’estinzione è certa:
   $$
-  q=1\;;
+  q = 1\;.
   $$
 
-* se $m>1$, allora esiste una soluzione con
+* Se $m > 1$, esiste una soluzione con
   $$
-  0<q<1\;,
+  0 < q < 1\;,
   $$
-  che rappresenta la probabilità di estinzione.
-
-Quindi nel regime supercritico l’estinzione non è impossibile: è soltanto non certa.
+  che rappresenta la probabilità di estinzione. La sopravvivenza ha quindi probabilità positiva $1-q > 0$, ma non è garantita.
 
 ## 7. I tre regimi: subcritico, critico, supercritico
 
@@ -444,29 +482,45 @@ $$
 G(s)=1-p+ps^2\;.
 $$
 
-L’equazione per la probabilità di estinzione è
-
-$$
-q = 1-p + pq^2.
-$$
-
-che ha sempre $q=1$ come soluzione, e un'altra
-
-$$
-q = \frac{1-p}{p}.
-$$
-
-La seconda soluzione è maggiore di uno per $p<1/2$ per cui non può rappresentare una probabilità. Notare che la media vale
+La media vale
 
 $$
 m = 2p\;.
 $$
 
+L’equazione per la probabilità di estinzione è
+
+$$
+q = 1-p + pq^2\;.
+$$
+
+Raccogliamo tutti i termini a sinistra:
+
+$$
+pq^2 - q + (1-p) = 0\;.
+$$
+
+Applichiamo la formula quadratica con $a=p$, $b=-1$, $c=1-p$:
+
+$$
+q = \frac{1 \pm \sqrt{1 - 4p(1-p)}}{2p}
+= \frac{1 \pm \sqrt{(1-2p)^2}}{2p}
+= \frac{1 \pm |1-2p|}{2p}\;.
+$$
+
+Le due soluzioni sono quindi
+
+$$
+q = 1 \qquad \text{e} \qquad q = \frac{1-p}{p}\;.
+$$
+
+La seconda soluzione è minore di $1$ soltanto se $p > \frac12$, cioè se $m = 2p > 1$; altrimenti è maggiore o uguale a $1$ e non rappresenta una probabilità valida.
+
 Quindi:
 
-* se $p\le \frac12$, allora $m\le 1$ e la soluzione fisica è $q=1$;
+* se $p \le \frac12$, allora $m \le 1$ e la soluzione fisica è $q=1$;
 
-* se $p>\frac12$, allora $m>1$ e compare una soluzione con $q<1$.
+* se $p > \frac12$, allora $m > 1$ e la probabilità di estinzione è $q = \frac{1-p}{p} < 1$.
 
 Questo esempio mostra in modo molto chiaro come la soglia su $m$ si traduca in comparsa di una probabilità di sopravvivenza positiva.
 
@@ -514,7 +568,7 @@ Questo è il contesto storico originale. Una linea familiare può essere vista c
 
 All’inizio di un’epidemia, quando il numero di suscettibili è ancora grande, ogni infetto può essere visto come origine di una linea di trasmissione quasi indipendente. Anche se il numero medio di casi secondari è maggiore di $1$, un focolaio iniziale può spegnersi per caso. Il branching è quindi una buona approssimazione della fase iniziale della diffusione.
 
-### 10.3 Cascades su reti
+### 10.3 Cascate su reti
 
 In una rete, un nodo attivo può attivare un numero casuale di vicini. Almeno nella fase iniziale della propagazione, e in assenza di forti effetti di saturazione, il processo può essere approssimato da un branching. Questo vale per diffusione di informazione, guasti a cascata, contagio comportamentale.
 
