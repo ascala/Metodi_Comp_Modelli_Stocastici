@@ -178,7 +178,7 @@ dove i $K_i$ sono indipendenti e hanno tutti la stessa distribuzione di offsprin
 
 ## Passo 1: fissiamo $N_t=n$
 
-Se condi\-zioniamo su $N_t=n$, allora
+Se condizioniamo su $N_t=n$, allora
 
 $$
 N_{t+1}=K_1+\cdots+K_n.
@@ -554,7 +554,7 @@ $$
 
 ---
 
-## Esempio: zero o due figli
+## Esempio: zero o due figli (1)
 
 Consideriamo
 
@@ -576,8 +576,11 @@ $$
 q = 1-p + pq^2.
 $$
 
-Le soluzioni sono:
+---
 
+## Esempio: zero o due figli (2)
+
+Le soluzioni sono:
 $$
 q=1,
 \qquad
