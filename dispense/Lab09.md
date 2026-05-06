@@ -1,4 +1,4 @@
-# LAB08: Analisi di serie stocastiche: ARMA, ARCH e GARCH
+# LAB09: Analisi di serie stocastiche: ARMA, ARCH e GARCH
 
 ## Obiettivi
 

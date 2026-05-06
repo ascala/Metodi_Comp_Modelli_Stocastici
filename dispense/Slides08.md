@@ -1,5 +1,5 @@
 ---
-title: "Lezione 09 -- Stima dei parametri e log-likelihood"
+title: "S08 -- Stima dei parametri e log-likelihood"
 author: "Antonio Scala"
 date: ""
 subtitle: "Metodi computazionali per modelli stocastici"

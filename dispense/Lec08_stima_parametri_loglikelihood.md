@@ -1,5 +1,5 @@
 ---
-title: "09: Stima dei parametri e log-likelihood"
+title: "08: Stima dei parametri e log-likelihood"
 author: "Antonio Scala"
 date: ""
 ---
@@ -1237,7 +1237,6 @@ Quindi, condizionatamente a $X_k=x_k$,
 $$ X_{k+1}\mid X_k=x_k \approx
 \mathcal{N}\left( x_k+a(x_k,\theta)\Delta t, \; b(x_k,\theta)^2\Delta t \right).
 $$
-
 ## 10.1 Log-likelihood approssimata
 
 Per piccoli $\Delta t$, lo schema di Euler--Maruyama suggerisce che, condizionatamente a $X_k=x_k$,

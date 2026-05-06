@@ -1,5 +1,5 @@
 ---
-title: "08: Serie stocastiche e modelli per dati temporali"
+title: "09: Serie stocastiche e modelli per dati temporali"
 author: "Antonio Scala"
 date: ""
 ---
@@ -952,7 +952,6 @@ Nei modelli ARMA, GARCH, a soglia o per conteggi, la densità condizionata cambi
 X_t\mid X_{t-1}\sim
 \mathcal{N}(c+aX_{t-1},\sigma^2).
 $$
-
 * AR(1) con innovazioni Student-t $$
 X_t-(c+aX_{t-1})\sim t_\nu(0,s).
 $$
@@ -963,7 +962,6 @@ X_t\mid\mathcal{F}_{t-1}\sim
 $$ con $$
 \sigma_t^2=\alpha_0+\alpha_1X_{t-1}^2+\beta_1\sigma_{t-1}^2.
 $$
-
 * Conteggi Poisson condizionati $$
 X_t\mid\mathcal{F}_{t-1}\sim\mathrm{Poisson}(\lambda_t).
 $$
