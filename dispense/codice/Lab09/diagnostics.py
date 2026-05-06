@@ -459,3 +459,82 @@ def residual_diagnostics(residuals, output_dir, prefix="resid", title_prefix="Re
     report_file.write_text(text, encoding="utf-8")
 
     print("\n" + text)
+    
+"""
+diagnostics_addons.py
+
+Funzioni aggiuntive da incollare in fondo a `diagnostics.py`.
+
+Servono per la diagnostica della Parte 1bis del laboratorio:
+decidere se lavorare sulla serie originale o sui suoi incrementi.
+
+Le due funzioni sono:
+
+- block_stats(x, K): media e varianza su K blocchi consecutivi;
+- plot_block_stats(x, filename, K, title): grafico delle stesse, fianco a fianco.
+
+Una varianza che cresce sistematicamente tra blocchi consecutivi e' un
+sintomo forte di non stazionarieta'. Una serie stazionaria mostra invece
+fluttuazioni delle varianze attorno a un valore costante.
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def block_stats(x, K=5):
+    """
+    Media e varianza campionaria su K blocchi consecutivi.
+
+    Per una serie stazionaria, le varianze dei blocchi devono fluttuare
+    attorno a un livello costante. Per un random walk, la varianza dei
+    blocchi successivi cresce sistematicamente con il tempo.
+
+    Restituisce (means, variances), entrambi array di lunghezza K.
+    """
+    x = np.asarray(x, dtype=float)
+    x = x[np.isfinite(x)]
+
+    blocks = np.array_split(x, K)
+    means = np.array([np.mean(b) for b in blocks])
+    variances = np.array([np.var(b, ddof=1) for b in blocks])
+    return means, variances
+
+
+def plot_block_stats(x, filename, K=5, title="Statistiche per blocchi"):
+    """
+    Grafico affiancato di media e varianza per blocchi.
+
+    Lettura:
+
+    - barre approssimativamente uguali, oscillazioni casuali: serie stazionaria;
+    - varianze che crescono sistematicamente con l'indice di blocco: random walk
+      o piu' in generale processo non stazionario nei valori;
+    - medie che derivano sistematicamente: trend o drift presente.
+
+    Le linee tratteggiate orizzontali indicano la media globale dei valori
+    riportati (media-delle-medie e media-delle-varianze).
+    """
+    means, variances = block_stats(x, K=K)
+    block_indices = np.arange(1, K + 1)
+
+    fig, axes = plt.subplots(1, 2, figsize=(10.0, 3.6))
+
+    axes[0].bar(block_indices, means, alpha=0.7, edgecolor="black")
+    axes[0].axhline(np.mean(means), linestyle="--", linewidth=1.0)
+    axes[0].set_title("Media per blocco")
+    axes[0].set_xlabel("blocco")
+    axes[0].set_ylabel("media campionaria")
+    axes[0].grid(alpha=0.25)
+
+    axes[1].bar(block_indices, variances, alpha=0.7, edgecolor="black")
+    axes[1].axhline(np.mean(variances), linestyle="--", linewidth=1.0)
+    axes[1].set_title("Varianza per blocco")
+    axes[1].set_xlabel("blocco")
+    axes[1].set_ylabel("varianza campionaria")
+    axes[1].grid(alpha=0.25)
+
+    fig.suptitle(title)
+    fig.tight_layout()
+    fig.savefig(filename, dpi=160)
+    plt.close(fig)

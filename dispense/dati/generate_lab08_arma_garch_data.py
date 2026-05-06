@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """
-Generazione dati sintetici per il laboratorio su serie temporali.
+Generazione dati sintetici per il laboratorio su serie temporali (versione 2).
+
+Differenze rispetto alla versione 1:
+- aggiunta serie_09: random walk;
+- aggiunta serie_10: random walk con drift;
+- introduzione del flag `standardize` in SeriesMetadata, per evitare di
+  standardizzare globalmente le serie non stazionarie (la standardizzazione
+  globale di un random walk distrugge proprio il segnale che vogliamo
+  diagnosticare nella Parte 1bis del laboratorio).
 
 Crea serie anonime per esercizi su:
 - rumore bianco gaussiano;
@@ -10,12 +18,14 @@ Crea serie anonime per esercizi su:
 - ARMA(1,1);
 - ARCH(1);
 - GARCH(1,1);
-- GARCH asimmetrico tipo GJR-GARCH.
+- GARCH asimmetrico tipo GJR-GARCH;
+- random walk;
+- random walk con drift.
 
 Lo script salva:
-- data/serie_01.csv, ..., data/serie_08.csv
+- data/serie_01.csv, ..., data/serie_10.csv
 - data/soluzioni_generative.csv
-- figures/serie_01.png, ..., figures/serie_08.png
+- figures/serie_01.png, ..., figures/serie_10.png
 
 Uso da terminale:
 
@@ -44,6 +54,7 @@ class SeriesMetadata:
     model: str
     parameters: str
     comment: str
+    standardize: bool = True
 
 
 def ensure_dirs(outdir: Path) -> tuple[Path, Path]:
@@ -55,7 +66,7 @@ def ensure_dirs(outdir: Path) -> tuple[Path, Path]:
 
 
 def standardise(x: np.ndarray) -> np.ndarray:
-    """Centra e riscalare una serie per rendere confrontabili i grafici."""
+    """Centra e riscala una serie per rendere confrontabili i grafici."""
     x = np.asarray(x, dtype=float)
     return (x - np.mean(x)) / np.std(x, ddof=1)
 
@@ -179,8 +190,8 @@ def simulate_gjr_garch(
                     + gamma x_{t-1}^2 1_{x_{t-1}<0}
                     + beta sigma_{t-1}^2
 
-    Per innovazioni gaussiane simmetriche, una condizione sufficiente di stazionarietà
-    debole è alpha + beta + gamma/2 < 1.
+    Per innovazioni gaussiane simmetriche, una condizione sufficiente di stazionarieta'
+    debole e' alpha + beta + gamma/2 < 1.
     """
     if omega <= 0:
         raise ValueError("omega deve essere positivo")
@@ -202,6 +213,47 @@ def simulate_gjr_garch(
             + beta * sigma2[t - 1]
         )
         x[t] = np.sqrt(sigma2[t]) * z[t]
+    return x
+
+
+def simulate_random_walk(
+    n_total: int,
+    sigma: float,
+    rng: np.random.Generator,
+    x0: float = 0.0,
+) -> np.ndarray:
+    """
+    Random walk gaussiano: X_{t+1} = X_t + eta_t, eta_t ~ N(0, sigma^2).
+
+    Non stazionario nei valori (Var(X_t) = t * sigma^2),
+    ma stazionario negli incrementi (rumore bianco gaussiano).
+    """
+    eps = sigma * rng.standard_normal(n_total)
+    x = np.empty(n_total)
+    x[0] = x0
+    for t in range(1, n_total):
+        x[t] = x[t - 1] + eps[t]
+    return x
+
+
+def simulate_random_walk_with_drift(
+    n_total: int,
+    mu: float,
+    sigma: float,
+    rng: np.random.Generator,
+    x0: float = 0.0,
+) -> np.ndarray:
+    """
+    Random walk con drift: X_{t+1} = X_t + mu + eta_t, eta_t ~ N(0, sigma^2).
+
+    Non stazionario nei valori, con trend lineare deterministico mu * t.
+    Gli incrementi sono i.i.d. N(mu, sigma^2): stazionari ma con media non nulla.
+    """
+    eps = sigma * rng.standard_normal(n_total)
+    x = np.empty(n_total)
+    x[0] = x0
+    for t in range(1, n_total):
+        x[t] = x[t - 1] + mu + eps[t]
     return x
 
 
@@ -299,7 +351,7 @@ def generate_all(outdir: Path, seed: int, n: int, burnin: int, standardize: bool
             label="Serie 07",
             model="GARCH(1,1)",
             parameters="omega=0.05, alpha=0.10, beta=0.86",
-            comment="Volatilità persistente; alpha+beta=0.96.",
+            comment="Volatilita' persistente; alpha+beta=0.96.",
         ),
     ))
 
@@ -312,13 +364,45 @@ def generate_all(outdir: Path, seed: int, n: int, burnin: int, standardize: bool
             label="Serie 08",
             model="GJR-GARCH(1,1) asimmetrico",
             parameters="omega=0.05, alpha=0.06, gamma=0.16, beta=0.84",
-            comment="Volatilità asimmetrica: shock negativi aumentano maggiormente la varianza futura.",
+            comment="Volatilita' asimmetrica: shock negativi aumentano maggiormente la varianza futura.",
+        ),
+    ))
+
+    # Serie non stazionarie: NON vanno standardizzate globalmente, altrimenti
+    # si distrugge il segnale (varianza crescente, drift) che la diagnostica
+    # della Parte 1bis deve identificare.
+    x = simulate_random_walk(n_total, sigma=0.5, rng=rng)[burnin:]
+    series.append((
+        "serie_09.csv",
+        x,
+        SeriesMetadata(
+            file="serie_09.csv",
+            label="Serie 09",
+            model="Random walk",
+            parameters="sigma=0.5, x0=0.0",
+            comment="Non stazionaria nei valori; gli incrementi sono rumore bianco. Test della diagnostica valori-vs-incrementi.",
+            standardize=False,
+        ),
+    ))
+
+    x = simulate_random_walk_with_drift(n_total, mu=0.05, sigma=0.5, rng=rng)[burnin:]
+    series.append((
+        "serie_10.csv",
+        x,
+        SeriesMetadata(
+            file="serie_10.csv",
+            label="Serie 10",
+            model="Random walk con drift",
+            parameters="mu=0.05, sigma=0.5, x0=0.0",
+            comment="Trend lineare con fluttuazioni cumulative; gli incrementi sono i.i.d. con media non nulla.",
+            standardize=False,
         ),
     ))
 
     metadata: list[SeriesMetadata] = []
     for filename, x, meta in series:
-        x_out = standardise(x) if standardize else x
+        do_standardise = standardize and meta.standardize
+        x_out = standardise(x) if do_standardise else x
         save_series(x_out, data_dir, fig_dir, filename, title=meta.label)
         metadata.append(meta)
 
@@ -332,13 +416,19 @@ def generate_all(outdir: Path, seed: int, n: int, burnin: int, standardize: bool
         "# Dati sintetici per laboratorio ARMA/GARCH\n\n"
         "Questa cartella contiene serie temporali sintetiche generate da modelli noti.\n\n"
         "## File prodotti\n\n"
-        "- `data/serie_01.csv` ... `data/serie_08.csv`: serie anonime da assegnare agli studenti.\n"
+        "- `data/serie_01.csv` ... `data/serie_10.csv`: serie anonime da assegnare agli studenti.\n"
         "- `data/soluzioni_generative.csv`: modello generatore e parametri, da tenere per il docente.\n"
-        "- `figures/serie_01.png` ... `figures/serie_08.png`: grafici rapidi di controllo.\n\n"
+        "- `figures/serie_01.png` ... `figures/serie_10.png`: grafici rapidi di controllo.\n\n"
         "Ogni serie contiene due colonne: `t` e `x`.\n\n"
-        "## Nota\n\n"
-        "Le serie sono standardizzate per default, in modo che scala e varianza empirica non rivelino troppo facilmente il modello.\n"
-        "Per disattivare la standardizzazione usare `--no-standardize`.\n",
+        "## Note\n\n"
+        "Le serie da 01 a 08 sono stazionarie e vengono standardizzate per default,\n"
+        "in modo che scala e varianza empirica non rivelino troppo facilmente il modello.\n\n"
+        "Le serie 09 e 10 sono non stazionarie (random walk e random walk con drift)\n"
+        "e NON vengono standardizzate, anche se il flag globale --standardize e' attivo:\n"
+        "una standardizzazione globale di una serie non stazionaria nasconderebbe\n"
+        "proprio il segnale (varianza crescente, drift) che la diagnostica\n"
+        "valori-vs-incrementi della Parte 1bis deve identificare.\n\n"
+        "Per disattivare la standardizzazione anche sulle serie stazionarie usare `--no-standardize`.\n",
         encoding="utf-8",
     )
 
@@ -349,7 +439,7 @@ def generate_all(outdir: Path, seed: int, n: int, burnin: int, standardize: bool
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Genera serie sintetiche ARMA/ARCH/GARCH per laboratorio.",
+        description="Genera serie sintetiche ARMA/ARCH/GARCH per laboratorio (versione con random walk).",
     )
     parser.add_argument(
         "--outdir",
@@ -378,7 +468,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-standardize",
         action="store_true",
-        help="Non standardizza le serie in uscita.",
+        help="Non standardizza nemmeno le serie stazionarie in uscita.",
     )
     return parser.parse_args()
 

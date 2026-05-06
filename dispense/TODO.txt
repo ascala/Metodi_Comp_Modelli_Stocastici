@@ -1,5 +1,17 @@
 Per l'anno prox: visto che lezione Mastere equation e Fokker-Planck sono separate, separare anche i laboratori...
 In particolare:
 1) laboratorio master equation: introdurre RW su reticolo e risolvere con matrici
-2) laboratorio Fokker-Plank: soprattutto far vedere come si pass "correttamente" dal continuo al discreto in modo che quando simulano non facciano cazzate tipiche (ovvero debbono far scalare "bene" i coefficienti)
+2) laboratorio Fokker-Plank: soprattutto far vedere come si passa "correttamente" dal continuo al discreto in modo che quando simulano non facciano cazzate tipiche (ovvero debbono far scalare "bene" i coefficienti)
+
+sequenza delle lezioni: 8 deve diventare stima dei parametri / loglikelihoode e la 9 serie stocastiche. A quel punto rimane solo una lezione+lab a scelta oppure due lezioni teoriche
+
+controllare che ci siano come lezioni possibili:
+- point process
+- boltzmann machine / langevin (machine learning)
+- esplorazione di paesaggi complessi / ottimizzazione stocastica
+	Per questa lezione mettere simulated annealing, parallel tempering, tabu search, genetic algorithms etc
+	
+TUTTE LE LEZIONI VANNO FATTE IN LABORATORIO !!!
+
+
 

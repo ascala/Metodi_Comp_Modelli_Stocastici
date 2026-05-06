@@ -1,0 +1,11 @@
+file,label,model,parameters,comment,standardize
+serie_01.csv,Serie 01,Rumore bianco gaussiano,sigma=1.0,Controllo nullo: nessuna memoria nella media o nella varianza.,True
+serie_02.csv,Serie 02,AR(1),"phi=0.75, sigma=1.0",Persistenza positiva; ACF attesa con decadimento positivo.,True
+serie_03.csv,Serie 03,AR(1),"phi=-0.65, sigma=1.0",Persistenza negativa; ACF attesa con alternanza di segno.,True
+serie_04.csv,Serie 04,MA(1),"theta=0.70, sigma=1.0",Memoria breve negli shock; ACF teoricamente troncata dopo lag 1.,True
+serie_05.csv,Serie 05,"ARMA(1,1)","phi=0.60, theta=-0.45, sigma=1.0",Memoria mista: persistenza dello stato e degli shock.,True
+serie_06.csv,Serie 06,ARCH(1),"omega=0.20, alpha=0.70","Media non prevedibile, ma varianza condizionata dipendente dallo shock passato.",True
+serie_07.csv,Serie 07,"GARCH(1,1)","omega=0.05, alpha=0.10, beta=0.86",Volatilita' persistente; alpha+beta=0.96.,True
+serie_08.csv,Serie 08,"GJR-GARCH(1,1) asimmetrico","omega=0.05, alpha=0.06, gamma=0.16, beta=0.84",Volatilita' asimmetrica: shock negativi aumentano maggiormente la varianza futura.,True
+serie_09.csv,Serie 09,Random walk,"sigma=0.5, x0=0.0",Non stazionaria nei valori; gli incrementi sono rumore bianco. Test della diagnostica valori-vs-incrementi.,False
+serie_10.csv,Serie 10,Random walk con drift,"mu=0.05, sigma=0.5, x0=0.0",Trend lineare con fluttuazioni cumulative; gli incrementi sono i.i.d. con media non nulla.,False
