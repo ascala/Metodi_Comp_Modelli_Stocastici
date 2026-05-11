@@ -181,26 +181,19 @@ df.to_csv("data/poisson_interarrivals.csv", index=False)
 Per un campione di tempi di attesa indipendenti,
 
 $$
-L(\lambda)
-=
-\prod_{i=1}^n \lambda e^{-\lambda s_i}.
+L(\lambda) = \prod_{i=1}^n \lambda e^{-\lambda s_i}.
 $$
 
 Quindi
 
 $$
-L(\lambda)
-=
-\lambda^n
-\exp\left(-\lambda\sum_{i=1}^n s_i\right).
+L(\lambda) = \lambda^n \exp\left(-\lambda\sum_{i=1}^n s_i\right).
 $$
 
 La log-likelihood è
 
 $$
-\ell(\lambda)
-=
-n\log\lambda-\lambda\sum_{i=1}^n s_i.
+\ell(\lambda) = n\log\lambda-\lambda\sum_{i=1}^n s_i.
 $$
 
 Implementatela:
@@ -220,21 +213,13 @@ def loglik_exponential_rate(lam, s):
 Derivando:
 
 $$
-\frac{d\ell}{d\lambda}
-=
-\frac{n}{\lambda}
--
-\sum_{i=1}^n s_i.
+\frac{d\ell}{d\lambda} = \frac{n}{\lambda} - \sum_{i=1}^n s_i.
 $$
 
 La condizione del primo ordine dà
 
 $$
-\hat\lambda
-=
-\frac{n}{\sum_i s_i}
-=
-\frac{1}{\bar s}.
+\hat\lambda = \frac{n}{\sum_i s_i} = \frac{1}{\bar s}.
 $$
 
 Implementazione:
@@ -292,27 +277,20 @@ plt.show()
 Per questo modello,
 
 $$
-\ell''(\lambda)
-=
--\frac{n}{\lambda^2}.
+\ell''(\lambda) = -\frac{n}{\lambda^2}.
 $$
 
 Quindi, nel massimo,
 
 $$
--\ell''(\hat\lambda)
-=
-\frac{n}{\hat\lambda^2}.
+-\ell''(\hat\lambda) = \frac{n}{\hat\lambda^2}.
 $$
 
 L'approssimazione della varianza dello stimatore è
 
 $$
-\widehat{\mathrm{Var}}(\hat\lambda)
-\approx
-\frac{1}{-\ell''(\hat\lambda)}
-=
-\frac{\hat\lambda^2}{n}.
+\widehat{\mathrm{Var}}(\hat\lambda) \approx \frac{1}{-\ell''(\hat\lambda)}
+= \frac{\hat\lambda^2}{n}.
 $$
 
 Implementazione:
@@ -471,15 +449,7 @@ def two_state_sufficient_statistics(jumps, T, x0=1):
 La log-likelihood della traiettoria è
 
 $$
-\ell(\alpha,\beta)
-=
-N_{12}\log\alpha
-+
-N_{21}\log\beta
--
-\alpha T_1
--
-\beta T_2.
+\ell(\alpha,\beta) = N_{12}\log\alpha + N_{21}\log\beta - \alpha T_1 - \beta T_2.
 $$
 
 Questa formula ha una struttura intuitiva:
@@ -501,23 +471,17 @@ def loglik_two_state(alpha, beta, N12, N21, T1, T2):
 Derivando rispetto ad $\alpha$ e $\beta$:
 
 $$
-\frac{\partial \ell}{\partial \alpha}
-=
-\frac{N_{12}}{\alpha}-T_1,
+\frac{\partial \ell}{\partial \alpha} = \frac{N_{12}}{\alpha}-T_1,
 $$
 
 $$
-\frac{\partial \ell}{\partial \beta}
-=
-\frac{N_{21}}{\beta}-T_2.
+\frac{\partial \ell}{\partial \beta} = \frac{N_{21}}{\beta}-T_2.
 $$
 
 Ponendo a zero:
 
 $$
-\hat\alpha=\frac{N_{12}}{T_1},
-\qquad
-\hat\beta=\frac{N_{21}}{T_2}.
+\hat\alpha=\frac{N_{12}}{T_1}, \qquad \hat\beta=\frac{N_{21}}{T_2}.
 $$
 
 Implementazione:
@@ -558,9 +522,7 @@ $$
 Confrontate queste quantità con
 
 $$
-\hat\pi_1=\frac{T_1}{T},
-\qquad
-\hat\pi_2=\frac{T_2}{T}.
+\hat\pi_1=\frac{T_1}{T}\;, \qquad \hat\pi_2=\frac{T_2}{T}.
 $$
 
 ## B.7 Compiti
@@ -636,35 +598,17 @@ df_ou.to_csv("data/ou_process.csv", index=False)
 Per piccoli $\Delta t$,
 
 $$
-X_{k+1}
-\mid
-X_k=x_k
-\approx
-\mathcal{N}
-\left(
-x_k-\gamma(x_k-\mu)\Delta t,
-\sigma^2\Delta t
-\right).
+X_{k+1} \mid X_k=x_k \approx
+\mathcal{N}\left( x_k-\gamma(x_k-\mu)\Delta t\;,\; \sigma^2\Delta t \right).
 $$
 
 Quindi la log-likelihood approssimata è
 
 $$
-\ell(\gamma)
-=
--\frac{1}{2}
-\sum_{k=0}^{N-1}
-\left[
-\log(2\pi\sigma^2\Delta t)
-+
-\frac{
-\left(
-x_{k+1}-x_k+\gamma(x_k-\mu)\Delta t
-\right)^2
-}{
-\sigma^2\Delta t
-}
-\right].
+\ell(\gamma) = -\frac{1}{2} \sum_{k=0}^{N-1} \left[
+\log(2\pi\sigma^2\Delta t) +
+\frac{ \left(x_{k+1}-x_k+\gamma(x_k-\mu)\Delta t\right)^2}{\sigma^2\Delta t}
+\right]\;.
 $$
 
 Implementazione:
@@ -714,11 +658,7 @@ $$
 Dal modello discretizzato,
 
 $$
-\Delta x_k
-=
--\gamma(x_k-\mu)\Delta t
-+
-\sigma\sqrt{\Delta t}\xi_k.
+\Delta x_k = -\gamma(x_k-\mu)\Delta t + \sigma\sqrt{\Delta t}\xi_k\;.
 $$
 
 Quindi, se $\mu$ e $\sigma$ sono noti, stimare $\gamma$ equivale a una regressione degli incrementi $\Delta x_k$ sulla variabile $(x_k-\mu)\Delta t$.
@@ -726,14 +666,7 @@ Quindi, se $\mu$ e $\sigma$ sono noti, stimare $\gamma$ equivale a una regressio
 La MLE approssimata è
 
 $$
-\hat\gamma
-=
--
-\frac{
-\sum_k (x_k-\mu)\Delta x_k
-}{
-\Delta t\sum_k (x_k-\mu)^2
-}.
+\hat\gamma =- \frac{\sum_k (x_k-\mu)\Delta x_k}{\Delta t\sum_k (x_k-\mu)^2}\;.
 $$
 
 Implementazione:
@@ -754,14 +687,11 @@ print("gamma stimato via regressione:", gamma_hat_reg)
 Per Ornstein--Uhlenbeck il propagatore esatto è noto ed è gaussiano:
 
 $$
-X_{k+1}\mid X_k=x_k
-\sim
-\mathcal{N}
-\left(
-\mu+(x_k-\mu)e^{-\gamma\Delta t},
-\frac{\sigma^2}{2\gamma}
-\left(1-e^{-2\gamma\Delta t}\right)
-\right).
+X_{k+1}\mid X_k=x_k \sim
+\mathcal{N}\left(
+\mu+(x_k-\mu)e^{-\gamma\Delta t}\;,\;
+\frac{\sigma^2}{2\gamma}\left(1-e^{-2\gamma\Delta t}\right)
+\right)\;.
 $$
 
 Quindi, per questo modello, si può costruire una likelihood esatta per dati campionati a passo finito.
@@ -859,35 +789,23 @@ L'idea diventa allora:
 
 Consideriamo una popolazione chiusa di taglia
 
-$$
-N=S+I+R.
-$$
+$$ N=S+I+R. $$
 
 Gli eventi possibili sono:
 
 1. infezione:
-   $$
-   (S,I,R)\to(S-1,I+1,R)
-   $$
+   $$ (S,I,R)\to(S-1,I+1,R) $$
    con tasso
-   $$
-   a_1(S,I,R)=\beta\frac{SI}{N};
-   $$
+   $$ a_1(S,I,R)=\beta\frac{SI}{N}\;; $$
 
 2. guarigione:
-   $$
-   (S,I,R)\to(S,I-1,R+1)
-   $$
+   $$ (S,I,R)\to(S,I-1,R+1) $$
    con tasso
-   $$
-   a_2(S,I,R)=\gamma I.
-   $$
+   $$ a_2(S,I,R)=\gamma I\;. $$
 
 I parametri da stimare sono
 
-$$
-\theta=(\beta,\gamma).
-$$
+$$ \theta=(\beta,\gamma)\;. $$
 
 ## D.3 Simulazione Gillespie del SIR
 
@@ -980,9 +898,7 @@ print("Statistiche osservate:", obs_stats)
 Queste statistiche sono:
 
 $$
-m_{\mathrm{obs}}
-=
-(R_\infty,\ I_{\max},\ t_{\max}).
+m_{\mathrm{obs}} = (R_\infty\,,\, I_{\max}\,,\, t_{\max}).
 $$
 
 ## D.5 Metodo dei momenti simulati
@@ -997,27 +913,16 @@ Per ogni valore candidato $(\beta,\gamma)$:
 Definiamo
 
 $$
-\overline m_{\mathrm{sim}}(\beta,\gamma)
-=
+\overline m_{\mathrm{sim}}(\beta,\gamma) = 
 \frac{1}{M}\sum_{r=1}^M m_{\mathrm{sim}}^{(r)}(\beta,\gamma).
 $$
 
 La funzione obiettivo è
 
 $$
-Q(\beta,\gamma)
-=
-\left[
-m_{\mathrm{obs}}
--
-\overline m_{\mathrm{sim}}(\beta,\gamma)
-\right]^T
-W
-\left[
-m_{\mathrm{obs}}
--
-\overline m_{\mathrm{sim}}(\beta,\gamma)
-\right].
+Q(\beta,\gamma) = 
+\left[ m_{\mathrm{obs}} - \overline m_{\mathrm{sim}}(\beta,\gamma) \right]^T
+W \left[ m_{\mathrm{obs}} - \overline m_{\mathrm{sim}}(\beta,\gamma) \right].
 $$
 
 Nel caso più semplice usiamo $W=I$, ma conviene normalizzare le statistiche per evitare che una componente domini le altre solo per scala numerica.
@@ -1148,9 +1053,7 @@ for k in range(3):
 
 1. Generare un'epidemia osservata con parametri noti.
 2. Calcolare le statistiche osservate:
-   $$
-   R_\infty,\quad I_{\max},\quad t_{\max}.
-   $$
+   $$ R_\infty\,,\quad I_{\max}\,,\quad t_{\max}\;. $$
 3. Implementare la funzione obiettivo SMM.
 4. Stimare $\beta$ e $\gamma$.
 5. Visualizzare la funzione obiettivo su una griglia.
